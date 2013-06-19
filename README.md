@@ -1,5 +1,7 @@
 # Advanced Modular Platform (AMP)
 
+[![Build Status](https://travis-ci.org/Berico-Technologies/AMP.png?branch=master)](https://travis-ci.org/Berico-Technologies/AMP)
+
 AMP is many things, but all related to messaging:
 
 * Implementation of CMF (http://github.com/Berico-Technologies/CMF) using AMQP.
