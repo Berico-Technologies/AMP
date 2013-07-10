@@ -36,6 +36,14 @@
     <AssemblyOriginatorKeyFile>amp.eventing.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="cmf.bus">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\binaries\libraries\cmf.bus.dll</HintPath>
+    </Reference>
+    <Reference Include="cmf.eventing">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\binaries\libraries\cmf.eventing.dll</HintPath>
+    </Reference>
     <Reference Include="Common.Logging">
       <HintPath>..\..\binaries\libraries\Common.Logging.dll</HintPath>
     </Reference>
@@ -50,12 +58,6 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="cmf.bus">
-      <HintPath>..\..\binaries\libraries\cmf.bus.dll</HintPath>
-    </Reference>
-    <Reference Include="cmf.eventing">
-      <HintPath>..\..\binaries\libraries\cmf.eventing.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\GlobalAssemblyInfo.cs">
@@ -73,6 +75,18 @@
     <Compile Include="RpcFilter.cs" />
     <Compile Include="RpcRegistration.cs" />
     <Compile Include="serializers\JsonEventSerializer.cs" />
+    <Compile Include="streaming\CollectionSizeNotifier.cs" />
+    <Compile Include="streaming\DefaultEventStream.cs" />
+    <Compile Include="streaming\DefaultEventStreamFactory.cs" />
+    <Compile Include="streaming\DefaultStreamingBus.cs" />
+    <Compile Include="streaming\EndOfStream.cs" />
+    <Compile Include="streaming\EventStreamQueueItem.cs" />
+    <Compile Include="streaming\IEventStreamFactory.cs" />
+    <Compile Include="streaming\IStandardStreamingEventBus.cs" />
+    <Compile Include="streaming\StreamingCollectionRegistration.cs" />
+    <Compile Include="streaming\StreamingEnvelopeHelper.cs" />
+    <Compile Include="streaming\StreamingHeadersProcessor.cs" />
+    <Compile Include="streaming\StreamingReaderRegistration.cs" />
     <Compile Include="TypedEventHandler.cs" />
   </ItemGroup>
   <ItemGroup>

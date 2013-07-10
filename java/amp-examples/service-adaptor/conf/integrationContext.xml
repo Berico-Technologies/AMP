@@ -36,6 +36,6 @@
 	
 	<beans:bean id="zipToLatLonResponseChannel" 
 		class="amp.examples.adaptor.integration.EnvelopeBusMessageSink" 
-		c:envelopBus-ref="envelopeBus" c:messageTopic="zipcode.to.latlon.Response" c:messageType="text/xml" />
+		c:envelopBus-ref="envelopeBus" c:messageTopic="zipcode.to.latlon.Response" c:collectionType="text/xml" />
 	
 </beans:beans>

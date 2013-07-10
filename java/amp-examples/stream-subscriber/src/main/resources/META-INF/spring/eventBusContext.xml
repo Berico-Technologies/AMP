@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/util 
+		http://www.springframework.org/schema/util/spring-util.xsd">
+                      
+	<!-- The following components are for our Event Bus, which uses our Envelope Bus -->
+    <bean id="eventBus" class="amp.eventing.streaming.DefaultStreamingBus"
+    		destroy-method="dispose"
+    		c:envelopeBus-ref="envelopeBus"
+    		c:outboundProcessors-ref="outboundEventProcessors"
+    		c:inboundProcessors-ref="inboundEventProcessors" />
+
+    <util:list id="inboundEventProcessors" value-type="amp.eventing.IEventProcessor">
+        <!--<ref bean="rpcFilter" />-->
+        <ref bean="serializationProcessor" />
+    </util:list>
+
+    <util:list id="outboundEventProcessors" value-type="amp.eventing.IEventProcessor">
+        <ref bean="serializationProcessor" />
+        <ref bean="outboundHeadersProcessor" />
+        <!--<ref bean="rpcFilter"/>-->
+    </util:list>
+
+    <bean id="serializationProcessor" class="amp.eventing.serializers.JsonEventSerializer"
+    		c:serializer-ref="serializer" />
+
+    <bean id="serializer" class="amp.eventing.GsonSerializer" />
+
+    <bean id="outboundHeadersProcessor" class="amp.eventing.OutboundHeadersProcessor" 
+    		c:userInfoRepository-ref="userInfoRepository"  />
+	
+	<util:map id="userMapping" key-type="java.lang.String" value-type="java.lang.String">
+		<entry key="tuser" value="CN=Test User,CN=users,DC=osd,DC=mil" />
+	</util:map>
+	
+    <bean id="userInfoRepository" class="amp.bus.security.InMemoryUserInfoRepository"
+    		c:mapping-ref="userMapping" />
+
+    <bean id="rpcFilter" class="amp.eventing.RpcFilter" />
+
+    <!-- The follow components are for our Envelope Bus -->
+    <bean id="envelopeBus" class="amp.bus.DefaultEnvelopeBus" destroy-method="dispose"
+    		c:transportProvider-ref="transportProvider" />
+
+    <bean id="transportProvider" class="amp.bus.rabbit.RabbitTransportProvider" 
+    		c:topologyService-ref="topologyService" c:channelFactory-ref="channelFactory" />
+
+    <bean id="channelFactory" class="amp.bus.rabbit.BasicChannelFactory"
+    		c:username="guest" c:password="guest" />
+
+    <bean id="topologyService" class="amp.bus.rabbit.topology.SimpleTopologyService">
+        <constructor-arg name="clientProfile" value="" />
+        <constructor-arg name="name" value="" />
+        <constructor-arg name="hostname" value="localhost" />
+        <constructor-arg name="vhost" value="" />
+        <constructor-arg name="port" value="5672" />
+    </bean>
+
+</beans>

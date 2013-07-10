@@ -118,7 +118,7 @@ namespace amp.tests
         {
         }
 
-        protected override void ProcessEvent(EventContext context, IEnumerable<IEventProcessor> processorChain, Action processingComplete)
+        public override void ProcessEvent(EventContext context, IEnumerable<IEventProcessor> processorChain, Action processingComplete)
         {
             // set the payload of the envelope to something, or an exception will be thrown
             context.Envelope = new Envelope() {Payload = Encoding.UTF8.GetBytes("Test")};

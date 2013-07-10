@@ -6,14 +6,14 @@
     <parent>
         <groupId>amp</groupId>
         <artifactId>amp</artifactId>
-        <version>3.1.0</version>
+        <version>3.2.0-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
 
     <groupId>amp</groupId>
     <artifactId>amp.topology.client</artifactId>
-    <version>3.1.0</version>
+    <version>3.2.0-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>AMP Global Topology Client</name>
     <url>http://labs.beri.co/cmf/topology</url>

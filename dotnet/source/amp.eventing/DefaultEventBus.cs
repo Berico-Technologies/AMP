@@ -112,7 +112,7 @@ namespace amp.eventing
 
 
         // recursive function that processes envelopes
-        protected virtual void ProcessEvent(
+        public virtual void ProcessEvent(
             EventContext context,
             IEnumerable<IEventProcessor> processorChain,
             Action processingComplete)
