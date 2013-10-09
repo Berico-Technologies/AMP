@@ -92,6 +92,7 @@ namespace amp.bus.rabbit
             cf.Ssl.Certs = new X509CertificateCollection(new X509Certificate[] { cert });
             cf.Ssl.ServerName = ex.HostName;
             cf.Ssl.Enabled = true;
+            cf.Ssl.Version = System.Security.Authentication.SslProtocols.Tls;
 
             // we either now create an SSL connection or a default "guest/guest" connection
             try
