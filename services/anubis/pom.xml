@@ -47,9 +47,14 @@
 		</dependency>
 		<dependency>
 			<groupId>amp</groupId>
-			<artifactId>amp.bus.rabbit</artifactId>
+			<artifactId>amp.rabbit</artifactId>
 			<version>${amp.version}</version>
 		</dependency>
+<!-- 		<DEPENDENCY> -->
+<!-- 			<GROUPID>AMP</GROUPID> -->
+<!-- 			<ARTIFACTID>AMP.BUS.RABBIT</ARTIFACTID> -->
+<!-- 			<VERSION>${AMP.VERSION}</VERSION> -->
+<!-- 		</DEPENDENCY> -->
 		<dependency>
 			<groupId>amp</groupId>
 			<artifactId>amp.bus.security</artifactId>
