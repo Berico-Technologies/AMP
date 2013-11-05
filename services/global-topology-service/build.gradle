@@ -1,0 +1,98 @@
+apply plugin: 'dropwizard'
+apply plugin: 'maven'
+apply plugin: 'rpm'
+
+group = 'amp'
+version = '3.2.1'
+
+description = """Global Topology Service"""
+
+sourceCompatibility = 1.6
+targetCompatibility = 1.6
+
+
+buildscript {
+	repositories {
+			mavenCentral()
+			maven {
+					url 'http://nexus.bericotechnologies.com/content/repositories/releases/'
+			}
+			dependencies {
+					classpath group: 'com.bericotech', name: 'dropwizard-gradle-plugin', version: '1.1'
+					classpath 'com.trigonic:gradle-rpm-plugin:1.4'
+
+			}
+	}
+}
+
+repositories {
+        
+     maven { url "http://nexus.bericotechnologies.com/content/groups/public" }
+     maven { url "http://repo.springsource.org/release" }
+     maven { url "http://repo.springsource.org/libs-snapshot" }
+     maven { url "http://repo.maven.apache.org/maven2" }
+}
+dependencies {
+    compile group: 'rabbitmq', name: 'mgmt', version:'3.2.0'
+    compile group: 'cmf', name: 'cmf.bus', version:'3.2.1'
+    compile group: 'amp', name: 'amp.bus', version:'3.2.1'
+    compile group: 'amp', name: 'amp.rabbit', version:'3.2.1'
+    compile(group: 'org.springframework', name: 'spring-context', version:'3.2.2.RELEASE') {
+		exclude(module: 'commons-logging')
+    }
+    compile group: 'org.springframework.security', name: 'spring-security-core', version:'3.1.3.RELEASE'
+    compile group: 'org.springframework.security', name: 'spring-security-web', version:'3.1.3.RELEASE'
+    compile group: 'org.springframework.security', name: 'spring-security-config', version:'3.1.3.RELEASE'
+    compile group: 'org.springframework.security', name: 'spring-security-ldap', version:'3.1.3.RELEASE'
+    compile group: 'org.springframework.ldap', name: 'spring-ldap', version:'1.3.1.RELEASE', classifier:'all'
+    compile group: 'org.springframework.data', name: 'spring-data-mongodb', version:'1.2.0.BUILD-SNAPSHOT'
+    compile group: 'commons-io', name: 'commons-io', version:'2.4'
+    compile group: 'joda-time', name: 'joda-time', version:'2.1'
+    compile group: 'com.google.code.gson', name: 'gson', version:'2.2.2'
+    compile group: 'com.thoughtworks.xstream', name: 'xstream', version:'1.2.2'
+    compile group: 'com.yammer.dropwizard', name: 'dropwizard-core', version:'0.6.1'
+    compile group: 'com.yammer.dropwizard', name: 'dropwizard-auth', version:'0.6.1'
+    compile group: 'com.berico', name: 'fallwizard', version:'1.1.1'
+    compile group: 'com.bazaarvoice.dropwizard', name: 'dropwizard-configurable-assets-bundle', version:'0.1.9'
+    testCompile group: 'org.mockito', name: 'mockito-all', version:'1.9.5'
+    testCompile group: 'junit', name: 'junit', version:'4.10'
+}
+
+dropwizard {
+	mainClassName = "amp.topology.TopologyService"
+}
+
+task rpm(type: Rpm) {
+	packageName = 'gts'
+	version = project.version
+	release = 2
+	arch = NOARCH
+	os = LINUX
+
+	postInstall = file('scripts/rpm/postInstall.sh')
+	preUninstall = file('scripts/rpm/preUninstall.sh')
+	postUninstall = file('scripts/rpm/postUninstall.sh')
+
+	into '/opt/ampere/gts'
+
+	from(jar.outputs.files) {
+		//into 'lib'
+	}
+	from('src/dist/configs') {
+		fileType = CONFIG | NOREPLACE
+		into '/etc/ampere/anubis'
+	}
+	from('scripts/etc/default') {
+		fileType = CONFIG | NOREPLACE
+		into '/etc/default'
+	}
+	from('scripts/service') {
+		into '/etc/rc.d/init.d'
+		fileMode=0775
+	}
+}
+
+
+wrapper {
+	gradleVersion = '1.7'
+}

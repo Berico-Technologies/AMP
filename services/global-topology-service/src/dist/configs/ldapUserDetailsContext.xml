@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:c="http://www.springframework.org/schema/c"
+       xmlns:sec="http://www.springframework.org/schema/security"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd">
+
+
+    <sec:ldap-server id="ldapServer"
+                     url="${ldap.server:ldap://dc01.openampere.com:389/DC=openampere,DC=com}"
+                     manager-dn="${ldap.bindaccount:CN=LDAP Bind Account,CN=Users,DC=openampere,DC=com}"
+                     manager-password="${ldap.password:1qaz@WSX3edc$RFV}" />
+
+    <bean id="filterBasedLdapUserSearch" class="amp.anubis.ldap.NoSpacesFilterBasedLdapUserSearch">
+        <constructor-arg value="cn=Users" />
+        <constructor-arg value="(distinguishedName={0})" />
+        <constructor-arg ref="ldapServer" />
+        <property name="searchSubtree" value="true" />
+        <property name="derefLinkFlag" value="true" />
+    </bean>
+
+    <bean id="authoritiesPopulator" class="amp.anubis.ldap.IncludeDomainUsersLdapAuthoritiesPopulator">
+        <constructor-arg ref="ldapServer" />
+        <constructor-arg value="cn=Users" />
+        <property name="searchSubtree" value="true" />
+        <property name="rolePrefix" value="" />
+        <property name="convertToUpperCase" value="false" />
+        <!-- see: http://stackoverflow.com/questions/5163597/is-there-a-spring-security-defaultldapauthoritiespopulator-implementation-that-s -->
+        <property name="groupSearchFilter" value="(&amp;(objectClass=group)(member:1.2.840.113556.1.4.1941:={0}))" />
+    </bean>
+
+    <bean id="ldapUserDetailsService" class="org.springframework.security.ldap.userdetails.LdapUserDetailsService">
+        <constructor-arg ref="filterBasedLdapUserSearch" />
+        <constructor-arg ref="authoritiesPopulator"/>
+    </bean>
+
+    <bean id="adAuthenticationProvider"
+          class="org.springframework.security.ldap.authentication.ad.ActiveDirectoryLdapAuthenticationProvider">
+        <constructor-arg value="${ldap.domain:openampere.com}" />
+        <constructor-arg value="${ldap.url:ldap://dc01.openampere.com/}" />
+    </bean>
+
+</beans>

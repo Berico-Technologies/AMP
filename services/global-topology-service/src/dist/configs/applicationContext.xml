@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.2.xsd
+		http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd">
+
+
+    <bean id="exchangeResource"
+		class="amp.topology.resources.ExchangeResource" 
+		c:topologyRepository-ref="topologyRepository" />
+	
+	<bean id="routeInfoResource"
+		class="amp.topology.resources.RouteInfoResource"
+		c:topologyRepository-ref="topologyRepository" />
+	
+	<bean id="topologyServiceResource"
+		class="amp.topology.resources.TopologyServiceResource"
+		c:topologyService-ref="topologyService" />
+		
+	<bean id="missedTopicsResource"
+		class="amp.topology.resources.MissedTopicsResource"
+		c:noRouteForTopicListener-ref="noRouteInfoForTopicListener" />
+	
+	<bean id="userManagementResource"
+		class="amp.topology.resources.UserManagementResource" />
+	
+	<bean id="noRouteInfoForTopicListener" 
+		class="amp.topology.core.repo.listeners.NoRouteInfoForTopicListener" />
+	
+	<bean id="repositoryHealthCheck"
+		class="amp.topology.health.RepositoryHealthCheck"
+		c:topologyRepository-ref="topologyRepository" />
+	
+	<bean id="topicMissHealthCheck"
+		class="amp.topology.health.TopicMissHealthCheck"
+		c:noRouteForTopicListener-ref="noRouteInfoForTopicListener" />
+	
+	<bean id="showTopicMissesTask"
+		class="amp.topology.tasks.ShowTopicMissesTask"
+		c:noRouteForTopicListener-ref="noRouteInfoForTopicListener" />
+	
+	<bean id="topologyService"
+        class="amp.topology.core.GlobalTopologyService"
+        c:topologyRepository-ref="topologyRepository"
+        c:routeCreator-ref="routeCreator" />
+
+
+    <bean id="fallbackRoutingResource"
+          class="amp.topology.resources.FallbackRoutingResource"
+          c:routeCreator-ref="routeCreator"/>
+
+	<!-- Enter the authentication parameters for the RabbitMQ Management Console.
+	     There is an equivalent provider for SSL.
+	 -->
+	<bean id="authProvider" class="rabbitmq.httpclient.BasicAuthHttpClientProvider"
+	    c:username="gts" c:password="gts-password" />
+	
+	<bean id="rmqManagementService" class="rabbitmq.mgmt.RabbitMgmtService" 
+	   init-method="initialize" 
+	   c:hostname="localhost" c:port="15672" c:httpClientProvider-ref="authProvider" />
+	   
+	<bean id="routeCreator" class="amp.topology.core.RmqRouteCreator" 
+	   c:mgmtService-ref="rmqManagementService" />
+	
+</beans>
