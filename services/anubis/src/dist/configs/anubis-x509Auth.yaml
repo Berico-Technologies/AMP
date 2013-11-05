@@ -1,0 +1,33 @@
+applicationContext: ['/etc/ampere/anubis/ldapUserDetailsContext.xml', '/etc/ampere/anubis/applicationContext.xml', '/etc/ampere/anubis/x509AuthSecurityContext.xml']
+
+useSpringSecurity: true
+
+logging:
+    level: DEBUG
+
+    console:
+        enabled: true
+        threshold: DEBUG
+    file:
+        enabled: true
+        threshold: ALL
+        currentLogFilename: /var/log/ampere/anubis/anubis.log
+        archivedLogFilenamePattern: /var/log/ampere/anubis/anubis-%d.log.gz
+        archivedFileCount: 5
+        timeZone: UTC
+
+
+http:
+    connectorType: nonblocking+ssl
+    ssl:
+        keyStore: /etc/pki/ampere/oamp-anubis.jks
+        keyStorePassword: "1qaz@WSX3edc$RFV"
+        trustStore: /etc/pki/ampere/truststore.jks
+        trustStorePassword: "1qaz@WSX3edc$RFV"
+        wantClientAuth: true
+        needClientAuth: false
+    port: 15678
+    adminPort: 8082
+    adminUsername: admin
+    adminPassword: admin
+    rootPath: /anubis/*
