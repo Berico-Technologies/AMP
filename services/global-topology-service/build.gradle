@@ -1,6 +1,7 @@
 apply plugin: 'dropwizard'
 apply plugin: 'maven'
 apply plugin: 'rpm'
+apply plugin: 'mimosa'
 
 group = 'amp'
 version = '3.2.1'
