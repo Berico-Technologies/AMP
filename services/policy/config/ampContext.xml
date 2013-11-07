@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:c="http://www.springframework.org/schema/c"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+
+    <!-- This is "your" service.  Pretend it's the one you're writing that uses the event bus -->
+    <bean id="ampService" class="amp.policy.AmpService">
+        <constructor-arg index="0" ref="rpcEventBus" />
+    </bean>
+
+    <!-- The following components are for our Event Bus, which uses our Envelope Bus -->
+    <!-- The following components are for our Event Bus, which uses our Envelope Bus -->
+    <bean id="rpcEventBus" class="amp.eventing.DefaultRpcBus"
+          destroy-method="dispose">
+        <constructor-arg ref="envelopeBus" />
+        <constructor-arg >
+            <util:list value-type="amp.eventing.IEventProcessor">
+                <ref bean="rpcFilter" />
+                <ref bean="JsonSerializationProcessor" />
+            </util:list>
+        </constructor-arg>
+        <constructor-arg >
+            <util:list value-type="amp.eventing.IEventProcessor">
+                <ref bean="JsonSerializationProcessor" />
+                <ref bean="OutboundHeadersProcessor" />
+                <ref bean="rpcFilter"/>
+            </util:list>
+        </constructor-arg>
+    </bean>
+
+    <bean id="JsonSerializationProcessor" class="amp.messaging.JsonSerializationProcessor" />
+
+    <bean id="OutboundHeadersProcessor" class="amp.messaging.OutboundHeadersProcessor"
+          c:userInfoRepository-ref="userInfoRepository"  />
+
+    <bean id="userInfoRepository" class="amp.bus.security.InMemoryUserInfoRepository"
+          c:mapping-ref="userMapping" />
+
+    <util:map id="userMapping" key-type="java.lang.String" value-type="java.lang.String" />
+
+    <bean id="rpcFilter" class="amp.eventing.RpcFilter" />
+
+    <bean id="envelopeBus" class="amp.bus.DefaultEnvelopeBus" destroy-method="dispose"
+          c:transportProvider-ref="transportProvider" />
+
+    <bean id="transportProvider" class="amp.rabbit.transport.RabbitTransportProvider"
+          c:topologyService-ref="topologyService"
+          c:channelFactory-ref="channelFactory"
+          c:routingInfoCache-ref="routingInfoCache" />
+
+    <bean id="channelFactory" class="amp.rabbit.TokenChannelFactory"
+          c:httpClientFactory-ref="httpClientProvider"
+          c:anubisUri="https://anubis.openampere.com:15678/anubis/identity/authenticate"
+          c:serializer-ref="serializer"
+          c:secureChannelFactory-ref="secureChannelFactory"/>
+
+    <bean id="httpClientProvider" class="amp.utility.http.SslHttpClientProvider"
+          c:keystore="/keys/amp-test-at-openampere.com.jks"
+          c:keystorePassword="1qaz@WSX3edc$RFV"
+          c:truststore="/keys/truststore.jks"
+          c:port="15678"/>
+
+    <bean id="serializer" class="amp.utility.serialization.GsonSerializer" />
+
+    <bean id="secureChannelFactory" class="amp.rabbit.CertificateChannelFactory"
+          c:keystore="/keys/amp-test-at-openampere.com.jks"
+          c:keystorePassword="1qaz@WSX3edc$RFV"
+          c:truststore="/keys/truststore.jks"/>
+
+    <bean id="topologyService" class="amp.topology.client.GlobalTopologyService"
+          c:routingInfoRetriever-ref="routingInfoRetriever"
+          c:fallbackProvider-ref="fallbackProvider" />
+
+    <bean id="routingInfoRetriever" class="amp.topology.client.HttpRoutingInfoRetriever"
+          c:httpClientProvider-ref="httpClientProvider"
+          c:serializer-ref="serializer"
+          c:urlExpression="https://gts.openampere.com:15677/service/topology/get-routing-info/%s" />
+
+    <bean id="fallbackProvider" class="amp.topology.client.DefaultApplicationExchangeProvider"
+          p:hostname="rabbit.openampere.com"
+          p:port="5671"
+          p:exchangeName="amp.fallback" />
+
+    <bean id="routingInfoCache" class="amp.rabbit.transport.CommandableCache"
+          c:commandReceiver-ref="commandReceiver"
+          c:cacheExpiryInSeconds="600" />
+
+    <bean id="commandReceiver" class="amp.commanding.DefaultCommandReceiver" >
+        <constructor-arg ref="envelopeReceiver" />
+        <constructor-arg >
+            <util:list value-type="amp.messaging.IMessageProcessor">
+                <ref bean="JsonSerializationProcessor" />
+            </util:list>
+        </constructor-arg>
+    </bean>
+
+    <bean id="envelopeReceiver" class="amp.rabbit.transport.RabbitEnvelopeReceiver"
+          c:topologyService-ref="topologyService"
+          c:channelFactory-ref="channelFactory" />
+
+</beans>

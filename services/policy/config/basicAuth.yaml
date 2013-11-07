@@ -1,0 +1,15 @@
+applicationContext: ['config/applicationContext.xml', 'config/securityContext.xml']
+
+useSpringSecurity: true
+
+logging:
+    level: INFO
+    console:
+        enabled: true
+        threshold: DEBUG
+
+http:
+    port: 42424
+    adminUsername: admin
+    adminPassword: admin123
+    rootPath: /service/*
