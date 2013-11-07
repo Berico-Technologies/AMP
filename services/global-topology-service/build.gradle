@@ -27,7 +27,7 @@ buildscript {
 }
 
 repositories {
-        
+
      maven { url "http://nexus.bericotechnologies.com/content/groups/public" }
      maven { url "http://repo.springsource.org/release" }
      maven { url "http://repo.springsource.org/libs-snapshot" }
@@ -81,7 +81,7 @@ task rpm(type: Rpm) {
 	}
 	from('src/dist/configs') {
 		fileType = CONFIG | NOREPLACE
-		into '/etc/ampere/anubis'
+		into '/etc/ampere/gts'
 	}
 	from('scripts/etc/default') {
 		fileType = CONFIG | NOREPLACE
@@ -97,3 +97,4 @@ task rpm(type: Rpm) {
 wrapper {
 	gradleVersion = '1.7'
 }
+processResources.dependsOn(mimosaTask)

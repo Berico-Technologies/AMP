@@ -11,41 +11,53 @@
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd">
 
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="searchSystemEnvironment" value="true" />
+		<property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE" />
+		<property name="locations">
+			<list>
+				<value>file:/${AMPERE_CONFIG}/*.properties</value>
+				<value>file:/etc/ampere/gts/*.properties</value>
+			</list>
+		</property>
+		<property name="ignoreUnresolvablePlaceholders" value="true" />
+	</bean>
 
     <bean id="exchangeResource"
-		class="amp.topology.resources.ExchangeResource" 
+		class="amp.topology.resources.ExchangeResource"
 		c:topologyRepository-ref="topologyRepository" />
-	
+
 	<bean id="routeInfoResource"
 		class="amp.topology.resources.RouteInfoResource"
 		c:topologyRepository-ref="topologyRepository" />
-	
+
 	<bean id="topologyServiceResource"
 		class="amp.topology.resources.TopologyServiceResource"
 		c:topologyService-ref="topologyService" />
-		
+
 	<bean id="missedTopicsResource"
 		class="amp.topology.resources.MissedTopicsResource"
 		c:noRouteForTopicListener-ref="noRouteInfoForTopicListener" />
-	
+
 	<bean id="userManagementResource"
 		class="amp.topology.resources.UserManagementResource" />
-	
-	<bean id="noRouteInfoForTopicListener" 
+
+	<bean id="noRouteInfoForTopicListener"
 		class="amp.topology.core.repo.listeners.NoRouteInfoForTopicListener" />
-	
+
 	<bean id="repositoryHealthCheck"
 		class="amp.topology.health.RepositoryHealthCheck"
 		c:topologyRepository-ref="topologyRepository" />
-	
+
 	<bean id="topicMissHealthCheck"
 		class="amp.topology.health.TopicMissHealthCheck"
 		c:noRouteForTopicListener-ref="noRouteInfoForTopicListener" />
-	
+
 	<bean id="showTopicMissesTask"
 		class="amp.topology.tasks.ShowTopicMissesTask"
 		c:noRouteForTopicListener-ref="noRouteInfoForTopicListener" />
-	
+
 	<bean id="topologyService"
         class="amp.topology.core.GlobalTopologyService"
         c:topologyRepository-ref="topologyRepository"
@@ -60,13 +72,13 @@
 	     There is an equivalent provider for SSL.
 	 -->
 	<bean id="authProvider" class="rabbitmq.httpclient.BasicAuthHttpClientProvider"
-	    c:username="gts" c:password="gts-password" />
-	
-	<bean id="rmqManagementService" class="rabbitmq.mgmt.RabbitMgmtService" 
-	   init-method="initialize" 
-	   c:hostname="localhost" c:port="15672" c:httpClientProvider-ref="authProvider" />
-	   
-	<bean id="routeCreator" class="amp.topology.core.RmqRouteCreator" 
+	    c:username="${gts.username:gts}" c:password="${gts.password:gts-password}" />
+
+	<bean id="rmqManagementService" class="rabbitmq.mgmt.RabbitMgmtService"
+	   init-method="initialize"
+	   c:hostname="localhost" c:port="${rabbit.mgtPort:15672}" c:httpClientProvider-ref="authProvider" />
+
+	<bean id="routeCreator" class="amp.topology.core.RmqRouteCreator"
 	   c:mgmtService-ref="rmqManagementService" />
-	
+
 </beans>
