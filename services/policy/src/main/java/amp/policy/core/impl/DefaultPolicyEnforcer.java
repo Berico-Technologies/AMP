@@ -49,7 +49,7 @@ public class DefaultPolicyEnforcer implements PolicyEnforcer {
     }
 
     @Override
-    public void accept(Envelope e) {
+    public void approve(Envelope e) {
 
         logger.log(e, "APPROVED", "Approved to be consumed.");
 

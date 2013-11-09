@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <bean class="amp.policy.core.providers.MockAdjudicator1" />
+    <bean class="amp.policy.core.providers.MockAdjudicator2" />
+
+    <bean id="defaultEnforcer" class="amp.policy.core.impl.DefaultPolicyEnforcer" />
+
+    <bean id="mockEnforcer" class="amp.policy.core.providers.MockEnforcer" />
+
+    <bean class="amp.policy.core.EnvelopeInterceptor">
+       <constructor-arg index="0" value="123" />
+       <constructor-arg index="1" value="123description" />
+       <constructor-arg index="2"><bean class="amp.policy.core.providers.MockAdjudicator3" /></constructor-arg>
+       <constructor-arg index="3" ref="defaultEnforcer" />
+       <constructor-arg index="4">
+           <bean class="amp.policy.core.InterceptionCriteria">
+               <constructor-arg index="0" value="amp.policy.Mock1" />
+               <constructor-arg index="1" value="jdoe@openampere.com" />
+           </bean>
+       </constructor-arg>
+    </bean>
+
+    <bean id="springProvider" class="amp.policy.core.providers.SpringInterceptorProvider" />
+
+</beans>

@@ -20,7 +20,7 @@ public class InterceptorRegistrar implements ApplicationContextAware, Intercepto
 
     private static final Logger LOG = LoggerFactory.getLogger(InterceptorRegistrar.class);
 
-    private IEnvelopeBus envelopeBus;
+    IEnvelopeBus envelopeBus;
 
     private ApplicationContext applicationContext;
 

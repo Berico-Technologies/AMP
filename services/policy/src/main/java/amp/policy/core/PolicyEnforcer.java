@@ -20,10 +20,10 @@ public interface PolicyEnforcer {
     }
 
     /**
-     * Accept the envelope, forwarding it on to it's original destination.
-     * @param e Envelope to accept.
+     * Approve the envelope, forwarding it on to it's original destination.
+     * @param e Envelope to approve.
      */
-    void accept(Envelope e);
+    void approve(Envelope e);
 
     /**
      * Reject the envelope, preventing it from going on to consumers.

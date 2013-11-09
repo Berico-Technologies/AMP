@@ -70,6 +70,10 @@ public class EnvelopeInterceptor implements IRegistration {
         return adjudicator.getClass().toString();
     }
 
+    public String getEnforcerType(){
+        return enforcer.getClass().toString();
+    }
+
     @Override
     public IEnvelopeFilterPredicate getFilterPredicate() {
         return new IEnvelopeFilterPredicate() {

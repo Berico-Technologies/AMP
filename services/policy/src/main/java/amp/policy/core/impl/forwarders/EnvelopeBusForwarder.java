@@ -24,6 +24,11 @@ public class EnvelopeBusForwarder implements Forwarder, DelayedForwarder {
 
     private IEnvelopeBus envelopeBus;
 
+    public EnvelopeBusForwarder(IEnvelopeBus bus){
+
+        this.envelopeBus = bus;
+    }
+
     @Override
     public final void forward(Envelope e) {
 
@@ -49,6 +54,7 @@ public class EnvelopeBusForwarder implements Forwarder, DelayedForwarder {
                 certifier.certify(envelope);
 
                 forward(envelope);
+
             }
         }, delay, TimeUnit.MILLISECONDS);
     }

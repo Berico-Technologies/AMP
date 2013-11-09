@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <bean class="amp.policy.core.providers.MockAdjudicator1" />
+    <bean class="amp.policy.core.providers.MockAdjudicator3" />
+
+    <bean id="defaultEnforcer" class="amp.policy.core.impl.DefaultPolicyEnforcer" />
+
+    <bean id="mockProvider" class="amp.policy.core.providers.MockInterceptorProvider" />
+
+    <bean id="springProvider" class="amp.policy.core.providers.SpringInterceptorProvider" />
+
+    <bean id="mockEventBusFactory" class="amp.policy.core.MockEnvelopeBusFactory" />
+
+    <bean class="cmf.bus.IEnvelopeBus" factory-bean="mockEventBusFactory" factory-method="getEnvelopeBus" />
+
+    <bean class="amp.policy.core.InterceptorRegistrar" />
+</beans>

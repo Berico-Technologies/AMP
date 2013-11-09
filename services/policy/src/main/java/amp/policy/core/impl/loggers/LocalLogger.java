@@ -26,7 +26,7 @@ public class LocalLogger implements PolicyLogger {
         String timeStamp = Optional.of(e.getHeader(EnvelopeHeaderConstants.ENVELOPE_RECEIPT_TIME)).or("?");
 
         String logMessage = String.format(
-                "[id=%s, type=%s, sender=%s, time=%s]: %s", msgId, msgType, sender, timeStamp, message);
+                "[id=%s, type=%s, targetSender=%s, time=%s]: %s", msgId, msgType, sender, timeStamp, message);
 
         if (logType.equals("WARN"))
             LOG.warn(logMessage);

@@ -45,21 +45,21 @@ public class AccessControlAdjudicatorTest {
 
         adjudicator.adjudicate(e1, enforcer);
 
-        verify(enforcer).accept(e1);
+        verify(enforcer).approve(e1);
         verify(enforcer, never()).reject(eq(e1), anyString());
 
         Envelope e2 = createEnvelopeWithSender("jruiz");
 
         adjudicator.adjudicate(e2, enforcer);
 
-        verify(enforcer).accept(e2);
+        verify(enforcer).approve(e2);
         verify(enforcer, never()).reject(eq(e2), anyString());
 
         Envelope e3 = createEnvelopeWithSender("tim");
 
         adjudicator.adjudicate(e3, enforcer);
 
-        verify(enforcer, never()).accept(e3);
+        verify(enforcer, never()).approve(e3);
         verify(enforcer).reject(eq(e3), anyString());
 
     }
@@ -77,7 +77,7 @@ public class AccessControlAdjudicatorTest {
 
         adjudicator.adjudicate(shouldBeDenied, enforcer);
 
-        verify(enforcer, never()).accept(shouldBeDenied);
+        verify(enforcer, never()).approve(shouldBeDenied);
         verify(enforcer).reject(eq(shouldBeDenied), anyString());
     }
 
@@ -96,7 +96,7 @@ public class AccessControlAdjudicatorTest {
 
         adjudicator.adjudicate(shouldBeApproved, enforcer);
 
-        verify(enforcer).accept(shouldBeApproved);
+        verify(enforcer).approve(shouldBeApproved);
         verify(enforcer, never()).reject(eq(shouldBeApproved), anyString());
     }
 

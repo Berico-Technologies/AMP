@@ -3,7 +3,7 @@ package amp.policy.core.impl;
 import cmf.bus.Envelope;
 
 /**
- * Used to mark that a message was certified by the AutoRegister Service.
+ * Used to mark that a message was certified by the PolicyInterceptor Service.
  */
 public interface PolicyCertifier {
 

@@ -18,7 +18,7 @@ public interface DelayedForwarder {
 
     /**
      * Delay the message from being delivered using the specified envelope bus.
-     * @param certifier AutoRegister Certifier to stamp the message.
+     * @param certifier PolicyInterceptor Certifier to stamp the message.
      * @param envelope Envelope to forward.
      * @param delay Delay in milliseconds.
      */

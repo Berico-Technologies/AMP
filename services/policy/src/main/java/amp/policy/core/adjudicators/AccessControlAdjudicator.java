@@ -13,7 +13,7 @@ import java.util.HashMap;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Accept or Reject Messages by the sender identity
+ * Accept or Reject Messages by the targetSender identity
  */
 public class AccessControlAdjudicator implements EnvelopeAdjudicator {
 
@@ -63,13 +63,13 @@ public class AccessControlAdjudicator implements EnvelopeAdjudicator {
                 if (banByDefault)
                     enforcer.reject(envelope, "Explicit approval required for message.");
                 else
-                    enforcer.accept(envelope);
+                    enforcer.approve(envelope);
 
             }
             else {
 
                 if (ace.getPermission() == AccessControlEntry.Permissions.APPROVED)
-                    enforcer.accept(envelope);
+                    enforcer.approve(envelope);
                 else
                     enforcer.reject(envelope, String.format("Sender %s is not allowed to send this message.", sender));
             }

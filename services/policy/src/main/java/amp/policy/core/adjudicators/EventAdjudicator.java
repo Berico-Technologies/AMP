@@ -1,11 +1,15 @@
-package amp.policy.core;
+package amp.policy.core.adjudicators;
 
+import amp.policy.core.EnvelopeAdjudicator;
+import amp.policy.core.PolicyEnforcer;
+import amp.policy.core.SerializerFactory;
 import amp.utility.serialization.ISerializer;
 import cmf.bus.Envelope;
-import com.google.common.base.Optional;
+import com.google.common.base.Strings;
 import com.google.common.reflect.TypeToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Adjudicator that can be extended to provide strongly typed Event's for enforcement.
@@ -22,15 +26,21 @@ public abstract class EventAdjudicator<T> implements EnvelopeAdjudicator {
      * This is Google Guava magic that will discover "T" at runtime so we can
      * deserialize to the most correct type.
      */
-    protected TypeToken<T> eventTypeToken = new TypeToken<T>(getClass()){};
+    final TypeToken<T> eventTypeToken = new TypeToken<T>(getClass()){};
 
     /**
      * This is the factory that will provide the correct serializer based on Content-Type
      */
+    @Autowired
     protected SerializerFactory serializerFactory;
 
     // Trusted Logger.
     private static final Logger LOG = LoggerFactory.getLogger(EventAdjudicator.class);
+
+    /**
+     *  Default Constructor
+     */
+    public EventAdjudicator(){}
 
     /**
      * Initialize the EventPolicy Adjudicator.
@@ -39,7 +49,16 @@ public abstract class EventAdjudicator<T> implements EnvelopeAdjudicator {
      */
     public EventAdjudicator(SerializerFactory serializerFactory){
 
-        this.serializerFactory = serializerFactory;
+        setSerializerFactory(serializerFactory);
+    }
+
+    /**
+     * Set the SeralizerFactory needed to deserialize the event.
+     * @param factory Factory that maps content-type to serializer.
+     */
+    public void setSerializerFactory(SerializerFactory factory){
+
+        this.serializerFactory = factory;
     }
 
     /**
@@ -60,7 +79,10 @@ public abstract class EventAdjudicator<T> implements EnvelopeAdjudicator {
     @Override
     public void adjudicate(Envelope envelope, PolicyEnforcer enforcer) {
 
-        String contentType = Optional.of( envelope.getHeader("Content-Type") ).or(DEFAULT_CONTENT_TYPE);
+        String contentType = envelope.getHeader("Content-Type");
+
+        if (Strings.isNullOrEmpty(contentType))
+            contentType = DEFAULT_CONTENT_TYPE;
 
         ISerializer serializer = serializerFactory.getByContentType(contentType);
 
@@ -75,5 +97,13 @@ public abstract class EventAdjudicator<T> implements EnvelopeAdjudicator {
 
             enforcer.log(envelope, PolicyEnforcer.LogTypes.ERROR, "Could not convert body of message to an object.");
         }
+    }
+
+    /**
+     * Get the type of event this adjudicator evaluates.
+     * @return Event Type.
+     */
+    public String getEventType(){
+        return eventTypeToken.getRawType().toString();
     }
 }
