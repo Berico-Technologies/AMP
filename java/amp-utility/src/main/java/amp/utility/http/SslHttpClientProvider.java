@@ -1,8 +1,6 @@
 package amp.utility.http;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.KeyStore;
@@ -100,11 +98,15 @@ public class SslHttpClientProvider implements HttpClientProvider {
 		
 		try {
 		
-			KeyStore loadedKeystore = getAndLoad(this.keystore, this.keystorePassword);
+			KeyStore loadedKeystore = loadKeystore(
+                    this.openResource(this.keystore),
+                    this.keystorePassword);
 			
 			if (this.truststore != null) {
 				
-				KeyStore loadedTruststore = getAndLoad(this.truststore, this.truststorePassword);
+				KeyStore loadedTruststore = loadKeystore(
+                        this.openResource(this.truststore),
+                        this.truststorePassword);
 				
 				socketFactory = new SSLSocketFactory(loadedKeystore, this.keystorePassword, loadedTruststore);
 				
@@ -127,35 +129,47 @@ public class SslHttpClientProvider implements HttpClientProvider {
 		return httpClient;
 	}
 
-	/**
-	 * Get an instance of the KeyStore and Load it with Certs using the supplied password.
-	 * @param path Location of the KeyStore
-	 * @param password Password, which can be null for the trust store.
-	 * @return A loaded KeyStore instance.
-	 * @throws KeyStoreException
-	 * @throws NoSuchAlgorithmException 
-	 * @throws CertificateException
-	 * @throws IOException
-	 */
-	static KeyStore getAndLoad(String path, String password)
-			throws KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException, URISyntaxException {
-		
-		char[] charPassword = (password == null)? null : password.toCharArray();
-		
-		KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
+    public InputStream openResource(String resourceName) throws FileNotFoundException {
 
-        File keystoreFile = new File(path);
 
-        if (!keystoreFile.exists()) {
-            // try to find it on the classpath
-            URL url = SslHttpClientProvider.class.getResource(path);
-            keystoreFile = (null != url) ? new File(url.toURI()) : new File(path);
+        InputStream stream;
+
+        // try to open resource as a file on the file system
+        try {
+            stream = new FileInputStream(resourceName);
+            return stream;
+        } catch (Exception ex) {} // it's not a file path
+
+
+        // try as an embedded resource
+        stream = this.getClass().getClassLoader().getResourceAsStream(resourceName);
+        if (stream != null) {
+            return stream;
         }
 
-		FileInputStream fis = new FileInputStream(keystoreFile);
-		
-		keystore.load(fis, charPassword);
-		
-		return keystore;
-	}
+
+        // it is neither on the file system, nor embedded
+        throw new FileNotFoundException("Failed to find file: " + resourceName);
+    }
+
+    /**
+     * Get an instance of the KeyStore and Load it with Certs using the supplied password.
+     * @param stream InputStreamReader with KeyStore opened for reading.
+     * @param password Password, which can be null for the trust store.
+     * @return A loaded KeyStore instance.
+     * @throws java.security.KeyStoreException
+     * @throws java.security.NoSuchAlgorithmException
+     * @throws java.security.cert.CertificateException
+     * @throws java.io.IOException
+     */
+    static KeyStore loadKeystore(InputStream stream, String password)
+            throws KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException, URISyntaxException {
+
+        char[] charPassword = (password == null)? null : password.toCharArray();
+
+        KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
+        keystore.load(stream, charPassword);
+
+        return keystore;
+    }
 }
