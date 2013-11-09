@@ -78,7 +78,7 @@ public class RpcFilter implements IMessageProcessor {
                 sentRequests.add(requestId);
             }
 
-            if (timeout == Duration.ZERO) {
+            if (!timeout.equals(Duration.ZERO)) {
                 Timer gc = new Timer(true);
                 gc.schedule(new TimerTask() {
 
