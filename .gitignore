@@ -122,4 +122,4 @@ managed
 *.p7b -text
 *.jar -text
 *.jks -text
-
+node_modules/
