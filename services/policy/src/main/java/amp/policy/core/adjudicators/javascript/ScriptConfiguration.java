@@ -1,9 +1,9 @@
-package amp.policy.core.adjudicators;
+package amp.policy.core.adjudicators.javascript;
 
 /**
  * @author Richard Clayton (Berico Technologies)
  */
-public class ScriptContext {
+public class ScriptConfiguration {
 
     protected String scriptName;
 
@@ -13,13 +13,13 @@ public class ScriptContext {
 
     protected String objectEntry = null;
 
-    public ScriptContext(String scriptName, String scriptBody, String functionEntry) {
+    public ScriptConfiguration(String scriptName, String scriptBody, String functionEntry) {
         this.scriptName = scriptName;
         this.scriptBody = scriptBody;
         this.functionEntry = functionEntry;
     }
 
-    public ScriptContext(String scriptName, String scriptBody, String functionEntry, String objectEntry) {
+    public ScriptConfiguration(String scriptName, String scriptBody, String functionEntry, String objectEntry) {
         this.scriptName = scriptName;
         this.scriptBody = scriptBody;
         this.functionEntry = functionEntry;

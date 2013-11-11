@@ -100,7 +100,7 @@ public class SpringInterceptorProvider implements InterceptorProvider, Applicati
             }
         }
 
-        LOG.info("Found {} envelope interceptors in the Spring Context.");
+        LOG.info("Found {} envelope interceptors in the Spring Context.", interceptors.size());
 
         return interceptors;
     }

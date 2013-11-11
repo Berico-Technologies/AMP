@@ -2,6 +2,7 @@ package amp.policy.core.adjudicators;
 
 import amp.policy.core.EnvelopeAdjudicator;
 import amp.policy.core.PolicyEnforcer;
+import amp.policy.core.adjudicators.security.AccessControlEntry;
 import cmf.bus.Envelope;
 import cmf.bus.EnvelopeHeaderConstants;
 import com.google.common.base.Optional;

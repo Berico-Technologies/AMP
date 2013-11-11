@@ -1,4 +1,4 @@
-package amp.policy.core.adjudicators;
+package amp.policy.core.adjudicators.security;
 
 /**
  *

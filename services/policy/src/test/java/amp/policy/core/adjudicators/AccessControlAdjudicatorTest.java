@@ -3,6 +3,7 @@ package amp.policy.core.adjudicators;
 
 import amp.bus.EnvelopeHelper;
 import amp.policy.core.PolicyEnforcer;
+import amp.policy.core.adjudicators.security.AccessControlEntry;
 import cmf.bus.Envelope;
 import com.google.common.collect.Lists;
 import org.junit.Test;

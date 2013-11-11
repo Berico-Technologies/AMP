@@ -2,20 +2,23 @@ package amp.policy.core.adjudicators;
 
 import amp.policy.core.EnvelopeAdjudicator;
 import amp.policy.core.PolicyEnforcer;
+import amp.policy.core.adjudicators.javascript.JavaScriptLibrary;
+import amp.policy.core.adjudicators.javascript.ScriptConfiguration;
 import cmf.bus.Envelope;
-import cmf.bus.EnvelopeHeaderConstants;
 import com.google.common.base.Strings;
-import org.mozilla.javascript.Context;
-import org.mozilla.javascript.NativeJSON;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import org.mozilla.javascript.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.script.Invocable;
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
-import java.util.HashMap;
+import java.io.*;
+import java.util.List;
 import java.util.Map;
+
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
 
 /**
  * @author Richard Clayton (Berico Technologies)
@@ -24,29 +27,86 @@ public class JavaScriptAdjudicator implements EnvelopeAdjudicator {
 
     private static final Logger LOG = LoggerFactory.getLogger(JavaScriptAdjudicator.class);
 
-    private static final String JAVASCRIPT = "JavaScript";
+    static final String[] coreLibraries = new String[]{ "/scripts/lodash.js", "/scripts/helpers.js" };
 
-    protected static final ScriptEngineManager scriptEngineManager = new ScriptEngineManager();
+    protected ScriptableObject scriptScope;
 
-    protected ScriptEngine scriptEngine = scriptEngineManager.getEngineByName(JAVASCRIPT);
+    protected ScriptConfiguration scriptConfiguration;
 
-    protected ScriptContext scriptContext;
+    protected List<JavaScriptLibrary> libraries = Lists.newArrayList();
 
-    public JavaScriptAdjudicator(ScriptContext scriptContext) throws ScriptException {
+    protected Map<String, Object> sessionObjects = Maps.newHashMap();
 
-        this(scriptContext, new HashMap<String, Object>());
+    protected boolean wasInitialized = false;
+
+    public JavaScriptAdjudicator(){}
+
+    public JavaScriptAdjudicator(ScriptConfiguration scriptConfiguration) {
+
+        this.scriptConfiguration = scriptConfiguration;
+
+        initialize();
     }
 
-    public JavaScriptAdjudicator(
-            ScriptContext scriptContext, Map<String, Object> sessionContext) throws ScriptException {
+    public void setScriptConfiguration(ScriptConfiguration scriptConfiguration) {
+        this.scriptConfiguration = scriptConfiguration;
+    }
 
-        this.scriptContext = scriptContext;
+    public void setLibraries(List<JavaScriptLibrary> libraries) {
+        this.libraries = libraries;
+    }
 
-        scriptEngine.eval(scriptContext.getScriptBody());
+    public void setSessionObjects(Map<String, Object> sessionObjects) {
+        this.sessionObjects = sessionObjects;
+    }
 
-        for (Map.Entry<String, Object> object : sessionContext.entrySet()){
+    public void initialize(){
 
-            scriptEngine.put(object.getKey(), object.getValue());
+        checkNotNull(scriptConfiguration);
+        checkNotNull(libraries);
+        checkNotNull(sessionObjects);
+
+        Context loadingContext = Context.enter();
+
+        scriptScope = loadingContext.initStandardObjects();
+
+        loadCoreLibraries(loadingContext, scriptScope, coreLibraries);
+
+        for (Map.Entry<String, Object> sessionObject : sessionObjects.entrySet()){
+
+            Object jsObj = Context.javaToJS(sessionObject.getValue(), scriptScope);
+
+            scriptScope.put(sessionObject.getKey(), scriptScope, jsObj);
+        }
+
+        for (JavaScriptLibrary library : libraries){
+
+            loadScript(loadingContext, scriptScope, library.getLibrarySource(), library.getLibraryName());
+        }
+
+        loadScript(
+                loadingContext, scriptScope, scriptConfiguration.getScriptBody(), scriptConfiguration.getScriptName());
+
+        Context.exit();
+
+        wasInitialized = true;
+    }
+
+
+    static void loadCoreLibraries(Context c, Scriptable s, String[] libraryFiles){
+
+        for (String library : libraryFiles){
+
+            try {
+
+                System.out.println("Loading " + library + "...");
+
+                loadResourceFile(c, s, library);
+
+            } catch (IOException ex){
+
+                throw new RuntimeException("Essential script library " + library + " was not found.");
+            }
         }
     }
 
@@ -59,23 +119,55 @@ public class JavaScriptAdjudicator implements EnvelopeAdjudicator {
     @Override
     public void adjudicate(Envelope envelope, PolicyEnforcer enforcer) {
 
+        if (!wasInitialized) initialize();
+
+        Context runContext = Context.enter();
+
+        Scriptable tempScope = runContext.newObject(this.scriptScope);
+
+        tempScope.setPrototype(this.scriptScope);
+
+        tempScope.setParentScope(null);
+
+        Object jsEnvelope = Context.javaToJS(envelope, tempScope);
+
+        Object jsEnforcer = Context.javaToJS(enforcer, tempScope);
+
         try {
 
-            if(scriptContext.isObjectEntry()){
+//            // TODO: Figure out why NativeJSON.parse doesn't produce a valid JavaScript object.
+//            // After calling NativeJSON.parse and sticking the object into the runtime time,
+//            // calls to properties are resulting in null-reference errors.
+//            Object event = null;
+//
+//            if(isJsonPayload(envelope)){
+//
+//                event = parseJSON(runContext, tempScope, new String(envelope.getPayload()));
+//            }
 
-                callMethod(
-                    scriptContext.getObjectEntry(), scriptContext.getFunctionEntry(), envelope, enforcer);
+            if(scriptConfiguration.isObjectEntry()){
+
+                callMethod(runContext, tempScope, scriptConfiguration.getObjectEntry(), scriptConfiguration.getFunctionEntry(), jsEnvelope, jsEnforcer);
             }
             else {
 
-                callFunction(scriptContext.getFunctionEntry(), envelope, enforcer);
+                callFunction(runContext, tempScope, scriptConfiguration.getFunctionEntry(), jsEnvelope,  jsEnforcer);
             }
+        }
+        catch (IllegalStateException ise){
+
+            throw new RuntimeException("Execution must stop, there's something wrong with the environment.", ise);
         }
         catch (Exception e){
 
             LOG.error("Error executing the script function.", e);
 
             enforcer.log(envelope, PolicyEnforcer.LogTypes.ERROR, "Error executing the script function.");
+
+        }
+        finally {
+
+            runContext.exit();
         }
 
     }
@@ -93,29 +185,103 @@ public class JavaScriptAdjudicator implements EnvelopeAdjudicator {
     }
 
     /**
-     * Call a function on the Script Engine.
-     * @param functionName Name of the function to call
-     * @param args An array of arguments to pass to the function
-     *        representing the function argument signature.
-     * @returns The result (if any) from the script function
+     * Parse a JSON String into an Object.
+     * @param c Rhino Context
+     * @param scope Execution Scope
+     * @param json JSON string
+     * @return Representative Java Object of the JSON String
      */
-    Object callFunction(String functionName, Object... args) throws Exception {
+    static NativeObject parseJSON(Context c, Scriptable scope, String json){
 
-        return ((Invocable)scriptEngine).invokeFunction(functionName, args);
+        // TODO: This isn't producing the results we would expect.
+
+        return (NativeObject) NativeJSON.parse(c, scope, json, new Callable() {
+            @Override
+            public Object call(Context context, Scriptable scope, Scriptable holdable, Object[] objects) {
+
+                return holdable;
+            }
+        });
+    }
+
+
+    /**
+     * Call a JavaScript function from within the scope.
+     * @param c JavaScript Execution Context
+     * @param scope JavaScript Scope
+     * @param functionName Name of the function to call
+     * @param args (optional) any function arguments.
+     * @return Whatever the JavaScript method returns
+     * @throws IllegalStateException if the function does not exist in the scope
+     */
+    static Object callFunction(Context c, Scriptable scope, String functionName, Object... args)
+            throws IllegalStateException {
+
+        if (scope.has(functionName, scope)){
+
+            Function function = (Function)scope.get(functionName, scope);
+
+            return function.call(c, scope, scope, args);
+        }
+
+        throw new IllegalStateException(
+                String.format("Function with name %s does not exist in scope.", functionName));
+    }
+
+
+    /**
+     * Call a JavaScript method from within the scope.
+     * @param context JavaScript Execution Context
+     * @param scope JavaScript Scope
+     * @param objectName Name of the object with the method to be called
+     * @param methodName Name of the method to call
+     * @param args (optional) any function arguments.
+     * @return Whatever the JavaScript method returns
+     * @throws IllegalStateException if the object does not exist in the scope
+     */
+    static Object callMethod(Context context, Scriptable scope, String objectName, String methodName, Object... args)
+            throws IllegalStateException {
+
+        if (scope.has(objectName, scope)){
+
+            NativeObject object = (NativeObject)scope.get(objectName, scope);
+
+            return callFunction(context, object, methodName, args);
+        }
+
+        throw new IllegalStateException(
+                String.format("Object with name %s does not exist in scope.", objectName));
     }
 
     /**
-     * Call a method on a Script object within the Script Engine.
-     * @param objectName The reference name of the object with
-     *        the method that will be called (e.g.: in foo->bar(),
-     *        we want 'foo').
-     * @param methodName Name of the method to call (bar())
-     * @param args An array of arguments to pass to the function
-     *        representing the function argument signature.
-     * @returns The result (if any) from the script method
+     * Load and evaluate JavaScript code from a String.
+     * @param context JavaScript Execution Context
+     * @param scope JavaScript Scope
+     * @param scriptBody Actual JavaScript code as a String
+     * @param scriptName Name of the script
      */
-    Object callMethod(String objectName, String methodName, Object... args) throws Exception {
+    static void loadScript(
+            Context context, Scriptable scope, String scriptBody, String scriptName) {
 
-        return ((Invocable)scriptEngine).invokeMethod(objectName, methodName, args);
+        context.evaluateString(scope, scriptBody, scriptName, 0, null);
+    }
+
+    /**
+     * Load a file from within the JAR as a script file.
+     * @param context JavaScript Execution Context
+     * @param scope JavaScript Scope
+     * @param file File to load
+     * @throws IOException Occurs if file not found or is unable to read.
+     */
+    static void loadResourceFile(
+            Context context, Scriptable scope, String file) throws IOException {
+
+        InputStream is = JavaScriptAdjudicator.class.getResourceAsStream(file);
+
+        InputStreamReader isr = new InputStreamReader(is);
+
+        Reader resource = new BufferedReader(isr);
+
+        context.evaluateReader(scope, resource, file, 0, null);
     }
 }
