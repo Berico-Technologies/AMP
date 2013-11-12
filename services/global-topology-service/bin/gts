@@ -16,13 +16,16 @@
 
 prog="gts"
 config="/etc/$prog/gts-basicAuth.yaml"
-JAR="/opt/gts/amp.topology.service-3.2.0-SNAPSHOT.jar"
 ARGS="server $config"
 serviceUser="gts"
 serviceGroup="gts"
 maxShutdownTime=15
 
 [ -e /etc/default/$prog ] && . /etc/default/$prog
+
+if [ -z $GTS_VERSION ]; then GTS_VERSION="3.2.0-SNAPSHOT"; fi
+
+JAR="/opt/gts/amp.topology.service-${GTS_VERSION}.jar"
 
 JAVA_HOME=/usr/java/latest
 javaCommand=$JAVA_HOME/bin/java
