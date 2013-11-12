@@ -7,17 +7,13 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import org.apache.commons.vfs2.*;
 import org.apache.commons.vfs2.impl.DefaultFileMonitor;
-import org.codehaus.plexus.util.DirectoryWalkListener;
-import org.codehaus.plexus.util.DirectoryWalker;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -33,6 +29,9 @@ public class FileSystemProvider extends BaseScriptProvider implements FileListen
 
     ConcurrentMap<Path, ScriptConfiguration> scripts = Maps.newConcurrentMap();
 
+    /**
+     * Time between files system check intervals.
+     */
     public static long DELAY_BETWEEN_CHECKS_ON_FILE_SYSTEM = 2000;
 
     /**
@@ -47,7 +46,10 @@ public class FileSystemProvider extends BaseScriptProvider implements FileListen
      */
     private static final String ENTRY_PATTERN = "^\\s*\\/\\/\\s+ENTRY:\\s+.+$";
 
-    private final Path scriptsBaseDirectory;
+    /**
+     * Base Path for Scripts
+     */
+    private final Path scriptsBasePath;
 
 
     /**
@@ -61,11 +63,15 @@ public class FileSystemProvider extends BaseScriptProvider implements FileListen
 
         Preconditions.checkState(Files.isDirectory(scriptBasePath, null));
 
-        scriptsBaseDirectory = scriptBasePath;
+        scriptsBasePath = scriptBasePath;
 
         initialize();
     }
 
+    /**
+     * Get all known scripts.
+     * @return All scripts known to, and managed by, the FileSystemProvider.
+     */
     @Override
     public Collection<ScriptConfiguration> get() {
 
@@ -78,13 +84,18 @@ public class FileSystemProvider extends BaseScriptProvider implements FileListen
      */
     private void initialize() throws IOException {
 
-        loadInitialDirectory(scriptsBaseDirectory, scripts, this);
+        loadInitialDirectory(scriptsBasePath, scripts, this);
 
-        startFileMonitoring(scriptsBaseDirectory, this);
+        startDirectoryMonitoring(scriptsBasePath, this);
     }
 
-
-    static void startFileMonitoring(Path baseDirectory, FileListener listener) throws IOException {
+    /**
+     * Start watching the base directory for file system changes.
+     * @param baseDirectory Root directory we will perform watches.
+     * @param listener Usually this class, but externalized for testing.
+     * @throws IOException
+     */
+    static void startDirectoryMonitoring(Path baseDirectory, FileListener listener) throws IOException {
 
         FileSystemManager fsm = VFS.getManager();
 
@@ -99,7 +110,7 @@ public class FileSystemProvider extends BaseScriptProvider implements FileListen
         fileMonitor.setDelay(DELAY_BETWEEN_CHECKS_ON_FILE_SYSTEM);
 
         // Ensure the file monitor is stopped when the service shuts down.
-        Runtime.getRuntime().addShutdownHook(new Thread(){
+        Runtime.getRuntime().addShutdownHook(new Thread() {
 
             @Override
             public void run() {
@@ -111,15 +122,27 @@ public class FileSystemProvider extends BaseScriptProvider implements FileListen
         fileMonitor.start();
     }
 
-
+    /**
+     * Load the initial directory.
+     * @param path Base path
+     * @param scriptBag the bag of known scripts
+     * @param scriptProvider the provider we'll call to notify registered listeners of script changes
+     * @throws IOException
+     */
     static void loadInitialDirectory(Path path, Map<Path, ScriptConfiguration> scriptBag, BaseScriptProvider scriptProvider) throws IOException {
 
-        ArrayList<Path> pathsToBeProcessed = Lists.newArrayList();
-
-        getValidPaths(path, scriptBag, scriptProvider, pathsToBeProcessed);
+        getValidPaths(path, scriptBag, scriptProvider);
     }
 
-    static void getValidPaths(Path path, Map<Path, ScriptConfiguration> scriptBag, BaseScriptProvider scriptProvider, List<Path> toBeProcessed) throws IOException {
+    /**
+     * Collect valid scripts and insert them into the script bag.  If the target is a directory, recursively scan the
+     * directory for more scripts.
+     * @param path Directory in scope
+     * @param scriptBag Bag of Scripts
+     * @param scriptProvider Service we'll call to notify script changes
+     * @throws IOException
+     */
+    static void getValidPaths(Path path, Map<Path, ScriptConfiguration> scriptBag, BaseScriptProvider scriptProvider) throws IOException {
 
         DirectoryStream<Path> ds = Files.newDirectoryStream(path, new DirectoryStream.Filter<Path>() {
             @Override
@@ -132,7 +155,7 @@ public class FileSystemProvider extends BaseScriptProvider implements FileListen
 
             if (Files.isDirectory(p)){
 
-                getValidPaths(p, scriptBag, scriptProvider, toBeProcessed);
+                getValidPaths(p, scriptBag, scriptProvider);
             }
             else {
 
@@ -145,6 +168,12 @@ public class FileSystemProvider extends BaseScriptProvider implements FileListen
         }
     }
 
+    /**
+     * Get the configuration for the given path.
+     * @param fileToGetConfigFor Path to parse configuration info for
+     * @return Script Configuration
+     * @throws IOException
+     */
     static ScriptConfiguration getConfigurationForPath(Path fileToGetConfigFor) throws IOException {
 
         List<String> lines = Files.readAllLines(fileToGetConfigFor, Charset.defaultCharset());
@@ -152,6 +181,11 @@ public class FileSystemProvider extends BaseScriptProvider implements FileListen
         return parse(lines);
     }
 
+    /**
+     * Update a script at the given path.
+     * @param path Path of the update
+     * @param configuration The actual update
+     */
     protected void updateScript(Path path, ScriptConfiguration configuration){
 
         removeScript(path);
@@ -159,6 +193,11 @@ public class FileSystemProvider extends BaseScriptProvider implements FileListen
         addScript(path, configuration);
     }
 
+    /**
+     * Add a new script to the provider
+     * @param path Path of script
+     * @param configuration The new script
+     */
     protected void addScript(Path path, ScriptConfiguration configuration){
 
         scripts.put(path, configuration);
@@ -166,6 +205,10 @@ public class FileSystemProvider extends BaseScriptProvider implements FileListen
         fireScriptAdded(configuration);
     }
 
+    /**
+     * Remove a script from the provider
+     * @param path Path of script
+     */
     protected void removeScript(Path path){
 
         ScriptConfiguration configuration = scripts.remove(path);
@@ -198,11 +241,10 @@ public class FileSystemProvider extends BaseScriptProvider implements FileListen
 
         String[] parts = entry.split("[.]");
 
-        if (parts.length > 1)
-            return new ScriptConfiguration(name, body, parts[1], parts[0]);
 
-        return new ScriptConfiguration(name, body, entry);
+        return new ScriptConfiguration(name, body, entry, null);
     }
+
 
     @Override
     public void fileCreated(FileChangeEvent fileChangeEvent) throws Exception {

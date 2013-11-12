@@ -7,7 +7,7 @@ import cmf.bus.Envelope;
 /**
  * @author Richard Clayton (Berico Technologies)
  */
-@PolicyInterceptor("amp.policy.Mock1")
+@Intercepts("amp.policy.Mock1")
 public class MockAdjudicator1 implements EnvelopeAdjudicator {
 
     @Override

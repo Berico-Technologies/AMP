@@ -12,13 +12,13 @@ import static org.junit.Assert.*;
 /**
  * @author Richard Clayton (Berico Technologies)
  */
-public class PolicyInterceptorTest {
+public class InterceptsTest {
 
     protected EnvelopeInterceptor createInteceptor(EnvelopeAdjudicator adj){
 
         Enforcer enforcer = mock(Enforcer.class);
 
-        return PolicyInterceptor.Helper.createInterceptor(adj, enforcer);
+        return Intercepts.Helper.createInterceptor(adj, enforcer);
     }
 
 
@@ -28,7 +28,7 @@ public class PolicyInterceptorTest {
         EnvelopeInterceptor actual = createInteceptor(new MockAdjudicator1());
 
         assertFalse(Strings.isNullOrEmpty(actual.getId()));
-        assertNotEquals(PolicyInterceptor.DEFAULT_VALUE, actual.getId());
+        assertNotEquals(Intercepts.DEFAULT_VALUE, actual.getId());
 
         assertEquals(MockAdjudicator1.class.getCanonicalName(), actual.getDescription());
 

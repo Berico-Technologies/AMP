@@ -13,6 +13,7 @@ import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ScriptableObject;
 
 import javax.annotation.Nullable;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -342,7 +343,7 @@ public class JavaScriptAdjudicatorTest {
         sb.append("   enforcer.approve(envelope);            ");
         sb.append(" }                                        ");
 
-        ScriptConfiguration conf = new ScriptConfiguration("testScript", sb.toString(), "adjudicate");
+        ScriptConfiguration conf = new ScriptConfiguration("testScript", sb.toString(), "adjudicate", new HashMap<String, String>());
 
         JavaScriptAdjudicator adj = new JavaScriptAdjudicator(conf);
 
@@ -364,7 +365,7 @@ public class JavaScriptAdjudicatorTest {
         sb.append("   enforcer.delay(envelope, 1000);        ");
         sb.append(" }                                        ");
 
-        ScriptConfiguration conf = new ScriptConfiguration("testScript", sb.toString(), "adjudicate");
+        ScriptConfiguration conf = new ScriptConfiguration("testScript", sb.toString(), "adjudicate", new HashMap<String, String>());
 
         JavaScriptAdjudicator adj = new JavaScriptAdjudicator(conf);
 
@@ -386,7 +387,7 @@ public class JavaScriptAdjudicatorTest {
         sb.append("   enforcer.reject(envelope, 'Not gonna happen!'); ");
         sb.append(" }                                                 ");
 
-        ScriptConfiguration conf = new ScriptConfiguration("testScript", sb.toString(), "adjudicate");
+        ScriptConfiguration conf = new ScriptConfiguration("testScript", sb.toString(), "adjudicate", new HashMap<String, String>());
 
         JavaScriptAdjudicator adj = new JavaScriptAdjudicator(conf);
 
@@ -408,7 +409,7 @@ public class JavaScriptAdjudicatorTest {
         sb.append("   enforcer.notify(envelope, 'rclayton', 'Look at this.'); ");
         sb.append(" }                                                         ");
 
-        ScriptConfiguration conf = new ScriptConfiguration("testScript", sb.toString(), "adjudicate");
+        ScriptConfiguration conf = new ScriptConfiguration("testScript", sb.toString(), "adjudicate", new HashMap<String, String>());
 
         JavaScriptAdjudicator adj = new JavaScriptAdjudicator(conf);
 
@@ -428,11 +429,11 @@ public class JavaScriptAdjudicatorTest {
 
         // TODO: Need a cleaner way to handle log types in JavaScript.
 
-        sb.append(" function adjudicate(envelope, enforcer){                                              ");
-        sb.append("   enforcer.log(envelope, INFO, 'Something happened!'); ");
-        sb.append(" }                                                                                     ");
+        sb.append(" function adjudicate(envelope, enforcer){                     ");
+        sb.append("   enforcer.log(envelope, INFO, 'Something happened!');       ");
+        sb.append(" }                                                            ");
 
-        ScriptConfiguration conf = new ScriptConfiguration("testScript", sb.toString(), "adjudicate");
+        ScriptConfiguration conf = new ScriptConfiguration("testScript", sb.toString(), "adjudicate", new HashMap<String, String>());
 
         JavaScriptAdjudicator adj = new JavaScriptAdjudicator(conf);
 

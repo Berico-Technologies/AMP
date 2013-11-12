@@ -18,7 +18,7 @@ import java.util.Collection;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
- * Pulls all EnvelopeInterceptors annotated with @PolicyInterceptor from the Spring Con
+ * Pulls all EnvelopeInterceptors annotated with @Intercepts from the Spring Con
  *
  * @author Richard Clayton (Berico Technologies)
  */
@@ -49,17 +49,17 @@ public class SpringInterceptorProvider implements InterceptorProvider, Applicati
         }
 
         // If you are using the much simpler annotation based way of wiring up an Adjudicator.
-        Collection<Object> registrations = this.applicationContext.getBeansWithAnnotation(PolicyInterceptor.class).values();
+        Collection<Object> registrations = this.applicationContext.getBeansWithAnnotation(Intercepts.class).values();
 
         if (registrations != null && registrations.size() > 0){
 
             for (Object registration : registrations){
 
-                String enforcerId = registration.getClass().getAnnotation(PolicyInterceptor.class).enforcer();
+                String enforcerId = registration.getClass().getAnnotation(Intercepts.class).enforcer();
 
                 Enforcer enforcer = null;
 
-                if (enforcerId.equals(PolicyInterceptor.DEFAULT_VALUE)){
+                if (enforcerId.equals(Intercepts.DEFAULT_VALUE)){
 
                     try {
 
@@ -88,13 +88,13 @@ public class SpringInterceptorProvider implements InterceptorProvider, Applicati
 
                     EnvelopeAdjudicator adjudicator = (EnvelopeAdjudicator)registration;
 
-                    EnvelopeInterceptor interceptor = PolicyInterceptor.Helper.createInterceptor(adjudicator, enforcer);
+                    EnvelopeInterceptor interceptor = Intercepts.Helper.createInterceptor(adjudicator, enforcer);
 
                     interceptors.add(interceptor);
                 }
                 else {
 
-                    LOG.warn("Unable to register class '{}' adorned with @PolicyInterceptor.", registration.getClass());
+                    LOG.warn("Unable to register class '{}' adorned with @Intercepts.", registration.getClass());
                 }
             }
         }

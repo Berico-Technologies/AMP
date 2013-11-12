@@ -22,7 +22,7 @@ import java.util.UUID;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface PolicyInterceptor {
+public @interface Intercepts {
 
     public static final String DEFAULT_VALUE = "__default__";
 
@@ -49,7 +49,7 @@ public @interface PolicyInterceptor {
 
         public static Map<String, String> getRegistrationInfo(Object annotatedTarget){
 
-            PolicyInterceptor info = annotatedTarget.getClass().getAnnotation(PolicyInterceptor.class);
+            Intercepts info = annotatedTarget.getClass().getAnnotation(Intercepts.class);
 
             InterceptionCriteria criteria = new InterceptionCriteria();
 
@@ -78,7 +78,7 @@ public @interface PolicyInterceptor {
         public static EnvelopeInterceptor createInterceptor(
                 EnvelopeAdjudicator annotatedAdjudicator, Enforcer enforcer){
 
-            PolicyInterceptor info = annotatedAdjudicator.getClass().getAnnotation(PolicyInterceptor.class);
+            Intercepts info = annotatedAdjudicator.getClass().getAnnotation(Intercepts.class);
 
             Map<String, String> registrationInfo = getRegistrationInfo(annotatedAdjudicator);
 

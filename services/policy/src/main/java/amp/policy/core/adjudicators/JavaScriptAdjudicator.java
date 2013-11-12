@@ -127,7 +127,7 @@ public class JavaScriptAdjudicator implements EnvelopeAdjudicator {
         loadUserLibraries(loadingContext, scriptScope, libraries);
 
         loadScript(
-                loadingContext, scriptScope, scriptConfiguration.getScriptBody(), scriptConfiguration.getScriptName());
+                loadingContext, scriptScope, scriptConfiguration.getBody(), scriptConfiguration.getName());
 
         Context.exit();
 

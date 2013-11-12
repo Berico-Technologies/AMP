@@ -7,7 +7,7 @@ import cmf.bus.Envelope;
 /**
  * @author Richard Clayton (Berico Technologies)
  */
-@PolicyInterceptor(
+@Intercepts(
         value="amp.policy.Mock2",
         sender="jdoe",
         id = "abc123",

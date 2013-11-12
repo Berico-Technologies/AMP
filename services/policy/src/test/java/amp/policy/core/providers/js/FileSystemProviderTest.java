@@ -28,10 +28,10 @@ public class FileSystemProviderTest {
 
         ScriptConfiguration configuration = FileSystemProvider.parse(lines);
 
-        assertEquals("My Script", configuration.getScriptName());
+        assertEquals("My Script", configuration.getName());
         assertEquals("obj", configuration.getObjectEntry());
         assertEquals("myFunction", configuration.getFunctionEntry());
-        assertEquals(Joiner.on("\n").join(lines), configuration.getScriptBody());
+        assertEquals(Joiner.on("\n").join(lines), configuration.getBody());
     }
 
 }
