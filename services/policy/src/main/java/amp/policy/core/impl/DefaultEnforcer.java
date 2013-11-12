@@ -1,16 +1,17 @@
 package amp.policy.core.impl;
 
 
-import amp.policy.core.PolicyEnforcer;
+import amp.policy.core.Enforcer;
 import cmf.bus.Envelope;
-import cmf.bus.IEnvelopeBus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class DefaultPolicyEnforcer implements PolicyEnforcer {
+public class DefaultEnforcer implements Enforcer {
 
-    private static final Logger LOG = LoggerFactory.getLogger(DefaultPolicyEnforcer.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DefaultEnforcer.class);
+
+    private boolean hasBeenAdjudicated = false;
 
     @Autowired
     protected Forwarder forwarder;
@@ -30,9 +31,9 @@ public class DefaultPolicyEnforcer implements PolicyEnforcer {
     @Autowired
     protected PolicyCertifier certifier;
 
-    public DefaultPolicyEnforcer(){}
+    public DefaultEnforcer(){}
 
-    public DefaultPolicyEnforcer(
+    public DefaultEnforcer(
             Forwarder forwarder,
             Notifier notifier,
             PolicyLogger logger,
@@ -59,6 +60,7 @@ public class DefaultPolicyEnforcer implements PolicyEnforcer {
 
             forwarder.forward(e);
 
+            hasBeenAdjudicated = true;
         }
         catch (Exception ex){
 
@@ -72,12 +74,16 @@ public class DefaultPolicyEnforcer implements PolicyEnforcer {
         logger.log(e, "REJECTED", String.format("Envelope was rejected: %s", message));
 
         rejectionHandler.handle(e, message);
+
+        hasBeenAdjudicated = true;
     }
 
     @Override
     public void delay(Envelope e, long millisecondsToDelay) {
 
         delayedFowarder.delay(certifier, e, millisecondsToDelay);
+
+        hasBeenAdjudicated = true;
     }
 
     @Override
@@ -90,6 +96,18 @@ public class DefaultPolicyEnforcer implements PolicyEnforcer {
     public void notify(Envelope e, String entityToNotify, String message) {
 
         notifier.notify(e, entityToNotify, message);
+    }
+
+    @Override
+    public void reset() {
+
+        this.hasBeenAdjudicated = false;
+    }
+
+    @Override
+    public boolean hasAdjudicated() {
+
+        return hasBeenAdjudicated;
     }
 
 }

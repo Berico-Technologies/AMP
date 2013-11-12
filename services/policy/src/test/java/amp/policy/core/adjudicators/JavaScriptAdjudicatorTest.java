@@ -1,17 +1,16 @@
 package amp.policy.core.adjudicators;
 
 import amp.bus.EnvelopeHelper;
+import amp.policy.core.Enforcer;
 import amp.policy.core.adjudicators.javascript.ScriptConfiguration;
 import amp.utility.serialization.GsonSerializer;
 import cmf.bus.Envelope;
 import com.google.common.base.Function;
+import com.google.common.collect.Maps;
 import org.joda.time.DateTime;
-import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mozilla.javascript.Context;
-import org.mozilla.javascript.NativeObject;
-import org.mozilla.javascript.Scriptable;
+import org.mozilla.javascript.ScriptableObject;
 
 import javax.annotation.Nullable;
 import java.util.Map;
@@ -296,7 +295,238 @@ public class JavaScriptAdjudicatorTest {
         }, true);
     }
 
+    @Test
+    public void lodash_js__script_correctly_loaded_into_runtime(){
 
+        wrapInScriptContext(new Function<ScriptRuntime, Void>() {
+
+            @Nullable @Override
+            public Void apply(@Nullable ScriptRuntime scriptRuntime) {
+
+                try {
+
+                    // This ensures the Helpers library is loaded.
+                    JavaScriptAdjudicator.loadCoreLibraries(
+                            scriptRuntime.context, scriptRuntime.scope, JavaScriptAdjudicator.coreLibraries);
+
+                    StringBuilder sb  = new StringBuilder();
+
+                    sb.append(" function makeAssertions(){                                ");
+                    sb.append("   org.junit.Assert.assertNotNull(_);                      ");
+                    sb.append("   org.junit.Assert.assertEquals(false, _.isEmpty('ads')); ");
+                    sb.append(" }                                                         ");
+
+                    JavaScriptAdjudicator.loadScript(scriptRuntime.context, scriptRuntime.scope, sb.toString(), "makeAssertions");
+
+                    JavaScriptAdjudicator.callFunction(
+                            scriptRuntime.context, scriptRuntime.scope, "makeAssertions");
+
+                } catch (Exception e){
+
+                    e.printStackTrace();
+
+                    fail(e.getMessage());
+                }
+
+                return null;
+            }
+        }, true);
+    }
+
+    @Test
+    public void adjudicate__script_calls_approve(){
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(" function adjudicate(envelope, enforcer){ ");
+        sb.append("   enforcer.approve(envelope);            ");
+        sb.append(" }                                        ");
+
+        ScriptConfiguration conf = new ScriptConfiguration("testScript", sb.toString(), "adjudicate");
+
+        JavaScriptAdjudicator adj = new JavaScriptAdjudicator(conf);
+
+        Enforcer pe = mock(Enforcer.class);
+
+        Envelope e = mock(Envelope.class);
+
+        adj.adjudicate(e, pe);
+
+        verify(pe).approve(e);
+    }
+
+    @Test
+    public void adjudicate__script_calls_delay(){
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(" function adjudicate(envelope, enforcer){ ");
+        sb.append("   enforcer.delay(envelope, 1000);        ");
+        sb.append(" }                                        ");
+
+        ScriptConfiguration conf = new ScriptConfiguration("testScript", sb.toString(), "adjudicate");
+
+        JavaScriptAdjudicator adj = new JavaScriptAdjudicator(conf);
+
+        Enforcer pe = mock(Enforcer.class);
+
+        Envelope e = mock(Envelope.class);
+
+        adj.adjudicate(e, pe);
+
+        verify(pe).delay(e, 1000);
+    }
+
+    @Test
+    public void adjudicate__script_calls_reject(){
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(" function adjudicate(envelope, enforcer){          ");
+        sb.append("   enforcer.reject(envelope, 'Not gonna happen!'); ");
+        sb.append(" }                                                 ");
+
+        ScriptConfiguration conf = new ScriptConfiguration("testScript", sb.toString(), "adjudicate");
+
+        JavaScriptAdjudicator adj = new JavaScriptAdjudicator(conf);
+
+        Enforcer pe = mock(Enforcer.class);
+
+        Envelope e = mock(Envelope.class);
+
+        adj.adjudicate(e, pe);
+
+        verify(pe).reject(eq(e), anyString());
+    }
+
+    @Test
+    public void adjudicate__script_calls_notify(){
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append(" function adjudicate(envelope, enforcer){                  ");
+        sb.append("   enforcer.notify(envelope, 'rclayton', 'Look at this.'); ");
+        sb.append(" }                                                         ");
+
+        ScriptConfiguration conf = new ScriptConfiguration("testScript", sb.toString(), "adjudicate");
+
+        JavaScriptAdjudicator adj = new JavaScriptAdjudicator(conf);
+
+        Enforcer pe = mock(Enforcer.class);
+
+        Envelope e = mock(Envelope.class);
+
+        adj.adjudicate(e, pe);
+
+        verify(pe).notify(eq(e), anyString(), anyString());
+    }
+
+    @Test
+    public void adjudicate__script_calls_log(){
+
+        StringBuilder sb = new StringBuilder();
+
+        // TODO: Need a cleaner way to handle log types in JavaScript.
+
+        sb.append(" function adjudicate(envelope, enforcer){                                              ");
+        sb.append("   enforcer.log(envelope, INFO, 'Something happened!'); ");
+        sb.append(" }                                                                                     ");
+
+        ScriptConfiguration conf = new ScriptConfiguration("testScript", sb.toString(), "adjudicate");
+
+        JavaScriptAdjudicator adj = new JavaScriptAdjudicator(conf);
+
+        Enforcer pe = mock(Enforcer.class);
+
+        Envelope e = mock(Envelope.class);
+
+        adj.adjudicate(e, pe);
+
+        verify(pe).log(eq(e), eq(Enforcer.LogTypes.INFO), anyString());
+    }
+
+    @Test
+    public void constant_values_are_added_to_context(){
+
+        wrapInScriptContext(new Function<ScriptRuntime, Void>() {
+
+            @Nullable @Override
+            public Void apply(@Nullable ScriptRuntime scriptRuntime) {
+
+                try {
+
+                    StringBuilder sb  = new StringBuilder();
+
+                    sb.append(" function makeAssertions(){               ");
+                    sb.append("   org.junit.Assert.assertNotNull(INFO);  ");
+                    sb.append("   org.junit.Assert.assertNotNull(DEBUG); ");
+                    sb.append("   org.junit.Assert.assertNotNull(WARN);  ");
+                    sb.append("   org.junit.Assert.assertNotNull(ERROR); ");
+                    sb.append(" }                                        ");
+
+                    JavaScriptAdjudicator.loadConstants(scriptRuntime.context, scriptRuntime.scope);
+
+                    JavaScriptAdjudicator.loadScript(scriptRuntime.context, scriptRuntime.scope, sb.toString(), "makeAssertions");
+
+                    JavaScriptAdjudicator.callFunction(
+                            scriptRuntime.context, scriptRuntime.scope, "makeAssertions");
+
+                } catch (Exception e){
+
+                    e.printStackTrace();
+
+                    fail(e.getMessage());
+                }
+
+                return null;
+            }
+        }, true);
+    }
+
+    @Test
+    public void session_objects_inserted_into_runtime_are_accessible(){
+
+        wrapInScriptContext(new Function<ScriptRuntime, Void>() {
+
+            @Nullable @Override
+            public Void apply(@Nullable ScriptRuntime scriptRuntime) {
+
+                try {
+
+                    PersonRepository repo = new PersonRepository();
+
+                    Map<String, Object> sessionObjects = Maps.newHashMap();
+
+                    sessionObjects.put("personRepo", repo);
+
+                    JavaScriptAdjudicator.loadSessionObjects(scriptRuntime.scope, sessionObjects);
+
+                    StringBuilder sb  = new StringBuilder();
+
+                    sb.append(" function makeAssertions(){                                        ");
+                    sb.append("   var p = personRepo.registerPerson('123', 'John', 'Smith', 42);  ");
+                    sb.append("   org.junit.Assert.assertEquals('123', p.id);                     ");
+                    sb.append("   org.junit.Assert.assertEquals('John', p.fname);                 ");
+                    sb.append("   org.junit.Assert.assertEquals('Smith', p.lname);                ");
+                    sb.append("   org.junit.Assert.assertEquals(42, p.age, 0.01);                 ");
+                    sb.append(" }                                                                 ");
+
+                    JavaScriptAdjudicator.loadScript(scriptRuntime.context, scriptRuntime.scope, sb.toString(), "makeAssertions");
+
+                    JavaScriptAdjudicator.callFunction(
+                            scriptRuntime.context, scriptRuntime.scope, "makeAssertions");
+
+                } catch (Exception e){
+
+                    e.printStackTrace();
+
+                    fail(e.getMessage());
+                }
+
+                return null;
+            }
+        }, true);
+    }
 
     private void wrapInScriptContext(Function<ScriptRuntime, Void> function, boolean failOnException){
 
@@ -304,7 +534,7 @@ public class JavaScriptAdjudicatorTest {
 
         try {
 
-            Scriptable scope = c.initStandardObjects();
+            ScriptableObject scope = c.initStandardObjects();
 
             function.apply(new ScriptRuntime(c, scope));
         }
@@ -318,18 +548,23 @@ public class JavaScriptAdjudicatorTest {
         }
     }
 
+    /**
+     * Encapsulates the state needed to execute JavaScript by the Function submitted to "wrapInScriptContext".
+     */
     public static class ScriptRuntime {
 
         public final Context context;
-        public final Scriptable scope;
+        public final ScriptableObject scope;
 
-        public ScriptRuntime(Context context, Scriptable scope) {
+        public ScriptRuntime(Context context, ScriptableObject scope) {
             this.context = context;
             this.scope = scope;
         }
     }
 
-
+    /**
+     * Example model object for testing.
+     */
     public static class Person {
 
         private String fname;
@@ -363,6 +598,16 @@ public class JavaScriptAdjudicatorTest {
 
         public int getAge() {
             return age;
+        }
+    }
+
+    /**
+     * Stupid example service that can be injected into a runtime.
+     */
+    public class PersonRepository {
+
+        public Person registerPerson(String id, String fname, String lname, int age){
+            return new Person(fname, lname, id, age);
         }
     }
 }

@@ -1,12 +1,12 @@
 package amp.policy.core.providers;
 
-import amp.policy.core.PolicyEnforcer;
+import amp.policy.core.Enforcer;
 import cmf.bus.Envelope;
 
 /**
  * @author Richard Clayton (Berico Technologies)
  */
-public class MockEnforcer implements PolicyEnforcer {
+public class MockEnforcer implements Enforcer {
 
     @Override
     public void approve(Envelope e) {}
@@ -22,4 +22,10 @@ public class MockEnforcer implements PolicyEnforcer {
 
     @Override
     public void notify(Envelope e, String entityToNotify, String message) {}
+
+    @Override
+    public void reset() {}
+
+    @Override
+    public boolean hasAdjudicated() { return true; }
 }

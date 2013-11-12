@@ -2,7 +2,7 @@ package amp.policy.core.providers;
 
 import amp.policy.core.EnvelopeInterceptor;
 import amp.policy.core.InterceptorProvider;
-import amp.policy.core.impl.DefaultPolicyEnforcer;
+import amp.policy.core.impl.DefaultEnforcer;
 import com.google.common.collect.Lists;
 import org.junit.Test;
 import org.springframework.context.support.GenericApplicationContext;
@@ -40,7 +40,7 @@ public class SpringInterceptorProviderTest {
             }
             else {
 
-                assertEquals(DefaultPolicyEnforcer.class.toString(), interceptor.getEnforcerType());
+                assertEquals(DefaultEnforcer.class.toString(), interceptor.getEnforcerType());
             }
 
             adjClasses.add(interceptor.getAdjudicatorType());

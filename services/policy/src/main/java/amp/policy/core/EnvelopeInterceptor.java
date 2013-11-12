@@ -25,7 +25,7 @@ public class EnvelopeInterceptor implements IRegistration {
 
     private EnvelopeAdjudicator adjudicator;
 
-    private PolicyEnforcer enforcer;
+    private Enforcer enforcer;
 
     private final Predicate<Envelope> filterPredicate;
 
@@ -35,7 +35,7 @@ public class EnvelopeInterceptor implements IRegistration {
             String id,
             String description,
             EnvelopeAdjudicator adjudicator,
-            PolicyEnforcer enforcer,
+            Enforcer enforcer,
             Map<String, String> registrationInfo){
 
         this(id, description, adjudicator, enforcer, new AdjudicateAllPredicate(), registrationInfo);
@@ -45,7 +45,7 @@ public class EnvelopeInterceptor implements IRegistration {
             String id,
             String description,
             EnvelopeAdjudicator adjudicator,
-            PolicyEnforcer enforcer,
+            Enforcer enforcer,
             Predicate<Envelope> filterPredicate,
             Map<String, String> registrationInfo){
 
@@ -93,7 +93,12 @@ public class EnvelopeInterceptor implements IRegistration {
     @Override
     public Object handle(Envelope envelope) throws Exception {
 
+        enforcer.reset();
+
         adjudicator.adjudicate(envelope, enforcer);
+
+        if (!enforcer.hasAdjudicated())
+            throw new NoAdjudicationActionTakenException(envelope);
 
         return true;
     }

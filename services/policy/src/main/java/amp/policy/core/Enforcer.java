@@ -6,7 +6,7 @@ import cmf.bus.Envelope;
 /**
  * This is the mechanism provided to adjudicators for enforcing their policies.
  */
-public interface PolicyEnforcer {
+public interface Enforcer {
 
     /**
      * When logging, these are the valid types of log entries available to adjudicators.
@@ -55,4 +55,18 @@ public interface PolicyEnforcer {
      * @param message Custom message.
      */
     void notify(Envelope e, String entityToNotify, String message);
+
+    /**
+     * Reset the context (preparing the enforcer to handle the next event.
+     *
+     * Note: this is to be called by the EnvelopeInterceptor.
+     */
+    void reset();
+
+    /**
+     * Has any action been taken since the last time the context has been reset?
+     *
+     * Note: this is to be called by the EnvelopeInterceptor.
+     */
+    boolean hasAdjudicated();
 }

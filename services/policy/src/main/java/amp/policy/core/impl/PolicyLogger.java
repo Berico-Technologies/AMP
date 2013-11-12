@@ -1,6 +1,5 @@
 package amp.policy.core.impl;
 
-import amp.policy.core.PolicyEnforcer;
 import cmf.bus.Envelope;
 
 /**
@@ -9,7 +8,7 @@ import cmf.bus.Envelope;
  *
  * NOTE: The reason why logType is a String and not the LogTypes enum is because I want to suppress the
  * full breadth of verbs that can be used in the logging system by users.  For instance, we don't want
- * someone to use "REJECTED" or "APPROVED" because that's a PolicyEnforcer responsibility.
+ * someone to use "REJECTED" or "APPROVED" because that's a Enforcer responsibility.
  */
 public interface PolicyLogger {
 

@@ -14,5 +14,5 @@ public interface EnvelopeAdjudicator {
      * @param envelope
      * @param enforcer
      */
-    void adjudicate(Envelope envelope, PolicyEnforcer enforcer);
+    void adjudicate(Envelope envelope, Enforcer enforcer);
 }

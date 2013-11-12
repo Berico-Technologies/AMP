@@ -1,7 +1,7 @@
 package amp.policy.core.adjudicators;
 
+import amp.policy.core.Enforcer;
 import amp.policy.core.EnvelopeAdjudicator;
-import amp.policy.core.PolicyEnforcer;
 import amp.policy.core.adjudicators.javascript.JavaScriptLibrary;
 import amp.policy.core.adjudicators.javascript.ScriptConfiguration;
 import cmf.bus.Envelope;
@@ -12,54 +12,102 @@ import org.mozilla.javascript.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.script.ScriptException;
 import java.io.*;
 import java.util.List;
 import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
 
 /**
+ * Delegates adjudication to JavaScript written by developers.
+ *
  * @author Richard Clayton (Berico Technologies)
  */
 public class JavaScriptAdjudicator implements EnvelopeAdjudicator {
 
     private static final Logger LOG = LoggerFactory.getLogger(JavaScriptAdjudicator.class);
 
+    /**
+     * Core libraries that will be available by default within the script runtime.
+     */
     static final String[] coreLibraries = new String[]{ "/scripts/lodash.js", "/scripts/helpers.js" };
 
+    /**
+     * This is the JavaScript scope.  The scope is specific to each instantiation; therefore, states
+     * is only maintained per class instance.
+     */
     protected ScriptableObject scriptScope;
 
+    /**
+     * Script configuration (name, script source, entry point).
+     */
     protected ScriptConfiguration scriptConfiguration;
 
+    /**
+     * Libraries that should be loaded into the script runtime (provided by instantiator).
+     */
     protected List<JavaScriptLibrary> libraries = Lists.newArrayList();
 
+    /**
+     * External services injected into the runtime.
+     */
     protected Map<String, Object> sessionObjects = Maps.newHashMap();
 
+    /**
+     * Has the adjudicator been instantiated yet?
+     */
     protected boolean wasInitialized = false;
 
+    /**
+     * Instantiate the adjudicator.  Use the setter methods to configure options for the runtime.
+     * Call "initialize" if you don't want to lazy instantiate the instance.
+     *
+     * Note: if you do not set the ScriptConfiguration, an exception will be raised!
+     */
     public JavaScriptAdjudicator(){}
 
+    /**
+     * Instantiate the essential Script Configuration.  Call "initialize" if you don't want to lazy
+     * instantiate the instance.
+     * @param scriptConfiguration
+     */
     public JavaScriptAdjudicator(ScriptConfiguration scriptConfiguration) {
 
         this.scriptConfiguration = scriptConfiguration;
-
-        initialize();
     }
 
+    /**
+     * Set the script configuration.
+     * @param scriptConfiguration Represents the handler that will be called by
+     *                            adjudicator.
+     */
     public void setScriptConfiguration(ScriptConfiguration scriptConfiguration) {
         this.scriptConfiguration = scriptConfiguration;
     }
 
+    /**
+     * Set the libraries that should be used with the script runtime.
+     * @param libraries Libraries to load
+     */
     public void setLibraries(List<JavaScriptLibrary> libraries) {
         this.libraries = libraries;
     }
 
+    /**
+     * Set the Java objects/services that should be available within the API.
+     * @param sessionObjects Objects to inject into the runtime.
+     */
     public void setSessionObjects(Map<String, Object> sessionObjects) {
         this.sessionObjects = sessionObjects;
     }
 
+    /**
+     * Initialized the adjudicator instance by loading applicable contexts, the supplied script,
+     * libraries, and services.
+     *
+     * @throws NullPointerException if script configuration, libraries, or session objects are null.  By default,
+     * libraries and session objects are empty collections (already not null).
+     */
     public void initialize(){
 
         checkNotNull(scriptConfiguration);
@@ -70,19 +118,13 @@ public class JavaScriptAdjudicator implements EnvelopeAdjudicator {
 
         scriptScope = loadingContext.initStandardObjects();
 
+        loadConstants(loadingContext, scriptScope);
+
         loadCoreLibraries(loadingContext, scriptScope, coreLibraries);
 
-        for (Map.Entry<String, Object> sessionObject : sessionObjects.entrySet()){
+        loadSessionObjects(scriptScope, sessionObjects);
 
-            Object jsObj = Context.javaToJS(sessionObject.getValue(), scriptScope);
-
-            scriptScope.put(sessionObject.getKey(), scriptScope, jsObj);
-        }
-
-        for (JavaScriptLibrary library : libraries){
-
-            loadScript(loadingContext, scriptScope, library.getLibrarySource(), library.getLibraryName());
-        }
+        loadUserLibraries(loadingContext, scriptScope, libraries);
 
         loadScript(
                 loadingContext, scriptScope, scriptConfiguration.getScriptBody(), scriptConfiguration.getScriptName());
@@ -92,8 +134,26 @@ public class JavaScriptAdjudicator implements EnvelopeAdjudicator {
         wasInitialized = true;
     }
 
+    /**
+     * Load essential constants into the script runtime.
+     * @param context Rhino Context
+     * @param scope Execution Scope
+     */
+    static void loadConstants(Context context, ScriptableObject scope) {
 
-    static void loadCoreLibraries(Context c, Scriptable s, String[] libraryFiles){
+        scope.putConst("INFO", scope, Enforcer.LogTypes.INFO);
+        scope.putConst("ERROR", scope, Enforcer.LogTypes.ERROR);
+        scope.putConst("DEBUG", scope, Enforcer.LogTypes.DEBUG);
+        scope.putConst("WARN", scope, Enforcer.LogTypes.WARN);
+    }
+
+    /**
+     * Load the core libraries into the script runtime.
+     * @param context Rhino Context
+     * @param scope Execution Scope
+     * @param libraryFiles Libraries (as embedded resources in the resources folder) to load.
+     */
+    static void loadCoreLibraries(Context context, Scriptable scope, String[] libraryFiles){
 
         for (String library : libraryFiles){
 
@@ -101,12 +161,41 @@ public class JavaScriptAdjudicator implements EnvelopeAdjudicator {
 
                 System.out.println("Loading " + library + "...");
 
-                loadResourceFile(c, s, library);
+                loadResourceFile(context, scope, library);
 
             } catch (IOException ex){
 
                 throw new RuntimeException("Essential script library " + library + " was not found.");
             }
+        }
+    }
+
+    /**
+     * Load user libraries into the script runtime.
+     * @param context Rhino Context
+     * @param scope Execution Scope
+     * @param libraries User Libraries to Load
+     */
+    static void loadUserLibraries(Context context, Scriptable scope, List<JavaScriptLibrary> libraries){
+
+        for (JavaScriptLibrary library : libraries){
+
+            loadScript(context, scope, library.getLibrarySource(), library.getLibraryName());
+        }
+    }
+
+    /**
+     * Load the session objects into the script runtime.
+     * @param scope Execution Scope
+     * @param sessionObjects Objects to insert
+     */
+    static void loadSessionObjects(Scriptable scope, Map<String, Object> sessionObjects){
+
+        for (Map.Entry<String, Object> sessionObject : sessionObjects.entrySet()){
+
+            Object jsObj = Context.javaToJS(sessionObject.getValue(), scope);
+
+            scope.put(sessionObject.getKey(), scope, jsObj);
         }
     }
 
@@ -117,21 +206,15 @@ public class JavaScriptAdjudicator implements EnvelopeAdjudicator {
      * @param enforcer Mechanism to enforce policy.
      */
     @Override
-    public void adjudicate(Envelope envelope, PolicyEnforcer enforcer) {
+    public void adjudicate(Envelope envelope, Enforcer enforcer) {
 
         if (!wasInitialized) initialize();
 
         Context runContext = Context.enter();
 
-        Scriptable tempScope = runContext.newObject(this.scriptScope);
+        Object jsEnvelope = Context.javaToJS(envelope, scriptScope);
 
-        tempScope.setPrototype(this.scriptScope);
-
-        tempScope.setParentScope(null);
-
-        Object jsEnvelope = Context.javaToJS(envelope, tempScope);
-
-        Object jsEnforcer = Context.javaToJS(enforcer, tempScope);
+        Object jsEnforcer = Context.javaToJS(enforcer, scriptScope);
 
         try {
 
@@ -147,11 +230,22 @@ public class JavaScriptAdjudicator implements EnvelopeAdjudicator {
 
             if(scriptConfiguration.isObjectEntry()){
 
-                callMethod(runContext, tempScope, scriptConfiguration.getObjectEntry(), scriptConfiguration.getFunctionEntry(), jsEnvelope, jsEnforcer);
+                callMethod(
+                        runContext,
+                        scriptScope,
+                        scriptConfiguration.getObjectEntry(),
+                        scriptConfiguration.getFunctionEntry(),
+                        jsEnvelope,
+                        jsEnforcer);
             }
             else {
 
-                callFunction(runContext, tempScope, scriptConfiguration.getFunctionEntry(), jsEnvelope,  jsEnforcer);
+                callFunction(
+                        runContext,
+                        scriptScope,
+                        scriptConfiguration.getFunctionEntry(),
+                        jsEnvelope,
+                        jsEnforcer);
             }
         }
         catch (IllegalStateException ise){
@@ -160,9 +254,9 @@ public class JavaScriptAdjudicator implements EnvelopeAdjudicator {
         }
         catch (Exception e){
 
-            LOG.error("Error executing the script function.", e);
+            LOG.error("Error executing the script function: {}.", e);
 
-            enforcer.log(envelope, PolicyEnforcer.LogTypes.ERROR, "Error executing the script function.");
+            enforcer.log(envelope, Enforcer.LogTypes.ERROR, "Error executing the script function.");
 
         }
         finally {

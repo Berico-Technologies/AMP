@@ -1,7 +1,6 @@
 package amp.policy.core;
 
 import cmf.bus.Envelope;
-import com.google.common.collect.Maps;
 import org.junit.Test;
 
 import java.util.HashMap;
@@ -19,7 +18,9 @@ public class EnvelopeInterceptorTest {
 
         EnvelopeAdjudicator adj = mock(EnvelopeAdjudicator.class);
 
-        PolicyEnforcer pe = mock(PolicyEnforcer.class);
+        Enforcer pe = mock(Enforcer.class);
+
+        when(pe.hasAdjudicated()).thenReturn(true);
 
         EnvelopeInterceptor interceptor = new EnvelopeInterceptor("id", "desc", adj, pe, new HashMap<String, String>());
 

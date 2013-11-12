@@ -1,8 +1,8 @@
 package amp.policy.core.providers;
 
+import amp.policy.core.Enforcer;
 import amp.policy.core.EnvelopeAdjudicator;
 import amp.policy.core.EnvelopeInterceptor;
-import amp.policy.core.PolicyEnforcer;
 import cmf.bus.EnvelopeHeaderConstants;
 import com.google.common.base.Strings;
 import org.junit.Test;
@@ -16,7 +16,7 @@ public class PolicyInterceptorTest {
 
     protected EnvelopeInterceptor createInteceptor(EnvelopeAdjudicator adj){
 
-        PolicyEnforcer enforcer = mock(PolicyEnforcer.class);
+        Enforcer enforcer = mock(Enforcer.class);
 
         return PolicyInterceptor.Helper.createInterceptor(adj, enforcer);
     }

@@ -8,7 +8,7 @@
     <bean class="amp.policy.core.providers.MockAdjudicator1" />
     <bean class="amp.policy.core.providers.MockAdjudicator3" />
 
-    <bean id="defaultEnforcer" class="amp.policy.core.impl.DefaultPolicyEnforcer" />
+    <bean id="defaultEnforcer" class="amp.policy.core.impl.DefaultEnforcer" />
 
     <bean id="mockProvider" class="amp.policy.core.providers.MockInterceptorProvider" />
 

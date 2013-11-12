@@ -1,16 +1,15 @@
 package amp.policy.core.providers;
 
+import amp.policy.core.Enforcer;
 import amp.policy.core.EnvelopeAdjudicator;
 import amp.policy.core.EnvelopeInterceptor;
 import amp.policy.core.InterceptionCriteria;
-import amp.policy.core.PolicyEnforcer;
 import com.google.common.base.Splitter;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -77,7 +76,7 @@ public @interface PolicyInterceptor {
         }
 
         public static EnvelopeInterceptor createInterceptor(
-                EnvelopeAdjudicator annotatedAdjudicator, PolicyEnforcer enforcer){
+                EnvelopeAdjudicator annotatedAdjudicator, Enforcer enforcer){
 
             PolicyInterceptor info = annotatedAdjudicator.getClass().getAnnotation(PolicyInterceptor.class);
 

@@ -10,7 +10,7 @@ public class MockEventAdjudicator extends EventAdjudicator<MockEvent> {
 
 
     @Override
-    public void adjudicate(MockEvent event, Envelope envelope, PolicyEnforcer enforcer) {
+    public void adjudicate(MockEvent event, Envelope envelope, Enforcer enforcer) {
 
         if (event.throwException){
 

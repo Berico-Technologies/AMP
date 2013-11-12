@@ -2,7 +2,7 @@ package amp.policy.core.adjudicators;
 
 
 import amp.bus.EnvelopeHelper;
-import amp.policy.core.PolicyEnforcer;
+import amp.policy.core.Enforcer;
 import amp.policy.core.adjudicators.security.AccessControlEntry;
 import cmf.bus.Envelope;
 import com.google.common.collect.Lists;
@@ -40,7 +40,7 @@ public class AccessControlAdjudicatorTest {
 
         AccessControlAdjudicator adjudicator = new AccessControlAdjudicator(acl);
 
-        PolicyEnforcer enforcer = mock(PolicyEnforcer.class);
+        Enforcer enforcer = mock(Enforcer.class);
 
         Envelope e1 = createEnvelopeWithSender("rclayton");
 
@@ -72,7 +72,7 @@ public class AccessControlAdjudicatorTest {
 
         AccessControlAdjudicator adjudicator = new AccessControlAdjudicator(acl);
 
-        PolicyEnforcer enforcer = mock(PolicyEnforcer.class);
+        Enforcer enforcer = mock(Enforcer.class);
 
         Envelope shouldBeDenied = createEnvelopeWithSender("jsmith");
 
@@ -91,7 +91,7 @@ public class AccessControlAdjudicatorTest {
 
         adjudicator.setBanByDefault(false);
 
-        PolicyEnforcer enforcer = mock(PolicyEnforcer.class);
+        Enforcer enforcer = mock(Enforcer.class);
 
         Envelope shouldBeApproved = createEnvelopeWithSender("jsmith");
 

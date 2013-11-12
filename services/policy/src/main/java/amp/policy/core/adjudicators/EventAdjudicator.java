@@ -1,7 +1,7 @@
 package amp.policy.core.adjudicators;
 
 import amp.policy.core.EnvelopeAdjudicator;
-import amp.policy.core.PolicyEnforcer;
+import amp.policy.core.Enforcer;
 import amp.policy.core.SerializerFactory;
 import amp.utility.serialization.ISerializer;
 import cmf.bus.Envelope;
@@ -68,7 +68,7 @@ public abstract class EventAdjudicator<T> implements EnvelopeAdjudicator {
      * @param envelope Original message.
      * @param enforcer The mechanism to enforce the policy.
      */
-    public abstract void adjudicate(T event, Envelope envelope, PolicyEnforcer enforcer);
+    public abstract void adjudicate(T event, Envelope envelope, Enforcer enforcer);
 
     /**
      * Adjudicate the message by delegating to derived classes.  This class will conveniently
@@ -77,7 +77,7 @@ public abstract class EventAdjudicator<T> implements EnvelopeAdjudicator {
      * @param enforcer The mechanism to enforce the policy.
      */
     @Override
-    public void adjudicate(Envelope envelope, PolicyEnforcer enforcer) {
+    public void adjudicate(Envelope envelope, Enforcer enforcer) {
 
         String contentType = envelope.getHeader("Content-Type");
 
@@ -95,7 +95,7 @@ public abstract class EventAdjudicator<T> implements EnvelopeAdjudicator {
         }
         catch (Exception e){
 
-            enforcer.log(envelope, PolicyEnforcer.LogTypes.ERROR, "Could not convert body of message to an object.");
+            enforcer.log(envelope, Enforcer.LogTypes.ERROR, "Could not convert body of message to an object.");
         }
     }
 

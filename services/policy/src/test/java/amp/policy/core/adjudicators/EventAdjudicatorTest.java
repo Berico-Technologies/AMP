@@ -1,8 +1,8 @@
 package amp.policy.core.adjudicators;
 
+import amp.policy.core.Enforcer;
 import amp.policy.core.MockEvent;
 import amp.policy.core.MockEventAdjudicator;
-import amp.policy.core.PolicyEnforcer;
 import amp.policy.core.SerializerFactory;
 import amp.utility.serialization.ISerializer;
 import cmf.bus.Envelope;
@@ -57,7 +57,7 @@ public class EventAdjudicatorTest {
 
         adj.setSerializerFactory(sf);
 
-        PolicyEnforcer pe = mock(PolicyEnforcer.class);
+        Enforcer pe = mock(Enforcer.class);
 
         adj.adjudicate(jsonEvent, pe);
 
@@ -81,7 +81,7 @@ public class EventAdjudicatorTest {
 
         when(e.getHeader(anyString())).thenReturn("contentType");
 
-        PolicyEnforcer pe = mock(PolicyEnforcer.class);
+        Enforcer pe = mock(Enforcer.class);
 
         adj.adjudicate(e, pe);
 
@@ -111,7 +111,7 @@ public class EventAdjudicatorTest {
 
         when(e.getHeader(anyString())).thenReturn("contentType");
 
-        PolicyEnforcer pe = mock(PolicyEnforcer.class);
+        Enforcer pe = mock(Enforcer.class);
 
         adj.adjudicate(e, pe);
 
@@ -141,7 +141,7 @@ public class EventAdjudicatorTest {
 
         when(e.getHeader(anyString())).thenReturn("contentType");
 
-        PolicyEnforcer pe = mock(PolicyEnforcer.class);
+        Enforcer pe = mock(Enforcer.class);
 
         adj.adjudicate(e, pe);
 
@@ -149,7 +149,7 @@ public class EventAdjudicatorTest {
 
         verify(adj).adjudicate(mockEvent, e, pe);
 
-        verify(pe).log(eq(e), eq(PolicyEnforcer.LogTypes.ERROR), anyString());
+        verify(pe).log(eq(e), eq(Enforcer.LogTypes.ERROR), anyString());
     }
 
 }

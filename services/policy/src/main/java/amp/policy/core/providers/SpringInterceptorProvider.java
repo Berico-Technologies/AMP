@@ -3,8 +3,8 @@ package amp.policy.core.providers;
 import amp.policy.core.EnvelopeAdjudicator;
 import amp.policy.core.EnvelopeInterceptor;
 import amp.policy.core.InterceptorProvider;
-import amp.policy.core.PolicyEnforcer;
-import amp.policy.core.impl.DefaultPolicyEnforcer;
+import amp.policy.core.Enforcer;
+import amp.policy.core.impl.DefaultEnforcer;
 import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +14,6 @@ import org.springframework.context.ApplicationContextAware;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -58,29 +57,29 @@ public class SpringInterceptorProvider implements InterceptorProvider, Applicati
 
                 String enforcerId = registration.getClass().getAnnotation(PolicyInterceptor.class).enforcer();
 
-                PolicyEnforcer enforcer = null;
+                Enforcer enforcer = null;
 
                 if (enforcerId.equals(PolicyInterceptor.DEFAULT_VALUE)){
 
                     try {
 
-                        // We are going to see if we can find an instance of the DefaultPolicyEnforcer
+                        // We are going to see if we can find an instance of the DefaultEnforcer
                         // (assuming that a custom enforcer would be of a different type).
-                        // If we tried to retrieve by PolicyEnforcer, we could come up with anything!
-                        enforcer = this.applicationContext.getBean(DefaultPolicyEnforcer.class);
+                        // If we tried to retrieve by Enforcer, we could come up with anything!
+                        enforcer = this.applicationContext.getBean(DefaultEnforcer.class);
                     }
                     catch (Exception e) {
 
-                        LOG.info("No DefaultPolicyEnforcer defined.  Retrieving the first bean of type PolicyEnforcer.");
+                        LOG.info("No DefaultEnforcer defined.  Retrieving the first bean of type Enforcer.");
 
                         // Ok, I guess we don't have an instance of the Default, let's see if there's
                         // any kind of enforcer defined.
-                        enforcer = this.applicationContext.getBean(PolicyEnforcer.class);
+                        enforcer = this.applicationContext.getBean(Enforcer.class);
                     }
 
                 } else {
 
-                    enforcer = this.applicationContext.getBean(enforcerId, PolicyEnforcer.class);
+                    enforcer = this.applicationContext.getBean(enforcerId, Enforcer.class);
                 }
 
                 checkNotNull(enforcer);
