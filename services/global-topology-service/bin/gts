@@ -60,6 +60,8 @@ startServiceProcess() {
    #rm -f $pidFile
    makeFileWritable $pidfile || return 1
    #makeFileWritable $serviceLogFile || return 1
+   # configurations should not be this fragile
+   cd /etc/$prog
    cmd="nohup $javaCommand $JAVA_OPTS -jar $JAR $ARGS >> /dev/null 2>&1 & echo \$! > $pidfile"
    su -m $serviceUser -s $SHELL -c "$cmd" || return 1
    sleep 0.1
