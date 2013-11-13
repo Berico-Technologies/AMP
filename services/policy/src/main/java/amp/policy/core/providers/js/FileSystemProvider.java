@@ -3,19 +3,20 @@ package amp.policy.core.providers.js;
 import amp.policy.core.adjudicators.javascript.ScriptConfiguration;
 import com.google.common.base.Joiner;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import org.apache.commons.vfs2.*;
-import org.apache.commons.vfs2.impl.DefaultFileMonitor;
+import org.apache.commons.io.monitor.FileAlterationListener;
+import org.apache.commons.io.monitor.FileAlterationListenerAdaptor;
+import org.apache.commons.io.monitor.FileAlterationMonitor;
+import org.apache.commons.io.monitor.FileAlterationObserver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
+import java.nio.file.*;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
@@ -25,26 +26,24 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * @author Richard Clayton (Berico Technologies)
  */
-public class FileSystemProvider extends BaseScriptProvider implements FileListener {
+public class FileSystemProvider extends BaseScriptProvider {
+
+    private static final Logger LOG = LoggerFactory.getLogger(FileSystemProvider.class);
 
     ConcurrentMap<Path, ScriptConfiguration> scripts = Maps.newConcurrentMap();
 
     /**
      * Time between files system check intervals.
      */
-    public static long DELAY_BETWEEN_CHECKS_ON_FILE_SYSTEM = 2000;
+    public static long DELAY_BETWEEN_CHECKS_ON_FILE_SYSTEM = 1000;
 
     /**
      * Example:
      * // NAME: My Script
-     */
-    private static final String NAME_PATTERN = "^\\s*\\/\\/\\s+NAME:\\s+.+$";
-
-    /**
-     * Example:
      * // ENTRY: object.function
+     * // amd.asdf.asdf12: asdf223.23d2
      */
-    private static final String ENTRY_PATTERN = "^\\s*\\/\\/\\s+ENTRY:\\s+.+$";
+    private static final String COMMENT_KVP_PATTERN = "^\\s*\\/\\/\\s*(?:\\w|\\.)+[:]\\s*.+$";
 
     /**
      * Base Path for Scripts
@@ -57,11 +56,11 @@ public class FileSystemProvider extends BaseScriptProvider implements FileListen
      * @param scriptDirectory Repository location.
      * @throws IOException
      */
-    public FileSystemProvider(String scriptDirectory) throws IOException {
+    public FileSystemProvider(String scriptDirectory) throws Exception {
 
         Path scriptBasePath = Paths.get(scriptDirectory);
 
-        Preconditions.checkState(Files.isDirectory(scriptBasePath, null));
+        //Preconditions.checkState(Files.isDirectory(scriptBasePath, null));
 
         scriptsBasePath = scriptBasePath;
 
@@ -82,44 +81,30 @@ public class FileSystemProvider extends BaseScriptProvider implements FileListen
      * Initialize the File System Monitor
      * @throws FileSystemException
      */
-    private void initialize() throws IOException {
+    private void initialize() throws Exception {
 
         loadInitialDirectory(scriptsBasePath, scripts, this);
 
-        startDirectoryMonitoring(scriptsBasePath, this);
+        startDirectoryWatcher(scriptsBasePath, fileAlterationListener);
     }
 
     /**
-     * Start watching the base directory for file system changes.
-     * @param baseDirectory Root directory we will perform watches.
-     * @param listener Usually this class, but externalized for testing.
-     * @throws IOException
+     * Start watching the directory.
+     * @param baseDirectory Directory to watch.
+     * @param listener Handles changes on the file system.
+     * @throws Exception
      */
-    static void startDirectoryMonitoring(Path baseDirectory, FileListener listener) throws IOException {
+    static void startDirectoryWatcher(Path baseDirectory, FileAlterationListener listener) throws Exception {
 
-        FileSystemManager fsm = VFS.getManager();
+        FileAlterationObserver fao = new FileAlterationObserver(baseDirectory.toFile());
 
-        FileObject foBaseDirectory = fsm.resolveFile(baseDirectory.toString());
+        FileAlterationMonitor fam = new FileAlterationMonitor(DELAY_BETWEEN_CHECKS_ON_FILE_SYSTEM);
 
-        final DefaultFileMonitor fileMonitor = new DefaultFileMonitor(listener);
+        fao.addListener(listener);
 
-        fileMonitor.setRecursive(true);
+        fam.addObserver(fao);
 
-        fileMonitor.addFile(foBaseDirectory);
-
-        fileMonitor.setDelay(DELAY_BETWEEN_CHECKS_ON_FILE_SYSTEM);
-
-        // Ensure the file monitor is stopped when the service shuts down.
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-
-            @Override
-            public void run() {
-
-                fileMonitor.stop();
-            }
-        });
-
-        fileMonitor.start();
+        fam.start();
     }
 
     /**
@@ -147,7 +132,9 @@ public class FileSystemProvider extends BaseScriptProvider implements FileListen
         DirectoryStream<Path> ds = Files.newDirectoryStream(path, new DirectoryStream.Filter<Path>() {
             @Override
             public boolean accept(Path entry) throws IOException {
-                return Files.isDirectory(entry, null) || (!Files.isDirectory(entry, null) && entry.endsWith(".js"));
+
+                return Files.isDirectory(entry, LinkOption.NOFOLLOW_LINKS)
+                       || (!Files.isDirectory(entry, LinkOption.NOFOLLOW_LINKS) && entry.toString().endsWith(".js"));
             }
         });
 
@@ -186,7 +173,7 @@ public class FileSystemProvider extends BaseScriptProvider implements FileListen
      * @param path Path of the update
      * @param configuration The actual update
      */
-    protected void updateScript(Path path, ScriptConfiguration configuration){
+    public void updateScript(Path path, ScriptConfiguration configuration){
 
         removeScript(path);
 
@@ -198,7 +185,7 @@ public class FileSystemProvider extends BaseScriptProvider implements FileListen
      * @param path Path of script
      * @param configuration The new script
      */
-    protected void addScript(Path path, ScriptConfiguration configuration){
+    public void addScript(Path path, ScriptConfiguration configuration){
 
         scripts.put(path, configuration);
 
@@ -209,11 +196,33 @@ public class FileSystemProvider extends BaseScriptProvider implements FileListen
      * Remove a script from the provider
      * @param path Path of script
      */
-    protected void removeScript(Path path){
+    public void removeScript(Path path){
 
         ScriptConfiguration configuration = scripts.remove(path);
 
         fireScriptRemoved(configuration);
+    }
+
+    /**
+     * Extract the key-value pair from the line.
+     * @param line Line to parse
+     * @return Key-value pair representing the property.
+     */
+    static Map.Entry<String, String> parseLine(String line){
+
+        final String key = line.substring(0, line.indexOf(":")).replace("/", "").trim();
+        final String value = line.substring(line.indexOf(":") + 1).trim();
+
+        return new Map.Entry<String, String>() {
+            @Override
+            public String getKey() { return key; }
+
+            @Override
+            public String getValue() { return value; }
+
+            @Override
+            public String setValue(String value) { return null; }
+        };
     }
 
     /**
@@ -226,51 +235,83 @@ public class FileSystemProvider extends BaseScriptProvider implements FileListen
         String name = null;
         String entry = null;
 
+        HashMap<String, String> registrationInfo = Maps.newHashMap();
+
         for (String line : scriptLines){
 
-            if (line.matches(NAME_PATTERN))
-                name = line.substring(line.indexOf(":") + 1).trim();
+            if (line.matches(COMMENT_KVP_PATTERN)) {
 
-            if (line.matches(ENTRY_PATTERN))
-                entry = line.substring(line.indexOf(":") + 1).trim();
+                Map.Entry<String, String> kvp = parseLine(line);
+
+                if (kvp.getKey().toLowerCase().equals("name"))
+                    name = kvp.getValue();
+                else if (kvp.getKey().toLowerCase().equals("entry"))
+                    entry = kvp.getValue();
+                else
+                    registrationInfo.put(kvp.getKey(), kvp.getValue());
+            }
         }
 
         String body = Joiner.on("\n").join(scriptLines);
 
         checkNotNull(entry);
 
-        String[] parts = entry.split("[.]");
-
-
-        return new ScriptConfiguration(name, body, entry, null);
+        return new ScriptConfiguration(name, body, entry, registrationInfo);
     }
 
+    /**
+     * Will listen to changes on the file system and call the correct method.
+     */
+    FileAlterationListenerAdaptor fileAlterationListener = new FileAlterationListenerAdaptor(){
 
-    @Override
-    public void fileCreated(FileChangeEvent fileChangeEvent) throws Exception {
+        @Override
+        public void onFileCreate(File file) {
 
-        Path fileToBeAdded = Paths.get(fileChangeEvent.getFile().getURL().toURI());
+            Path targetPath = Paths.get(file.getAbsolutePath());
 
-        ScriptConfiguration configuration = getConfigurationForPath(fileToBeAdded);
+            ScriptConfiguration configuration = null;
 
-        addScript(fileToBeAdded, configuration);
-    }
+            try {
 
-    @Override
-    public void fileDeleted(FileChangeEvent fileChangeEvent) throws Exception {
+                configuration = getConfigurationForPath(targetPath);
 
-        Path fileToBeRemoved = Paths.get(fileChangeEvent.getFile().getURL().toURI());
+            } catch (IOException e) {
 
-        removeScript(fileToBeRemoved);
-    }
+                LOG.error("Unable to parse configuration.", e);
+            }
 
-    @Override
-    public void fileChanged(FileChangeEvent fileChangeEvent) throws Exception {
+            addScript(targetPath, configuration);
+        }
 
-        Path fileToBeUpdated = Paths.get(fileChangeEvent.getFile().getURL().toURI());
+        @Override
+        public void onFileChange(File file) {
 
-        ScriptConfiguration configuration = getConfigurationForPath(fileToBeUpdated);
+            Path targetPath = Paths.get(file.getAbsolutePath());
 
-        updateScript(fileToBeUpdated, configuration);
-    }
+            // This method is erroneously called twice during an append, which
+            // will make appear absent to the file system.  If we can not
+            // locate the file during this process, we will ignore.
+            if (!Files.exists(targetPath, LinkOption.NOFOLLOW_LINKS)) return;
+
+            ScriptConfiguration configuration = null;
+
+            try {
+                configuration = getConfigurationForPath(targetPath);
+
+            } catch (IOException e) {
+
+                LOG.error("Unable to parse configuration.", e);
+            }
+
+            updateScript(targetPath, configuration);
+        }
+
+        @Override
+        public void onFileDelete(File file) {
+
+            Path targetPath = Paths.get(file.getAbsolutePath());
+
+            removeScript(targetPath);
+        }
+    };
 }
