@@ -7,7 +7,7 @@
     <!-- Information about this project -->
     <groupId>amp</groupId>
     <artifactId>amp</artifactId>
-    <version>3.2.1</version>
+    <version>3.2.2</version>
     <name>Advanced Modular Platform</name>
     <packaging>pom</packaging>
     <url>http://www.openampere.com</url>

@@ -4,7 +4,7 @@
 
     <groupId>amp</groupId>
     <artifactId>amp.topology.service</artifactId>
-    <version>3.2.1</version>
+    <version>3.2.2</version>
     <packaging>jar</packaging>
 
     <name>Global Topology Service</name>
@@ -73,12 +73,6 @@
         <dependency>
             <groupId>amp</groupId>
             <artifactId>amp.rabbit</artifactId>
-            <version>${amp.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>amp</groupId>
-            <artifactId>amp.bus.rabbit</artifactId>
             <version>${amp.version}</version>
         </dependency>
 
