@@ -51,7 +51,6 @@ public class GtsBasicAuth {
 	}
 	
     @Test
-    @Ignore
     public void Should_be_able_to_publish_and_subscribe() throws Exception
     {
     	TestHandler handler = new TestHandler();

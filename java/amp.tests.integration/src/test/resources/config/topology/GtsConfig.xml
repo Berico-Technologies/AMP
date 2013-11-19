@@ -26,7 +26,7 @@
 
     <bean id="fallbackProvider" class="amp.topology.client.DefaultApplicationExchangeProvider"
           p:hostname="rabbit.openampere.com" 
-          p:port="5671"
+          p:port="5672"
           p:exchangeName="amp.fallback" />
 
     <bean id="routingInfoCache" class="amp.rabbit.transport.CommandableCache"
