@@ -17,9 +17,9 @@
           c:urlExpression="https://gts.openampere.com:15677/service/topology/get-routing-info/%s" />
 
      <bean id="topoHttpClientProvider" class="amp.utility.http.SslHttpClientProvider"
-          c:keystore="/test-certs/amp-test-at-openampere.com.jks"
+          c:keystore="test-certs/amp-test-at-openampere.com.jks"
           c:keystorePassword="1qaz@WSX3edc$RFV" 
-          c:truststore="/test-certs/truststore.jks"
+          c:truststore="test-certs/truststore.jks"
           c:port="15677" />
 
     <bean id="routingSerializer" class="amp.utility.serialization.GsonSerializer" />

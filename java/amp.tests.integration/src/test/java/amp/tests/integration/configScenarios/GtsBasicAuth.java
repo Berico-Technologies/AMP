@@ -8,7 +8,7 @@ import static org.junit.Assert.*;
 import static com.jayway.awaitility.Awaitility.*;
 import static org.hamcrest.Matchers.*;
 
-import org.springframework.context.support.FileSystemXmlApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import amp.tests.integration.Config;
 import amp.tests.integration.TestEvent;
@@ -28,7 +28,7 @@ import cmf.eventing.IEventHandler;
  */
 public class GtsBasicAuth {
     
-	protected static FileSystemXmlApplicationContext context;
+	protected static ClassPathXmlApplicationContext context;
 	protected static IEventBus bus;
 	
 	public static String[] getConfigFiles(){
@@ -40,7 +40,7 @@ public class GtsBasicAuth {
 	
 	@BeforeClass
 	public static void BeforeAllTests(){
-		context = new FileSystemXmlApplicationContext(getConfigFiles());
+		context = new ClassPathXmlApplicationContext(getConfigFiles());
 		bus = (IEventBus) context.getBean("eventBus");
 	}
 	
@@ -51,6 +51,7 @@ public class GtsBasicAuth {
 	}
 	
     @Test
+    @Ignore
     public void Should_be_able_to_publish_and_subscribe() throws Exception
     {
     	TestHandler handler = new TestHandler();

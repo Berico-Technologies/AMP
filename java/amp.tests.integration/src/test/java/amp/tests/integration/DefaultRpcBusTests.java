@@ -7,7 +7,7 @@ import org.joda.time.Duration;
 import org.junit.*;
 import static org.junit.Assert.*;
 
-import org.springframework.context.support.FileSystemXmlApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import cmf.bus.Envelope;
 import cmf.eventing.IEventHandler;
@@ -17,7 +17,7 @@ public class DefaultRpcBusTests extends DefaultEventBusTests{
 	
     private static IRpcEventBus rpcBus;
 
-    private static FileSystemXmlApplicationContext backendContext;
+    private static ClassPathXmlApplicationContext backendContext;
     private static IRpcEventBus backendBus;
 
 	@BeforeClass
@@ -26,7 +26,7 @@ public class DefaultRpcBusTests extends DefaultEventBusTests{
 		
 		DefaultEventBusTests.bus = rpcBus = (IRpcEventBus) context.getBean("rpcEventBus");
 
-		backendContext = new FileSystemXmlApplicationContext(getConfigFiles());
+		backendContext = new ClassPathXmlApplicationContext(getConfigFiles());
 		backendBus = (IRpcEventBus) backendContext.getBean("rpcEventBus");
 
         try {

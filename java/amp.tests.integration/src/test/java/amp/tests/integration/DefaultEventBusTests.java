@@ -8,7 +8,7 @@ import static org.junit.Assert.*;
 import static com.jayway.awaitility.Awaitility.*;
 import static org.hamcrest.Matchers.*;
 
-import org.springframework.context.support.FileSystemXmlApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import cmf.bus.Envelope;
 import cmf.eventing.IEventBus;
@@ -16,7 +16,7 @@ import cmf.eventing.IEventHandler;
 
 public class DefaultEventBusTests {
     
-	protected static FileSystemXmlApplicationContext context;
+	protected static ClassPathXmlApplicationContext context;
 	protected static IEventBus bus;
 	
 	public static String[] getConfigFiles(){
@@ -28,7 +28,7 @@ public class DefaultEventBusTests {
 	
 	@BeforeClass
 	public static void BeforeAllTests(){
-		context = new FileSystemXmlApplicationContext(getConfigFiles());
+		context = new ClassPathXmlApplicationContext(getConfigFiles());
 		bus = (IEventBus) context.getBean("eventBus");
 	}
 	

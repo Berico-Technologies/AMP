@@ -54,18 +54,18 @@
           c:secureChannelFactory-ref="secureChannelFactory"/>
 
     <bean id="tokenHttpClientProvider" class="amp.utility.http.SslHttpClientProvider"
-          c:keystore="/amp-test-at-openampere.com.jks"
+          c:keystore="amp-test-at-openampere.com.jks"
           c:keystorePassword="1qaz@WSX3edc$RFV"
-          c:truststore="/truststore.jks"
+          c:truststore="truststore.jks"
           c:trustStorePassword="1qaz@WSX3edc$RFV"
           c:port="15678"/>
 
     <bean id="tokenSerializer" class="amp.utility.serialization.GsonSerializer" />
 
     <bean id="secureChannelFactory" class="amp.rabbit.CertificateChannelFactory"
-          c:keystore="/amp-test-at-openampere.com.jks"
+          c:keystore="amp-test-at-openampere.com.jks"
           c:keystorePassword="1qaz@WSX3edc$RFV"
-          c:truststore="/truststore.jks"/>
+          c:truststore="truststore.jks"/>
 
 
     <!-- topology configuration -->
@@ -79,9 +79,9 @@
           c:urlExpression="https://gts.openampere.com:15677/service/topology/get-routing-info/%s" />
 
     <bean id="topoHttpClientProvider" class="amp.utility.http.SslHttpClientProvider"
-          c:keystore="/amp-test-at-openampere.com.jks"
+          c:keystore="amp-test-at-openampere.com.jks"
           c:keystorePassword="1qaz@WSX3edc$RFV"
-          c:truststore="/truststore.jks"
+          c:truststore="truststore.jks"
           c:trustStorePassword="1qaz@WSX3edc$RFV"
           c:port="15677" />
 

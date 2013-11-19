@@ -47,17 +47,17 @@
           c:secureChannelFactory-ref="secureChannelFactory"/>
 
     <bean id="httpClientProvider" class="amp.utility.http.SslHttpClientProvider"
-          c:keystore="../../amp.tests.integration/src/test/resources/test-certs/amp-test-at-openampere.com.jks" 
+          c:keystore="test-certs/amp-test-at-openampere.com.jks"
           c:keystorePassword="1qaz@WSX3edc$RFV" 
-          c:truststore="../../amp.tests.integration/src/test/resources/test-certs/trust.openampere.com.jks"
+          c:truststore="test-certs/trust.openampere.com.jks"
           c:port="443"/>
 
     <bean id="serializer" class="amp.utility.serialization.GsonSerializer" />
  
     <bean id="secureChannelFactory" class="amp.rabbit.CertificateChannelFactory"
-          c:keystore="../../amp.tests.integration/src/test/resources/test-certs/amp-test-at-openampere.com.jks" 
+          c:keystore="test-certs/amp-test-at-openampere.com.jks"
           c:keystorePassword="1qaz@WSX3edc$RFV" 
-          c:truststore="../../amp.tests.integration/src/test/resources/test-certs/trust.openampere.com.jks"/>
+          c:truststore="test-certs/trust.openampere.com.jks"/>
 
     <bean id="topologyService" class="amp.topology.client.GlobalTopologyService"
           c:routingInfoRetriever-ref="routingInfoRetriever"
