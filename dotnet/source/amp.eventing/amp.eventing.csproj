@@ -36,11 +36,21 @@
     <AssemblyOriginatorKeyFile>amp.eventing.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Common.Logging">
-      <HintPath>..\..\binaries\libraries\Common.Logging.dll</HintPath>
+    <Reference Include="cmf.bus, Version=3.1.2.27690, Culture=neutral, PublicKeyToken=bbbef7830e900844, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\cmf.bus.3.1.2.27690\lib\net40\cmf.bus.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\..\binaries\libraries\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="cmf.eventing, Version=3.1.2.27690, Culture=neutral, PublicKeyToken=b0e0f46569419490, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\cmf.eventing.3.1.2.27690\lib\net40\cmf.eventing.dll</HintPath>
+    </Reference>
+    <Reference Include="Common.Logging, Version=1.2.0.0, Culture=neutral, PublicKeyToken=af08829b84f0328e">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Common.Logging.1.2.0\lib\1.0\Common.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.0.4.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Newtonsoft.Json.4.0.4\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -50,12 +60,6 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="cmf.bus">
-      <HintPath>..\..\binaries\libraries\cmf.bus.dll</HintPath>
-    </Reference>
-    <Reference Include="cmf.eventing">
-      <HintPath>..\..\binaries\libraries\cmf.eventing.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\GlobalAssemblyInfo.cs">
@@ -87,6 +91,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="amp.eventing.snk" />
+    <None Include="packages.config" />
+    <None Include="Scripts\jquery-2.0.3.min.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Scripts\jquery-2.0.3.intellisense.js" />
+    <Content Include="Scripts\jquery-2.0.3.js" />
+    <Content Include="Scripts\jquery-2.0.3.min.js" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

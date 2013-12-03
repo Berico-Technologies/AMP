@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <!--<licenseUrl>http://LICENSE_URL_HERE_OR_DELETE_THIS_LINE</licenseUrl>-->
+    <projectUrl>https://github.com/Berico-Technologies/AMP</projectUrl>
+    <!--<iconUrl>http://ICON_URL_HERE_OR_DELETE_THIS_LINE</iconUrl>-->
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <releaseNotes>API to interact with the Windows Certificate Store enabling applications to connect to an AMPere Enterprise Message broker using X509 Mutual Certificate Authentication</releaseNotes>
+    <copyright>Copyright 2013</copyright>
+    <tags>AMPere security X509 certificates mutual authentication</tags>
+  </metadata>
+</package>
