@@ -5,7 +5,7 @@
 
 	<groupId>amp</groupId>
 	<artifactId>anubis</artifactId>
-	<version>3.2.1</version>
+	<version>3.2.2</version>
 	<packaging>jar</packaging>
 
 	<name>AMP Quick Start</name>
@@ -45,12 +45,7 @@
 			<artifactId>amp.eventing</artifactId>
 			<version>${amp.version}</version>
 		</dependency>
-		<dependency>
-			<groupId>amp</groupId>
-			<artifactId>amp.bus.rabbit</artifactId>
-			<version>${amp.version}</version>
-		</dependency>
-		<dependency>
+        <dependency>
 			<groupId>amp</groupId>
 			<artifactId>amp.bus.security</artifactId>
 			<version>${amp.version}</version>

@@ -128,7 +128,7 @@ public class DefaultStreamingBusTests extends DefaultEventBusTests {
 
 		@Override
 		public void onPercentCollectionReceived(double percent) {
-        	LOG.debug(String.format("Percent of events received: %d%", percent));
+        	LOG.debug(String.format("Percent of events received: %d percent", percent));
 		}
     }
 
