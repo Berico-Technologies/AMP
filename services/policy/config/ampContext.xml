@@ -7,13 +7,6 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
-
-    <!-- This is "your" service.  Pretend it's the one you're writing that uses the event bus -->
-    <bean id="ampService" class="amp.policy.AmpService">
-        <constructor-arg index="0" ref="rpcEventBus" />
-    </bean>
-
-    <!-- The following components are for our Event Bus, which uses our Envelope Bus -->
     <!-- The following components are for our Event Bus, which uses our Envelope Bus -->
     <bean id="rpcEventBus" class="amp.eventing.DefaultRpcBus"
           destroy-method="dispose">
@@ -60,17 +53,17 @@
           c:secureChannelFactory-ref="secureChannelFactory"/>
 
     <bean id="httpClientProvider" class="amp.utility.http.SslHttpClientProvider"
-          c:keystore="/keys/amp-test-at-openampere.com.jks"
+          c:keystore="keys/amp-test-at-openampere.com.jks"
           c:keystorePassword="1qaz@WSX3edc$RFV"
-          c:truststore="/keys/truststore.jks"
+          c:truststore="keys/truststore.jks"
           c:port="15678"/>
 
     <bean id="serializer" class="amp.utility.serialization.GsonSerializer" />
 
     <bean id="secureChannelFactory" class="amp.rabbit.CertificateChannelFactory"
-          c:keystore="/keys/amp-test-at-openampere.com.jks"
+          c:keystore="keys/amp-test-at-openampere.com.jks"
           c:keystorePassword="1qaz@WSX3edc$RFV"
-          c:truststore="/keys/truststore.jks"/>
+          c:truststore="keys/truststore.jks"/>
 
     <bean id="topologyService" class="amp.topology.client.GlobalTopologyService"
           c:routingInfoRetriever-ref="routingInfoRetriever"

@@ -1,6 +1,7 @@
 amp.policy.service.iml
 amp.policy.service.ipr
 amp.policy.service.iws
+js/
 target/
 .idea/
 .DS_Store

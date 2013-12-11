@@ -159,8 +159,6 @@ public class JavaScriptAdjudicator implements EnvelopeAdjudicator {
 
             try {
 
-                System.out.println("Loading " + library + "...");
-
                 loadResourceFile(context, scope, library);
 
             } catch (IOException ex){

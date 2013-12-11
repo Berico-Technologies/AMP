@@ -11,6 +11,30 @@
                 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
                 http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd">
 
-      <bean id="helloResource" class="amp.policy.resources.HelloResource" />
+    <context:component-scan base-package="amp.policy"/>
+    <context:annotation-config/>
+
+    <bean id="helloResource" class="amp.policy.resources.HelloResource" />
+
+    <bean class="amp.policy.resources.InterceptorRegistrarResource" />
+
+    <bean class="amp.policy.core.impl.forwarders.EnvelopeBusForwarder" c:bus-ref="envelopeBus" />
+
+    <bean class="amp.policy.core.impl.loggers.LocalLogger" />
+
+    <bean class="amp.policy.core.impl.notifiers.NOOPNotifier" />
+
+    <bean class="amp.policy.core.impl.certifiers.NOOPCertifier" />
+
+    <bean class="amp.policy.core.impl.rejection.NOOPRejectionHandler" />
+
+    <bean id="defaultEnforcer" class="amp.policy.core.impl.DefaultEnforcer" />
+
+    <bean id="springProvider" class="amp.policy.core.providers.SpringInterceptorProvider" />
+
+    <bean id="fsScriptProvider" class="amp.policy.core.providers.js.FileSystemProvider"
+          c:scriptDirectory="js/"  />
+
+    <bean class="amp.policy.core.InterceptorRegistrar" />
 
 </beans>

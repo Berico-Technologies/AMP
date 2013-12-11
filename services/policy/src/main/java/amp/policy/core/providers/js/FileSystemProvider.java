@@ -2,7 +2,6 @@ package amp.policy.core.providers.js;
 
 import amp.policy.core.adjudicators.javascript.ScriptConfiguration;
 import com.google.common.base.Joiner;
-import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import org.apache.commons.io.monitor.FileAlterationListener;
 import org.apache.commons.io.monitor.FileAlterationListenerAdaptor;
@@ -96,6 +95,8 @@ public class FileSystemProvider extends BaseScriptProvider {
      */
     static void startDirectoryWatcher(Path baseDirectory, FileAlterationListener listener) throws Exception {
 
+        LOG.info("Watching for scripts in the {} directory.", baseDirectory.toString());
+
         FileAlterationObserver fao = new FileAlterationObserver(baseDirectory.toFile());
 
         FileAlterationMonitor fam = new FileAlterationMonitor(DELAY_BETWEEN_CHECKS_ON_FILE_SYSTEM);
@@ -145,6 +146,8 @@ public class FileSystemProvider extends BaseScriptProvider {
                 getValidPaths(p, scriptBag, scriptProvider);
             }
             else {
+
+                LOG.info("Found script at location: {}", p);
 
                 ScriptConfiguration conf = getConfigurationForPath(p);
 

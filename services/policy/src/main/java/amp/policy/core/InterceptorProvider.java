@@ -7,6 +7,10 @@ import java.util.Collection;
  */
 public interface InterceptorProvider {
 
+    /**
+     * This should be an Idempotent function!!!!
+     * @return The Set of EnvelopeInterceptors registered or built by this provider.
+     */
     Collection<EnvelopeInterceptor> get();
 
     void addListener(ChangeListener listener);

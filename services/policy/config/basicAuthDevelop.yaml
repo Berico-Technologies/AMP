@@ -1,4 +1,4 @@
-applicationContext: ['config/applicationContext.xml', 'config/securityContext.xml']
+applicationContext: ['config/applicationContext.xml', 'config/securityContext.xml', 'config/ampContext.xml']
 
 useSpringSecurity: true
 

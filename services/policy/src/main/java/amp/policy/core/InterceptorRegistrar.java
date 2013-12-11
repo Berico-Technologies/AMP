@@ -48,14 +48,18 @@ public class InterceptorRegistrar implements ApplicationContextAware, Intercepto
         }
     }
 
+    public Collection<InterceptorProvider> getInterceptorProviders(){
+
+        return applicationContext.getBeansOfType(InterceptorProvider.class).values();
+    }
+
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 
         this.applicationContext = applicationContext;
         this.envelopeBus = applicationContext.getBean(IEnvelopeBus.class);
 
-        Collection<InterceptorProvider> providers =
-                applicationContext.getBeansOfType(InterceptorProvider.class).values();
+        Collection<InterceptorProvider> providers = getInterceptorProviders();
 
         for(InterceptorProvider provider : providers){
 
