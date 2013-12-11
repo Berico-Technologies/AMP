@@ -36,6 +36,10 @@ namespace amp.rabbit.connection
             factory.Ssl.Certs = new X509CertificateCollection(new X509Certificate[] { cert });
             factory.Ssl.ServerName = broker.Hostname;
             factory.Ssl.Enabled = true;
+            // TLS will enable more secure cipher suites to use in the exchange, encryption, and HMAC algorithms 
+            // used on a secure connection. Also, if the Windows OS the client runs on has the FIPS Mode security
+            // policy enabled (Windows STIG), this will ensure successful connections to the Message Broker.
+            factory.Ssl.Version = System.Security.Authentication.SslProtocols.Tls;
 
         }
     }

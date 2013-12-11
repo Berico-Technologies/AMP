@@ -8,7 +8,7 @@
 [assembly: AssemblyCulture("")]
 
 // Global Versioning
-[assembly: AssemblyVersion("3.3.0.*")]
+[assembly: AssemblyVersion("3.2.2.0")]
 /* let MSBuild automatically update this:
  * [assembly: AssemblyFileVersion("3.0.0.0")]
  * see: 
