@@ -7,8 +7,9 @@ import java.util.Map;
 import java.util.UUID;
 
 import cmf.bus.Envelope;
-import amp.messaging.EnvelopeHeaderConstants;
+import cmf.bus.EnvelopeHeaderConstants;
 import cmf.bus.IEnvelopeBus;
+import cmf.eventing.IEventHandler;
 import cmf.eventing.patterns.rpc.IRpcEventBus;
 import org.joda.time.Duration;
 import org.slf4j.Logger;

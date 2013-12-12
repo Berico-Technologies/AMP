@@ -9,7 +9,7 @@ import org.springframework.integration.Message;
 import org.springframework.integration.MessageChannel;
 
 import cmf.bus.Envelope;
-import amp.messaging.EnvelopeHeaderConstants;
+import cmf.bus.EnvelopeHeaderConstants;
 import cmf.bus.IEnvelopeBus;
 import cmf.bus.IEnvelopeFilterPredicate;
 import cmf.bus.IRegistration;

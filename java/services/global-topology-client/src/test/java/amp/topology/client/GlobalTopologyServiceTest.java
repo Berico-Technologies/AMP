@@ -9,11 +9,9 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import amp.rabbit.topology.Exchange;
 import amp.rabbit.topology.RoutingInfo;
 import amp.utility.http.HttpClientProvider;
 import amp.utility.http.BasicAuthHttpClientProvider;
-import amp.utility.serialization.GsonSerializer;
 
 import com.berico.test.RequireProperties;
 import com.berico.test.TestProperties;
@@ -55,21 +53,20 @@ public class GlobalTopologyServiceTest {
 		logger.debug("Calling GTS with Basic Auth.");
 
 		HttpClientProvider provider = 
-				new BasicAuthHttpClientProvider(hostname,  username, password);
+				new BasicAuthHttpClientProvider(hostname, port, username, password);
 		
-		GsonSerializer serializer = new GsonSerializer();
+		JsonRoutingInfoSerializer serializer = new JsonRoutingInfoSerializer();
 		
 		IRoutingInfoRetriever routingInfoRetriever = 
 			new HttpRoutingInfoRetriever(provider, serviceUrlExpression, serializer);
 
-		DefaultApplicationExchangeProvider fallback = 
-				new DefaultApplicationExchangeProvider("GtsTestProfileName",hostname,port);
+		DefaultApplicationExchangeProvider fallback = new DefaultApplicationExchangeProvider();
 		
-		Exchange exchange = fallback.getExchangePrototype();
-		
-		exchange.setDurable(false);
-		exchange.setAutoDelete(false);
-		exchange.setName("amp.fallback");
+		fallback.setHostname(hostname);
+		fallback.setPort(port);
+		fallback.setDurable(false);
+		fallback.setAutoDelete(false);
+		fallback.setExchangeName("amp.fallback");
 		
 		GlobalTopologyService gts = new GlobalTopologyService(
 			routingInfoRetriever, fallback);

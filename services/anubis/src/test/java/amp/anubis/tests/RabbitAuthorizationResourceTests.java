@@ -1,5 +1,6 @@
 package amp.anubis.tests;
 
+import amp.anubis.core.AnubisException;
 import amp.anubis.resources.RabbitAuthorizationResource;
 import amp.anubis.core.IRabbitAccessManager;
 import org.junit.Test;

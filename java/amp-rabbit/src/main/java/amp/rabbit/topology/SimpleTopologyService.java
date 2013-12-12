@@ -1,82 +1,80 @@
 package amp.rabbit.topology;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Map;
 
-import amp.messaging.EnvelopeHeaderConstants;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.UUID;
+
+import cmf.bus.EnvelopeHeaderConstants;
+import org.apache.commons.lang.StringUtils;
+
 
 public class SimpleTopologyService implements ITopologyService {
 
 	protected static long QUEUE_NUMBER = 0;
 	
-	Exchange exchangePrototype = Exchange.builder()
-			.name("amp.simple").type("topic").isAutoDelete(true).declare(true).build();
-	
-	Queue queuePrototype = Queue.builder()
-			.isAutoDelete(true).isDurable(false).isExclusive(true).declare(true).build();
-	
-	String clientProfile;
-	ArrayList<Broker> brokers = new ArrayList<Broker>();
-	
-	public SimpleTopologyService(){}
-	
-    public SimpleTopologyService(String clientProfile, Broker... brokers) {
+    protected String clientProfile;
+    protected String hostName;
+    protected String name;
+    protected int port;
+    protected String virtualHost;
 
-        this(clientProfile, Arrays.asList(brokers));
-    }
-    
-    public SimpleTopologyService(String clientProfile, Collection<Broker> brokers) {
+    public SimpleTopologyService(String clientProfile, String name, String hostname, String vhost, int port) {
 
-        this.clientProfile = clientProfile;
-        this.setBrokers(brokers);
+        this.clientProfile = StringUtils.isBlank(clientProfile) ? UUID.randomUUID().toString() : clientProfile;
+        this.name = StringUtils.isBlank(name) ? "cmf.simple.exchange" : name;
+        hostName = StringUtils.isBlank(hostname) ? "localhost" : hostname;
+        virtualHost = StringUtils.isBlank(vhost) ? "/" : vhost;
+        this.port = port == 0 ? 5672 : port;
     }
 
-    public void setExchangePrototype(Exchange exchangePrototype) {
-		this.exchangePrototype = exchangePrototype;
-	}
+    @Override
+    public void dispose() {
+        // nothing to do
+    }
 
-	public void setQueuePrototype(Queue queuePrototype) {
-		this.queuePrototype = queuePrototype;
-	}
+    @Override
+    protected void finalize() {
+        dispose();
+    }
 
-	public void setClientProfile(String clientProfile) {
-		this.clientProfile = clientProfile;
-	}
+    public String getClientProfile() {
+        return clientProfile;
+    }
 
-	public void setBrokers(Collection<Broker> brokers) {
-		this.brokers.addAll(brokers);
-	}
+    public String getHostName() {
+        return hostName;
+    }
 
-	public Exchange getExchangePrototype(){
-		
-		return this.exchangePrototype;
-	}
-	
-	public Queue getQueuePrototype(){
-		
-		return this.queuePrototype;
-	}
-	
-	@Override
+    public String getName() {
+        return name;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    @Override
     public RoutingInfo getRoutingInfo(Map<String, String> headers) {
-    		
         String topic = headers.get(EnvelopeHeaderConstants.MESSAGE_TOPIC);
 
-        Exchange targetExchange = TopologyUtils.clone(exchangePrototype);
-        
-        Queue targetQueue = TopologyUtils.clone(queuePrototype);
-        targetQueue.setName(buildIdentifiableQueueName(topic));
-        
-        ProducingRoute producingRoute = ProducingRoute.builder()
-        		.exchange(targetExchange).brokers(brokers).routingKeys(topic).build();
-        
-        ConsumingRoute consumingRoute = ConsumingRoute.builder()
-        		.exchange(targetExchange).queue(targetQueue).brokers(brokers).routingkeys(topic).build();
-        
-        return new RoutingInfo(Arrays.asList(producingRoute), 
-        		Arrays.asList(consumingRoute));
+        Exchange theOneExchange = new Exchange(name, // exchange name
+                        hostName, // host name
+                        virtualHost, // virtual host
+                        port, // port
+                        topic, // routing key
+                        buildIdentifiableQueueName(topic), // queue name
+                        "direct", // exchange type
+                        false, // is durable
+                        true, // is auto-delete
+                        null); // arguments
+
+        RouteInfo theOneRoute = new RouteInfo(theOneExchange, theOneExchange);
+
+        ArrayList<RouteInfo> routingInfo = new ArrayList<RouteInfo>();
+        routingInfo.add(theOneRoute);
+
+        return new RoutingInfo(routingInfo);
     }
 
     public String buildIdentifiableQueueName(String topic){
@@ -84,7 +82,28 @@ public class SimpleTopologyService implements ITopologyService {
     		return String.format("%s#%03d#%s", clientProfile, ++QUEUE_NUMBER, topic);
     }
     
-    @Override
-    public void dispose() {}   
     
+    public String getVirtualHost() {
+        return virtualHost;
+    }
+
+    public void setClientProfile(String clientProfile) {
+        this.clientProfile = clientProfile;
+    }
+
+    public void setHostName(String hostName) {
+        this.hostName = hostName;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    public void setVirtualHost(String virtualHost) {
+        this.virtualHost = virtualHost;
+    }
 }

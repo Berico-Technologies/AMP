@@ -11,7 +11,7 @@ import org.springframework.integration.Message;
 import org.springframework.integration.MessageHeaders;
 import org.springframework.integration.support.MessageBuilder;
 
-import amp.messaging.EnvelopeHelper;
+import amp.bus.EnvelopeHelper;
 import cmf.bus.Envelope;
 
 public class IntegrationUtils {

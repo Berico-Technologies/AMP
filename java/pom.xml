@@ -335,7 +335,7 @@
         <connection>scm:git:git@github.com:Berico-Technologies/AMP.git</connection>
         <developerConnection>scm:git:git@github.com:Berico-Technologies/AMP.git</developerConnection>
         <url>https://github.com/Berico-Technologies/AMP</url>
-        <tag>amp-3.3.0</tag>
+        <tag>amp-3.2.1</tag>
   </scm>
 
 

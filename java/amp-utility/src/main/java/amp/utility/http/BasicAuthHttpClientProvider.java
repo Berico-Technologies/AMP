@@ -15,13 +15,13 @@ public class BasicAuthHttpClientProvider implements HttpClientProvider {
 
 	DefaultHttpClient httpClient;
 	
-	public BasicAuthHttpClientProvider(String hostname, String username, String password){
+	public BasicAuthHttpClientProvider(String hostname, int port, String username, String password){
 		
 		httpClient = new DefaultHttpClient();
 		httpClient
 			.getCredentialsProvider()
 			.setCredentials(
-				new AuthScope(hostname, 80), 
+				new AuthScope(hostname, port), 
 				new UsernamePasswordCredentials(username, password));
 	}
 	

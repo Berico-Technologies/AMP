@@ -10,7 +10,7 @@ import javax.ws.rs.core.Response;
 
 import org.springframework.security.core.userdetails.UserDetails;
 
-import amp.messaging.EnvelopeHelper;
+import amp.bus.EnvelopeHelper;
 import amp.examples.adaptor.views.PublishView;
 import cmf.bus.IEnvelopeBus;
 

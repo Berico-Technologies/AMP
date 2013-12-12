@@ -25,7 +25,7 @@ import amp.gel.dao.impl.accumulo.MutationsGenerator;
 import amp.gel.dao.impl.accumulo.MutationsGeneratorUtils;
 
 import cmf.bus.Envelope;
-import amp.messaging.EnvelopeHeaderConstants;
+import cmf.bus.EnvelopeHeaderConstants;
 
 public class DefaultMutationsGeneratorTest {
 

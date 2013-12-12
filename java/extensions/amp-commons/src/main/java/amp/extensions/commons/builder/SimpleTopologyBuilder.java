@@ -2,8 +2,6 @@ package amp.extensions.commons.builder;
 
 import java.util.UUID;
 
-import amp.rabbit.topology.Broker;
-import amp.rabbit.topology.Exchange;
 import amp.rabbit.topology.SimpleTopologyService;
 
 /**
@@ -127,15 +125,8 @@ public class SimpleTopologyBuilder extends FluentExtension {
 	 */
 	void buildTopologyService(){
 		
-		Broker broker = new Broker(hostname,port);
-		broker.setVirtualHost(vhost);
-		
-		SimpleTopologyService sts = 				
-			new SimpleTopologyService(clientName, broker);
-		
-		Exchange exchange = new Exchange(this.defaultExchange,"topic",true,false,false,null);
-		 
-		sts.setExchangePrototype(exchange);
+		SimpleTopologyService sts = 
+				new SimpleTopologyService(clientName, defaultExchange, hostname, vhost, port);
 		
 		this.transportBuilder.setTopologyService(sts);
 	}

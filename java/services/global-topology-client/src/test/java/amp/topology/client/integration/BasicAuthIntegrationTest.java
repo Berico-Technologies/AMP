@@ -13,10 +13,10 @@ import com.berico.test.TestProperties;
 import amp.rabbit.topology.RoutingInfo;
 import amp.topology.client.HttpRoutingInfoRetriever;
 import amp.topology.client.IRoutingInfoRetriever;
+import amp.topology.client.JsonRoutingInfoSerializer;
 import amp.topology.client.TestUtils;
 import amp.utility.http.BasicAuthHttpClientProvider;
 import amp.utility.http.HttpClientProvider;
-import amp.utility.serialization.GsonSerializer;
 
 public class BasicAuthIntegrationTest {
 
@@ -39,15 +39,16 @@ public class BasicAuthIntegrationTest {
 		String hostname = System.getProperty("amp.gtc.test.hostname");
 		String username = System.getProperty("amp.gtc.test.basic.username");
 		String password = System.getProperty("amp.gtc.test.basic.password");
+		int port = Integer.parseInt(System.getProperty("amp.gtc.test.port"));
 		String serviceUrlExpression = System.getProperty("amp.gtc.test.url");
 		String eventType = System.getProperty("amp.gtc.test.event");
 		
 		logger.debug("Calling GTS with Basic Auth.");
 		
 		HttpClientProvider provider = 
-				new BasicAuthHttpClientProvider(hostname, username, password);
+				new BasicAuthHttpClientProvider(hostname, port, username, password);
 		
-		GsonSerializer serializer = new GsonSerializer();
+		JsonRoutingInfoSerializer serializer = new JsonRoutingInfoSerializer();
 		
 		IRoutingInfoRetriever routingInfoRetriever = 
 			new HttpRoutingInfoRetriever(provider, serviceUrlExpression, serializer);

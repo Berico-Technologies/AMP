@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:util="http://www.springframework.org/schema/util"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:c="http://www.springframework.org/schema/c"
 	xmlns:p="http://www.springframework.org/schema/p"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
 	<bean id="httpClientProvider" class="amp.utility.http.BasicAuthHttpClientProvider"
-		c:hostname="gts" c:username="App01" c:password="password" />
+		c:hostname="gts" c:port="15677" c:username="App01" c:password="password" />
     <bean id="routingInfoRetriever" class="amp.topology.client.HttpRoutingInfoRetriever"
         c:httpClientProvider-ref="httpClientProvider" 
  		c:serializer-ref="serializer"
@@ -16,9 +14,7 @@
 
 	<bean id="serializer" class="amp.utility.serialization.GsonSerializer" />
  
-    <bean id="fallbackProvider" class="amp.topology.client.DefaultApplicationExchangeProvider"
- 	      c:hostname="rabbit.openampere.com"
-	      c:port="5672" />
+	<bean id="fallbackProvider" class="amp.topology.client.DefaultApplicationExchangeProvider" />
 	
 	<bean id="topologyService" class="amp.topology.client.GlobalTopologyService" 
 		c:routingInfoRetriever-ref="routingInfoRetriever"

@@ -13,10 +13,10 @@
 
     <bean id="transportProvider" class="amp.rabbit.transport.RabbitTransportProvider"
           c:topologyService-ref="topologyService"
-          c:connectionFactory-ref="connectionFactory"
+          c:channelFactory-ref="channelFactory"
           c:routingInfoCache-ref="routingInfoCache" />
 
-    <bean id="connectionFactory" class="amp.rabbit.connection.BasicConnectionFactory"
+    <bean id="channelFactory" class="amp.rabbit.BasicChannelFactory"
           c:username="openampere" c:password="openampere" />
  
 </beans>

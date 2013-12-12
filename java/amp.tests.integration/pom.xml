@@ -7,7 +7,7 @@
 		<groupId>amp</groupId>
 		<artifactId>amp</artifactId>
 		<relativePath>../pom.xml</relativePath>
-		<version>3.3.0-SNAPSHOT</version>
+		<version>3.2.1</version>
 	</parent>
 
 	<artifactId>amp.tests.integration</artifactId>
@@ -54,11 +54,10 @@
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
-			<scope>test</scope>
-         </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-all</artifactId>
+            </dependency>
 		<dependency>
 			<groupId>com.jayway.awaitility</groupId>
 			<artifactId>awaitility</artifactId>
@@ -90,10 +89,12 @@
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
+			<version>${logback.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-core</artifactId>
+			<version>${logback.version}</version>
 		</dependency>		
 	</dependencies>
 </project>

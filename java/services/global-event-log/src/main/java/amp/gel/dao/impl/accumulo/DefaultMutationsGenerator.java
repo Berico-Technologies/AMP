@@ -15,7 +15,7 @@ import org.apache.hadoop.io.Text;
 import amp.gel.dao.EnvelopeValidationUtils;
 
 import cmf.bus.Envelope;
-import amp.messaging.EnvelopeHeaderConstants;
+import cmf.bus.EnvelopeHeaderConstants;
 
 /**
  * Generates Accumulo mutations from envelopes.

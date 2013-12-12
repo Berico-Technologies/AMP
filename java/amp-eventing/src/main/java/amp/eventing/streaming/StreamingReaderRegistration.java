@@ -3,7 +3,7 @@ package amp.eventing.streaming;
 import amp.messaging.EnvelopeHelper;
 import amp.messaging.IInboundProcessorCallback;
 import cmf.bus.Envelope;
-import amp.messaging.EnvelopeHeaderConstants;
+import cmf.bus.EnvelopeHeaderConstants;
 import cmf.bus.IEnvelopeFilterPredicate;
 import cmf.bus.IRegistration;
 import cmf.eventing.patterns.streaming.StreamingEventItem;

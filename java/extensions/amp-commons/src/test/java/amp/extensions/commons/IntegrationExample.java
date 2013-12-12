@@ -1,5 +1,7 @@
 package amp.extensions.commons;
 
+import static org.junit.Assert.*;
+
 import amp.extensions.commons.builder.BuilderException;
 import org.junit.Test;
 

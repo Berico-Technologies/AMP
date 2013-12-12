@@ -1,4 +1,5 @@
 ﻿using amp.messaging;
+using cmf.bus;
 using System;
 
 namespace amp.eventing.streaming

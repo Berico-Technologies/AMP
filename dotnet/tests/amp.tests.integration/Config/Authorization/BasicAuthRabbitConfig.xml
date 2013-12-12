@@ -11,7 +11,7 @@
     <constructor-arg name="routingInfoCache" ref="IRoutingInfoCache" />
   </object>
 
-  <object id="IRabbitConnectionFactory" type="amp.rabbit.connection.BasicConnectionFactory, amp.rabbit">
+  <object id="IRabbitConnectionFactory" type="amp.rabbit.BasicConnectionFactory, amp.rabbit">
     <constructor-arg name="username" value="openampere" />
     <constructor-arg name="password" value="openampere" />
   </object>

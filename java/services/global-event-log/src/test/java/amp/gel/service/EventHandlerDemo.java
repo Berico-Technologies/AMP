@@ -8,7 +8,7 @@ import org.joda.time.DateTime;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import amp.rabbit.dispatch.DeliveryOutcomes;
+import amp.rabbit.DeliveryOutcomes;
 import amp.gel.domain.Table;
 import amp.gel.domain.TimeScale;
 import amp.gel.service.event.EventActivityRequestEvent;

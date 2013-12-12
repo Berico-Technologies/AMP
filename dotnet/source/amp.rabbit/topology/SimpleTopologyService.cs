@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using amp.messaging;
+using cmf.bus;
 
 namespace amp.rabbit.topology
 {
@@ -28,23 +29,19 @@ namespace amp.rabbit.topology
             string topic = routingHints.GetMessageTopic();
         
             Exchange theOneExchange = new Exchange(
-                this.Name,
-                exchangeType: "direct", 
-                isDurable: false, 
-                autoDelete: true);
+                this.Name, 
+                this.Hostname, 
+                this.VirtualHost, 
+                this.Port,
+                topic, 
+                string.Format("{0}#{1}", this.ClientProfile, topic),
+                "direct", 
+                false, 
+                true);
 
-            ProducingRoute producingRoute = new ProducingRoute(
-                new[]{new Broker(this.Hostname, this.Port)},
-                theOneExchange,
-                new[]{ topic });
+            RouteInfo theOneRoute = new RouteInfo(theOneExchange, theOneExchange);
 
-            ConsumingRoute consumingRoute = new ConsumingRoute(
-                new[]{new Broker(this.Hostname, this.Port)},
-                theOneExchange,
-                new Queue(string.Format("{0}#{1}", this.ClientProfile, topic), true, false, true, true, null), 
-                new[]{ topic });
-
-            return new RoutingInfo(new[]{producingRoute}, new []{consumingRoute});
+            return new RoutingInfo(new RouteInfo[] { theOneRoute });
         }
 
         public void Dispose()

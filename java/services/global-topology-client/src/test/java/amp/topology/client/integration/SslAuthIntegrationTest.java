@@ -13,9 +13,9 @@ import com.berico.test.TestProperties;
 import amp.rabbit.topology.RoutingInfo;
 import amp.topology.client.HttpRoutingInfoRetriever;
 import amp.topology.client.IRoutingInfoRetriever;
+import amp.topology.client.JsonRoutingInfoSerializer;
 import amp.utility.http.HttpClientProvider;
 import amp.utility.http.SslHttpClientProvider;
-import amp.utility.serialization.GsonSerializer;
 
 
 public class SslAuthIntegrationTest {
@@ -44,9 +44,9 @@ public class SslAuthIntegrationTest {
 		logger.debug("Calling GTS with SSL Auth.");
 		
 		HttpClientProvider provider = 
-			new SslHttpClientProvider(keystoreLocation, keystorePassword);
+			new SslHttpClientProvider(keystoreLocation, keystorePassword, port);
 		
-		GsonSerializer serializer = new GsonSerializer();
+		JsonRoutingInfoSerializer serializer = new JsonRoutingInfoSerializer();
 		
 		IRoutingInfoRetriever routingInfoRetriever = 
 			new HttpRoutingInfoRetriever(provider, serviceUrlExpression, serializer);

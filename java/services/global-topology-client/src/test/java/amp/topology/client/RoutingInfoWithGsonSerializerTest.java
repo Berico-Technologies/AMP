@@ -2,72 +2,56 @@ package amp.topology.client;
 
 import static org.junit.Assert.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.Iterator;
 
 import org.junit.Test;
 
-import amp.rabbit.topology.Broker;
-import amp.rabbit.topology.ConsumingRoute;
 import amp.rabbit.topology.Exchange;
-import amp.rabbit.topology.ProducingRoute;
-import amp.rabbit.topology.Queue;
+import amp.rabbit.topology.RouteInfo;
 import amp.rabbit.topology.RoutingInfo;
 import amp.utility.serialization.GsonSerializer;
 
 public class RoutingInfoWithGsonSerializerTest {
 	
-	private String SERIALIZED_ROUTING_INFO = "{\"producingRoutes\":[{\"brokers\":[{\"clusterId\":\"clusterIdOne\",\"hostname\":\"devexample.com\",\"port\":5672,\"virtualHost\":\"/\",\"connectionStrategy\":\"default\"}],\"exchange\":{\"exchangeType\":\"topic\",\"name\":\"exchange.cmf.security\",\"isAutoDelete\":true,\"isDurable\":false,\"shouldDeclare\":true},\"routingKeys\":[\"producingTopicAlpha\",\"producingTopicBravo\"]}],\"consumingRoutes\":[{\"queue\":{\"isExclusive\":true,\"name\":\"queue.cmf.security\",\"isAutoDelete\":true,\"isDurable\":false,\"shouldDeclare\":true},\"brokers\":[{\"clusterId\":\"clusterIdOne\",\"hostname\":\"devexample.com\",\"port\":5672,\"virtualHost\":\"/\",\"connectionStrategy\":\"default\"}],\"exchange\":{\"exchangeType\":\"topic\",\"name\":\"exchange.cmf.security\",\"isAutoDelete\":true,\"isDurable\":false,\"shouldDeclare\":true},\"routingKeys\":[\"queueTopic1\"]}]}";
-	
-	// Create the components of the Route
-
-
-	private RoutingInfo createTestRoutingInfoObject() {
+	public void assertExchangeHasValues(
+		Exchange actual, String name, String type, 
+		String routingKey, String host, int port, 
+		String vhost, boolean isDurable, boolean isAutoDelete){
 		
-		Broker broker = new Broker("clusterIdOne","devexample.com",5672,"default");
-		Exchange exchange = new Exchange("exchange.cmf.security","topic",true,false,true,null);
-		Queue queue = new Queue("queue.cmf.security",true,false,true,true,null);
-		String[] routeKeys = {"producingTopicAlpha","producingTopicBravo"};
-		String[] routeKeys2 = {"queueTopic1"};
-		
-		List<ProducingRoute> producingRoutes = new ArrayList<ProducingRoute>();
-		List<ConsumingRoute> consumingRoutes = new ArrayList<ConsumingRoute>();
-		
-			
-		// Assemble components into main route lists
-		ProducingRoute proute= new ProducingRoute(Arrays.asList(broker),exchange,Arrays.asList(routeKeys));
-		ConsumingRoute croute = new ConsumingRoute(Arrays.asList(broker), exchange, queue, Arrays.asList(routeKeys2));
-		producingRoutes.add(proute);		
-		consumingRoutes.add(croute);
-		
-		//Create Routing Info
-		RoutingInfo routingInfo = new RoutingInfo(producingRoutes,consumingRoutes);
-		return routingInfo;
-	}
-	
-	@Test
-	public void serializes_routing_info_properly() {
-		
-		RoutingInfo routingInfo  = createTestRoutingInfoObject();
-		//Serialize the route
-		GsonSerializer serializer = new GsonSerializer();
-		String result = serializer.stringSerialize(routingInfo);
-		
-		
-		assertEquals(SERIALIZED_ROUTING_INFO,result);		
+		assertEquals(actual.getName(), name);
+		assertEquals(actual.getExchangeType(), type);
+		assertEquals(actual.getRoutingKey(), routingKey);
+		assertEquals(actual.getHostName(), host);
+		assertEquals(actual.getPort(), port);
+		assertEquals(actual.getVirtualHost(), vhost);
+		assertEquals(actual.getIsDurable(), isDurable);
+		assertEquals(actual.getIsAutoDelete(), isAutoDelete);
 	}
 	
 	@Test
 	public void string_deserializes_into_a_proper_routing_info_object() {
 		
+		String serializedString = "{\"routes\":[{\"consumerExchange\":{\"arguments\":null,\"exchangeType\":\"topic\",\"hostName\":\"devexample.com\",\"isAutoDelete\":false,\"isDurable\":false,\"name\":\"cmf.security\",\"port\":5672,\"queueName\":\"\",\"routingKey\":\"cmf.security\",\"virtualHost\":\"/\"},\"producerExchange\":{\"arguments\":null,\"exchangeType\":\"topic\",\"hostName\":\"devexample.com\",\"isAutoDelete\":false,\"isDurable\":false,\"name\":\"cmf.security\",\"port\":5672,\"queueName\":\"\",\"routingKey\":\"cmf.security\",\"virtualHost\":\"/\"}}]}";
+		
 		GsonSerializer serializer = new GsonSerializer();
 		
-		RoutingInfo routingInfo = serializer.stringDeserialize(SERIALIZED_ROUTING_INFO, RoutingInfo.class);
+		RoutingInfo routingInfo = serializer.stringDeserialize(serializedString, RoutingInfo.class);
 		
-		RoutingInfo routingInfoExpected  = createTestRoutingInfoObject();
+		Iterator<RouteInfo> routesIterator = routingInfo.getRoutes().iterator();
 		
-		assertEquals(routingInfoExpected,routingInfo);
+		assertTrue(routesIterator.hasNext());
+		
+		RouteInfo actualRoute = routesIterator.next();
+		
+		assertExchangeHasValues(
+			actualRoute.getProducerExchange(), 
+			"cmf.security", "topic", "cmf.security", "devexample.com", 5672, "/", false, false);
+		
+		assertExchangeHasValues(
+				actualRoute.getConsumerExchange(), 
+				"cmf.security", "topic", "cmf.security", "devexample.com", 5672, "/", false, false);
+		
+		assertFalse(routesIterator.hasNext());
 		
 		TestUtils.dumpRoutingInfoToLogger(routingInfo);
 	}

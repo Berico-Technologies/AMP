@@ -1,10 +1,12 @@
 package amp.examples.streaming.subscriber;
 
 import amp.examples.streaming.common.ModernMajorGeneralMessage;
+import cmf.bus.Envelope;
 import cmf.eventing.patterns.streaming.IStreamingCollectionHandler;
 import cmf.eventing.patterns.streaming.StreamingEventItem;
 
 import java.util.Collection;
+import java.util.Map;
 
 public class CollectionHandler implements IStreamingCollectionHandler<ModernMajorGeneralMessage> {
 

@@ -51,11 +51,11 @@
 
     <bean id="transportProvider" class="amp.bus.rabbit.RabbitTransportProvider">
         <constructor-arg name="topologyService" ref="topologyService" />
-        <constructor-arg name="connectionFactory" ref="connectionFactory" />
+        <constructor-arg name="channelFactory" ref="channelFactory" />
         <constructor-arg name="routingInfoCache" ref="routingInfoCache" />
     </bean>
 
-    <bean id="connectionFactory" class="amp.rabbit.BasicConnectionFactory">
+    <bean id="channelFactory" class="amp.rabbit.BasicChannelFactory">
         <constructor-arg name="username" value="devexample" />
         <constructor-arg name="password" value="devexample" />
     </bean>
@@ -80,9 +80,11 @@
 
     <bean id="routingSerializer" class="amp.topology.client.JsonRoutingInfoSerializer" />
 
-    <bean id="fallbackProvider" class="amp.topology.client.DefaultApplicationExchangeProvider"
- 	      c:hostname="rabbit.openampere.com"
-	      c:port="5672" />
+    <bean id="fallbackProvider" class="amp.topology.client.DefaultApplicationExchangeProvider">
+        <property name="hostname" value="devexample.com" />
+        <property name="port" value="5672" />
+        <property name="exchangeName" value="amp.fallback" />
+    </bean>
 
     <bean id="routingInfoCache" class="amp.bus.rabbit.CommandableCache">
         <constructor-arg name="commandReceiver" ref="commandReceiver" />
@@ -95,7 +97,7 @@
 
     <bean id="envelopeReceiver" class="amp.commanding.rabbit.RabbitEnvelopeReceiver">
         <constructor-arg name="topologyService" ref="topologyService" />
-        <constructor-arg name="connectionFactory" ref="connectionFactory" />
+        <constructor-arg name="channelFactory" ref="channelFactory" />
     </bean>
 
 </beans>

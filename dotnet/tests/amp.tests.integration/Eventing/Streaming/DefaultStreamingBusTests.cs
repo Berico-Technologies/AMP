@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using amp.eventing.streaming;
 using cmf.eventing.patterns.streaming;
 using Common.Logging;
 using NUnit.Framework;
@@ -22,6 +21,7 @@ namespace amp.tests.integration.Eventing.Streaming
         }
 
         [Test]
+        [Ignore]
         public void Should_receive_all_segments_published_as_a_chunked_sequence()
         {
             ManualResetEvent signal = new ManualResetEvent(false);
@@ -29,10 +29,10 @@ namespace amp.tests.integration.Eventing.Streaming
             _streamingBus.SubscribeToCollection(handler);
 
 
-            IList<TestChunkedEvent> eventSequence = new List<TestChunkedEvent>();
-            eventSequence.Add(new TestChunkedEvent(1));
-            eventSequence.Add(new TestChunkedEvent(2));
-            eventSequence.Add(new TestChunkedEvent(3));
+            IList<TestStreamEvent> eventSequence = new List<TestStreamEvent>();
+            eventSequence.Add(new TestStreamEvent(1));
+            eventSequence.Add(new TestStreamEvent(2));
+            eventSequence.Add(new TestStreamEvent(3));
 
             _streamingBus.PublishChunkedSequence(eventSequence);
 
@@ -57,8 +57,7 @@ namespace amp.tests.integration.Eventing.Streaming
             streamEvents.Add(new TestStreamEvent(2));
             streamEvents.Add(new TestStreamEvent(3));
 
-            var topic = typeof (TestStreamEvent).FullName;
-            using (IEventStream stream = _streamingBus.CreateStream(topic))
+            using (IEventStream stream = _streamingBus.CreateStream(typeof (TestStreamEvent).FullName))
             {
                 stream.BatchLimit = 2;
 
@@ -67,9 +66,6 @@ namespace amp.tests.integration.Eventing.Streaming
                     stream.Publish(@event);
                 }
             }
-
-            //HACK: Works around fact that disposing of stream does not remove it from the cache (See AMP-109)
-            ((DefaultStreamingBus)_streamingBus).RemoveStream(topic);
 
             signal.WaitOne(TimeSpan.FromSeconds(10));
 
@@ -93,31 +89,24 @@ namespace amp.tests.integration.Eventing.Streaming
             }
         }
 
-        public class TestChunkedEvent : TestStreamEvent
-        {
-            public TestChunkedEvent(int sequence) : base(sequence)
-            {
-            }
-        }
-
-        public class CollectionHandler : IStreamingCollectionHandler<TestChunkedEvent>
+        public class CollectionHandler : IStreamingCollectionHandler<TestStreamEvent>
         {
             private readonly ManualResetEvent _signal;
-            public StreamingEventItem<TestChunkedEvent>[] ReceivedEvents { get; private set; }
+            public StreamingEventItem<TestStreamEvent>[] ReceivedEvents { get; private set; }
 
             public CollectionHandler(ManualResetEvent signal)
             {
                 _signal = signal;
             }
 
-            public void HandleCollection(IEnumerable<StreamingEventItem<TestChunkedEvent>> events)
+            public void HandleCollection(IEnumerable<StreamingEventItem<TestStreamEvent>> events)
             {
                 ReceivedEvents = events.ToArray();
                 _signal.Set();
 
-                Log.Debug(string.Format("Received a collection from AMPere of size: {0}", ReceivedEvents.Count()));
+                Log.Debug(string.Format("Received a collection from AMPere of size: {0}", events.Count()));
 
-                foreach (StreamingEventItem<TestChunkedEvent> eventItem in ReceivedEvents)
+                foreach (StreamingEventItem<TestStreamEvent> eventItem in events)
                 {
                     Log.Debug(string.Format("Event Item: SequenceId => {0}, Position => {1}, Content => {2}",
                         eventItem.SequenceId, eventItem.Position, eventItem.Event));
@@ -128,7 +117,7 @@ namespace amp.tests.integration.Eventing.Streaming
 
             public Type EventType
             {
-                get { return typeof(TestChunkedEvent); }
+                get { return typeof (TestStreamEvent); }
             }
 
             public void OnPercentCollectionReceived(double percent)

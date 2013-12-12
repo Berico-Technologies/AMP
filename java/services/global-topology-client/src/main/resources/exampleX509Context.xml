@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:util="http://www.springframework.org/schema/util"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:c="http://www.springframework.org/schema/c"
 	xmlns:p="http://www.springframework.org/schema/p"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
 	<bean id="httpClientProvider" class="amp.utility.http.SslHttpClientProvider"
 		c:keystore="ssl/app01.jks" c:keystorePassword="password" 
-		c:truststore="ssl/app01.jks" c:trustStorePassword="password" />
+		c:truststore="ssl/app01.jks" c:trustStorePassword="password" c:port="15677" />
 
     <bean id="routingInfoRetriever" class="amp.topology.client.HttpRoutingInfoRetriever"
         c:httpClientProvider-ref="httpClientProvider" 
@@ -22,10 +20,9 @@
 	     they are all durable.  This means that if use a default exchange, you will need
 	     to make sure the settings of the exchange match the exchange specified in this
 	     fallback provider. -->
-    <bean id="fallbackProvider" class="amp.topology.client.DefaultApplicationExchangeProvider"
- 	      c:hostname="rabbit.openampere.com"
-	      c:port="5671" />
-
+	<bean id="fallbackProvider" class="amp.topology.client.DefaultApplicationExchangeProvider"
+		p:exchangeName="amp.fallback" p:hostname="devexample.com" />
+	
 	<bean id="topologyService" class="amp.topology.client.GlobalTopologyService" 
 		c:routingInfoRetriever-ref="routingInfoRetriever"
 		c:fallbackProvider-ref="fallbackProvider" />

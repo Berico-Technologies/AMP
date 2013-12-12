@@ -10,7 +10,7 @@ namespace amp.rabbit.transport
         protected readonly int _cacheExpiryInSeconds;
         protected readonly object _cacheLock = new object();
 
-        public SimpleRoutingInfoCache(int cacheExpiryInSeconds)
+        protected SimpleRoutingInfoCache(int cacheExpiryInSeconds)
         {
             _routingInfoCache = new MemoryCache("amp.bus.rabbit.cache");
             _cacheExpiryInSeconds = cacheExpiryInSeconds;

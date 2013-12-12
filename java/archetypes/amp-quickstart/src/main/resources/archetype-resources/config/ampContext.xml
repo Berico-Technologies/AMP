@@ -50,23 +50,24 @@
 
     <bean id="transportProvider" class="amp.rabbit.transport.RabbitTransportProvider"
           c:topologyService-ref="topologyService"
-          c:connectionFactory-ref="connectionFactory"
+          c:channelFactory-ref="channelFactory"
           c:routingInfoCache-ref="routingInfoCache" />
 
-    <bean id="connectionFactory" class="amp.rabbit.TokenConnectionFactory"
+    <bean id="channelFactory" class="amp.rabbit.TokenChannelFactory"
           c:httpClientFactory-ref="httpClientProvider"
           c:anubisUri="https://anubis.openampere.com:15678/anubis/identity/authenticate"
           c:serializer-ref="serializer"
-          c:secureConnectionFactory-ref="secureConnectionFactory"/>
+          c:secureChannelFactory-ref="secureChannelFactory"/>
 
     <bean id="httpClientProvider" class="amp.utility.http.SslHttpClientProvider"
           c:keystore="/keys/amp-test-at-openampere.com.jks"
           c:keystorePassword="1qaz@WSX3edc$RFV"
-          c:truststore="/keys/truststore.jks" />
+          c:truststore="/keys/truststore.jks"
+          c:port="15678"/>
 
     <bean id="serializer" class="amp.utility.serialization.GsonSerializer" />
 
-    <bean id="secureConnectionFactory" class="amp.rabbit.CertificateConnectionFactory"
+    <bean id="secureChannelFactory" class="amp.rabbit.CertificateChannelFactory"
           c:keystore="/keys/amp-test-at-openampere.com.jks"
           c:keystorePassword="1qaz@WSX3edc$RFV"
           c:truststore="/keys/truststore.jks"/>
@@ -81,8 +82,9 @@
           c:urlExpression="https://gts.openampere.com:15677/service/topology/get-routing-info/%s" />
 
     <bean id="fallbackProvider" class="amp.topology.client.DefaultApplicationExchangeProvider"
- 	      c:hostname="rabbit.openampere.com"
-	      c:port="5671" />
+          p:hostname="rabbit.openampere.com"
+          p:port="5671"
+          p:exchangeName="amp.fallback" />
 
     <bean id="routingInfoCache" class="amp.rabbit.transport.CommandableCache"
           c:commandReceiver-ref="commandReceiver"
@@ -99,6 +101,6 @@
 
     <bean id="envelopeReceiver" class="amp.rabbit.transport.RabbitEnvelopeReceiver"
           c:topologyService-ref="topologyService"
-          c:connectionFactory-ref="connectionFactory" />
+          c:channelFactory-ref="channelFactory" />
 
 </beans>

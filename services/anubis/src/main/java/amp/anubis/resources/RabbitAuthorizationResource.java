@@ -6,6 +6,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
+import amp.anubis.core.AnubisException;
 import amp.anubis.core.AttributedNamedToken;
 import amp.anubis.core.IRabbitAccessManager;
 import com.yammer.metrics.annotation.Timed;
