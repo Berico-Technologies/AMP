@@ -57,8 +57,8 @@ public class EventBusBuilder extends FluentExtension {
 				new InMemoryUserInfoRepository(new HashMap<String, String>());
 
 		// Manipulates the headers for use by the Event Bus.
-		OutboundHeadersProcessor headersProcessor = new OutboundHeadersProcessor(userInfoRepository);
-		
+		OutboundHeadersProcessor headersProcessor = new OutboundHeadersProcessor();
+		headersProcessor.setUserInfoRepo(userInfoRepository);
 		// These are order dependent.
 		this.inbound.add(rpcFilter);
 		this.inbound.add(jsonEventSerializer);

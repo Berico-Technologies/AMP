@@ -16,9 +16,9 @@ public class OutboundHeadersProcessor implements IMessageProcessor {
 
 	protected IUserInfoRepository userInfoRepo;
 	
+
+	public OutboundHeadersProcessor( ) {
 	
-	public OutboundHeadersProcessor(IUserInfoRepository userInfoRepository) {
-		this.userInfoRepo = userInfoRepository;
 	}
 
 	@Override
@@ -49,11 +49,19 @@ public class OutboundHeadersProcessor implements IMessageProcessor {
             env.setCreationTime(DateTime.now());
 
             String senderIdentity = env.getSenderIdentity();
-            try {
-				senderIdentity = StringUtils.isBlank(senderIdentity) ? userInfoRepo.getDistinguishedName(System.getProperty("user.name")).replaceAll(",", ", ") : senderIdentity;
-			} catch (Exception ex) {
-				throw new MessageException("Failed to get user identity from " + userInfoRepo.getClass().getCanonicalName(), ex);
-			}
+            if( StringUtils.isBlank(senderIdentity) ) {
+            	String executingUser = System.getProperty("user.name").replaceAll(",", ", ");
+            	if( userInfoRepo != null ) {
+            		try {
+            			senderIdentity = userInfoRepo.getDistinguishedName(executingUser);
+            		}
+            		catch( Exception ex ) {
+            			throw new MessageException("Failed to get user identity from " + userInfoRepo.getClass().getCanonicalName(), ex);
+            		}
+            	} else {
+            		senderIdentity = executingUser;
+            	}
+            }
             env.setSenderIdentity(senderIdentity);
         }
 
@@ -86,4 +94,8 @@ public class OutboundHeadersProcessor implements IMessageProcessor {
 
         return messageTopic;
     }
+    
+	public void setUserInfoRepo(IUserInfoRepository userInfoRepo) {
+		this.userInfoRepo = userInfoRepo;
+	}
 }
