@@ -123,3 +123,5 @@ managed
 *.jar -text
 *.jks -text
 
+#Ignore nuget package files: those should be built as needed
+*.nupkg

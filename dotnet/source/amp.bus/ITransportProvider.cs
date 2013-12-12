@@ -6,6 +6,8 @@ namespace amp.bus
 {
     public interface ITransportProvider : IDisposable
     {
+
+        //TODO: Why does ITransportProvider define an OnEnvelopeReceived and IEnvelopeReceiver does not?
         event Action<IEnvelopeDispatcher> OnEnvelopeReceived;
 
 

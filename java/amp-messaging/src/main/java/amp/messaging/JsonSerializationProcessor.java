@@ -2,7 +2,7 @@ package amp.messaging;
 
 
 import cmf.bus.Envelope;
-import cmf.bus.EnvelopeHeaderConstants;
+import amp.messaging.EnvelopeHeaderConstants;
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;

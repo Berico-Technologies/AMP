@@ -9,6 +9,7 @@ public class Config {
 	public class Authorization{
 		public final static String Basic ="src/test/resources/config/authorization/BasicAuthRabbitConfig.xml";
 		public final static String AnubisBasic ="src/test/resources/config/authorization/AnubisAndBasicAuthRabbitConfig.xml";
+		public final static String AnubisOneWaySsl ="src/test/resources/config/authorization/AnubisAndOneWaySSLRabbitConfig.xml";
 		public final static String AnubisTwoWaySsl ="src/test/resources/config/authorization/AnubisAndTwoWaySSLRabbitConfig.xml";
 	}
 

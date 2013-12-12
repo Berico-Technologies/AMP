@@ -4,7 +4,6 @@ package amp.anubis.tests;
 import amp.anubis.core.AnubisException;
 import amp.anubis.core.NamedToken;
 import amp.anubis.services.DefaultTokenManager;
-import org.apache.commons.codec.binary.Base64;
 import org.junit.Test;
 import org.junit.experimental.runners.Enclosed;
 import org.junit.runner.RunWith;

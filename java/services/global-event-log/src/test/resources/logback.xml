@@ -21,7 +21,7 @@
 		<level value="DEBUG" />
 	</logger>
 
-	<logger name="amp.rabbit.RabbitConnectionShutdownListener">
+	<logger name="amp.rabbit.connection.RabbitConnectionShutdownListener">
 		<level value="ERROR" />
 	</logger>
 

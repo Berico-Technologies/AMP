@@ -8,7 +8,7 @@
         <groupId>amp</groupId>
         <artifactId>amp</artifactId>
         <relativePath>../../pom.xml</relativePath>
-        <version>3.2.1</version>
+        <version>3.3.0-SNAPSHOT</version>
     </parent>
 
 
@@ -19,7 +19,6 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <cmf.version>3.2.0-SNAPSHOT</cmf.version>
     </properties>
 
     <repositories>
@@ -45,12 +44,10 @@
         <dependency>
             <groupId>cmf</groupId>
             <artifactId>cmf.bus</artifactId>
-            <version>${cmf.version}</version>
         </dependency>
         <dependency>
             <groupId>cmf</groupId>
             <artifactId>cmf.eventing</artifactId>
-            <version>${cmf.version}</version>
         </dependency>
         <dependency>
             <groupId>amp</groupId>
@@ -81,13 +78,11 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.10</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
-            <version>1.9.5</version>
             <scope>test</scope>
         </dependency>
         <dependency>

@@ -37,34 +37,30 @@
     <bean id="rpcFilter" class="amp.eventing.RpcFilter" />
 
 
-
     <!-- The follow components are for our Envelope Bus -->
     <bean id="envelopeBus" class="amp.bus.DefaultEnvelopeBus" destroy-method="dispose"
           c:transportProvider-ref="transportProvider" />
 
     <bean id="transportProvider" class="amp.rabbit.transport.RabbitTransportProvider"
           c:topologyService-ref="topologyService"
-          c:channelFactory-ref="channelFactory"
+          c:connectionFactory-ref="connectionFactory"
           c:routingInfoCache-ref="routingInfoCache" />
 
-    <bean id="channelFactory" class="amp.rabbit.TokenChannelFactory"
+    <bean id="connectionFactory" class="amp.rabbit.connection.TokenConnectionFactory"
           c:httpClientFactory-ref="tokenHttpClientProvider"
           c:anubisUri="https://anubis.openampere.com:15678/anubis/identity/authenticate"
           c:serializer-ref="tokenSerializer"
-          c:secureChannelFactory-ref="secureChannelFactory"/>
+          c:secureConnectionFactory-ref="secureConnectionFactory"/>
 
     <bean id="tokenHttpClientProvider" class="amp.utility.http.SslHttpClientProvider"
           c:keystore="/amp-test-at-openampere.com.jks"
           c:keystorePassword="1qaz@WSX3edc$RFV"
           c:truststore="/truststore.jks"
-          c:trustStorePassword="1qaz@WSX3edc$RFV"
-          c:port="15678"/>
+          c:trustStorePassword="1qaz@WSX3edc$RFV" />
 
     <bean id="tokenSerializer" class="amp.utility.serialization.GsonSerializer" />
 
-    <bean id="secureChannelFactory" class="amp.rabbit.CertificateChannelFactory"
-          c:keystore="/amp-test-at-openampere.com.jks"
-          c:keystorePassword="1qaz@WSX3edc$RFV"
+    <bean id="secureConnectionFactory" class="amp.rabbit.connection.SslConnectionFactory"
           c:truststore="/truststore.jks"/>
 
 
@@ -82,15 +78,13 @@
           c:keystore="/amp-test-at-openampere.com.jks"
           c:keystorePassword="1qaz@WSX3edc$RFV"
           c:truststore="/truststore.jks"
-          c:trustStorePassword="1qaz@WSX3edc$RFV"
-          c:port="15677" />
+          c:trustStorePassword="1qaz@WSX3edc$RFV" />
 
     <bean id="routingSerializer" class="amp.utility.serialization.GsonSerializer" />
 
     <bean id="fallbackProvider" class="amp.topology.client.DefaultApplicationExchangeProvider"
-          p:hostname="rabbit.openampere.com"
-          p:port="5671"
-          p:exchangeName="amp.fallback" />
+ 	      c:hostname="rabbit.openampere.com"
+	      c:port="5671" />
 
     <bean id="routingInfoCache" class="amp.rabbit.transport.CommandableCache"
           c:commandReceiver-ref="commandReceiver"
@@ -107,7 +101,7 @@
 
     <bean id="envelopeReceiver" class="amp.rabbit.transport.RabbitEnvelopeReceiver"
           c:topologyService-ref="topologyService"
-          c:channelFactory-ref="channelFactory" />
+          c:connectionFactory-ref="connectionFactory" />
 
     <bean id="Cmd-JsonSerializationProcessor" class="amp.messaging.JsonSerializationProcessor" />
 

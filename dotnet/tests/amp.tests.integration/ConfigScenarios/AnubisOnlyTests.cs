@@ -22,7 +22,7 @@ namespace amp.tests.integration.ConfigScenarios
         {
             get
             {
-                return new string[] { Config.Bus.All, Config.Authorization.AnubisTwoWaySsl, Config.Topology.GtsSSL};
+                return new string[] { Config.Bus.All, Config.Authorization.AnubisOneWaySsl, Config.Topology.GtsSSL };
             }
         }
 

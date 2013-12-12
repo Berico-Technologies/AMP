@@ -1,11 +1,13 @@
 package amp.topology.client;
 
+import java.util.List;
 import java.util.Map;
 
-import cmf.bus.EnvelopeHeaderConstants;
+import amp.messaging.EnvelopeHeaderConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import amp.rabbit.topology.BaseRoute;
 import amp.rabbit.topology.ITopologyService;
 import amp.rabbit.topology.RoutingInfo;
 
@@ -52,15 +54,15 @@ public class GlobalTopologyService implements ITopologyService {
 	public RoutingInfo getRoutingInfo(Map<String, String> routingHints) {
 		
 		String topic = routingHints.get(EnvelopeHeaderConstants.MESSAGE_TOPIC);
-		
-		LOG.info("Getting routing info for topic: {}", topic);
+		LOG.debug("Getting routing info for hints: {}", routingHints);	
+		LOG.info("   >> Topic (in hints) to get routing info for: {}", topic);
 		
 		RoutingInfo routingInfo = this.routingInfoRetriever.retrieveRoutingInfo(topic);
 
         if (routingInfoAbsentOrNotValid(routingInfo)
                 && this.fallbackProvider != null) {
 
-            routingInfo = this.fallbackProvider.getFallbackRoute(topic);
+            routingInfo = this.fallbackProvider.getFallbackRoute(routingHints);
 
             LOG.info("Falling back to routing info: {}", routingInfo.toString());
         }
@@ -92,14 +94,14 @@ public class GlobalTopologyService implements ITopologyService {
 
             LOG.debug("Routing info is not null.");
 
-            if (routingInfo.getRoutes() != null){
+            List<BaseRoute> baseRoutes = routingInfo.getAllRoutes();
+            if ( baseRoutes!= null){
 
                 LOG.debug("Routes are not null.");
 
-                if (routingInfo.getRoutes().iterator().hasNext()){
+                if (baseRoutes.iterator().hasNext()){
 
-                    LOG.debug("Routes has next.");
-
+                    LOG.debug("Routes are not empty.");
                     return false;
                 }
             }

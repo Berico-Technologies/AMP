@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Net;
-using amp.rabbit;
+using amp.rabbit.connection;
 using amp.rabbit.topology;
 using NUnit.Framework;
 using RabbitMQ.Client;
@@ -18,7 +18,7 @@ namespace amp.tests.integration.Rabbit
         [TestFixtureSetUp]
         public virtual void TestFixtureSetUp()
         {
-            _context = new XmlApplicationContext(Config.Authorization.AnubisTwoWaySsl, Config.Topology.GtsSSL);
+            _context = new XmlApplicationContext(Config.Authorization.AnubisOneWaySsl, Config.Topology.GtsSSL);
             _factory = _context.GetObject("IRabbitConnectionFactory") as TokenConnectionFactory;
 
             //Hack so that we don't have to validate the Anubis server certificate.
@@ -39,7 +39,7 @@ namespace amp.tests.integration.Rabbit
         {
             //var rabbitFactory = new Mock<ConnectionFactory>();
             var rabbitFactory = new ConnectionFactory();
-            _factory.ConfigureConnectionFactory(rabbitFactory, new Exchange());
+            _factory.ConfigureConnectionFactory(rabbitFactory, new Broker("test.com", 1234));
 
             Assert.That(rabbitFactory.UserName, Is.Not.Null);
             Assert.That(rabbitFactory.Password, Is.Not.Null);

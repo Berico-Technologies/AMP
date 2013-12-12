@@ -5,14 +5,14 @@
 
 	<groupId>amp</groupId>
 	<artifactId>anubis</artifactId>
-	<version>3.2.1</version>
+	<version>3.3.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>AMP Quick Start</name>
 	<url>http://ampere.berico.us</url>
 
 	<properties>
-		<cmf.version>3.2.1</cmf.version>
+		<cmf.version>3.3.0-SNAPSHOT</cmf.version>
 		<amp.version>${project.version}</amp.version>
  		<dropwizard.version>0.6.1</dropwizard.version>
         <fallwizard.version>1.1.0</fallwizard.version>
@@ -47,7 +47,7 @@
 		</dependency>
 		<dependency>
 			<groupId>amp</groupId>
-			<artifactId>amp.bus.rabbit</artifactId>
+			<artifactId>amp.rabbit</artifactId>
 			<version>${amp.version}</version>
 		</dependency>
 		<dependency>

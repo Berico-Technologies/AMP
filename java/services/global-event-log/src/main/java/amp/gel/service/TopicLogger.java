@@ -10,7 +10,7 @@ import org.springframework.beans.factory.InitializingBean;
 
 import amp.gel.dao.DatastoreWriter;
 import cmf.bus.Envelope;
-import cmf.bus.EnvelopeHeaderConstants;
+import amp.messaging.EnvelopeHeaderConstants;
 import cmf.bus.IEnvelopeBus;
 import cmf.bus.IEnvelopeFilterPredicate;
 import cmf.bus.IRegistration;

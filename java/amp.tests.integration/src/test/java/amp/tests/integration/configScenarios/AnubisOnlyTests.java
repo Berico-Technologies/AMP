@@ -10,11 +10,10 @@ import static org.hamcrest.Matchers.*;
 
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 
-import amp.tests.integration.Config;
 import amp.tests.integration.TestEvent;
 import amp.tests.integration.Config.Authorization;
-import amp.tests.integration.Config.Bus;
 import amp.tests.integration.Config.Topology;
+import amp.tests.integration.Config.Bus;
 
 import cmf.bus.Envelope;
 import cmf.eventing.IEventBus;
@@ -33,9 +32,9 @@ public class AnubisOnlyTests {
 	
 	public static String[] getConfigFiles(){
 		return new String[]{
-				Config.Bus.All, 
-				Authorization.AnubisTwoWaySsl,
-				Topology.GtsSSL};
+				Bus.All, 
+				Authorization.AnubisBasic,
+				Topology.Simple};
 	}
 	
 	@BeforeClass

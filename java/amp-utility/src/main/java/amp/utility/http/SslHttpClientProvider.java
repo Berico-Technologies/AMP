@@ -26,7 +26,7 @@ public class SslHttpClientProvider implements HttpClientProvider {
 
 	private static final Logger logger = LoggerFactory.getLogger(SslHttpClientProvider.class);
 	
-	int port;
+	static final int port = 443;
 	
 	String keystore;
 	
@@ -44,13 +44,11 @@ public class SslHttpClientProvider implements HttpClientProvider {
 	 * Instantiate using a password for the TrustStore.
 	 * @param keystore Path to Key store
 	 * @param keystorePassword Password of Key store (private key)
-	 * @param port Port of the remote server.
 	 */
-	public SslHttpClientProvider(String keystore, String keystorePassword, int port){
+	public SslHttpClientProvider(String keystore, String keystorePassword){
 		
 		this.keystore = keystore;
 		this.keystorePassword = keystorePassword;
-		this.port = port;
 	}
 	
 	/**
@@ -58,11 +56,10 @@ public class SslHttpClientProvider implements HttpClientProvider {
 	 * @param keystore Path to Key store
 	 * @param keystorePassword Password of Key store (private key)
 	 * @param truststore Path to Trust store
-	 * @param port Port of the remote server.
 	 */
-	public SslHttpClientProvider(String keystore, String keystorePassword, String truststore, int port){
+	public SslHttpClientProvider(String keystore, String keystorePassword, String truststore){
 		
-		this(keystore, keystorePassword, port);
+		this(keystore, keystorePassword);
 		
 		this.truststore = truststore;
 	}
@@ -73,12 +70,11 @@ public class SslHttpClientProvider implements HttpClientProvider {
 	 * @param keystorePassword Password of Key store (private key)
 	 * @param truststore Path to Trust store
 	 * @param trustStorePassword Trust store password
-	 * @param port Port of the remote server.
 	 */
 	public SslHttpClientProvider(String keystore, String keystorePassword, 
-			String truststore, String trustStorePassword, int port){
+			String truststore, String trustStorePassword){
 		
-		this(keystore, keystorePassword, truststore, port);
+		this(keystore, keystorePassword, truststore);
 		
 		this.truststorePassword = trustStorePassword;
 	}

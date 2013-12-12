@@ -36,19 +36,21 @@
     <AssemblyOriginatorKeyFile>..\amp.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="cmf.bus">
+    <Reference Include="cmf.bus, Version=3.2.1.0, Culture=neutral, PublicKeyToken=bbbef7830e900844, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\binaries\libraries\cmf.bus.dll</HintPath>
+      <HintPath>..\..\packages\cmf.bus.3.2.1.0\lib\net40\cmf.bus.dll</HintPath>
     </Reference>
-    <Reference Include="cmf.eventing">
+    <Reference Include="cmf.eventing, Version=3.2.1.0, Culture=neutral, PublicKeyToken=b0e0f46569419490, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\binaries\libraries\cmf.eventing.dll</HintPath>
+      <HintPath>..\..\packages\cmf.eventing.3.2.1.0\lib\net40\cmf.eventing.dll</HintPath>
     </Reference>
-    <Reference Include="Common.Logging">
-      <HintPath>..\..\binaries\libraries\Common.Logging.dll</HintPath>
+    <Reference Include="Common.Logging, Version=1.2.0.0, Culture=neutral, PublicKeyToken=af08829b84f0328e">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Common.Logging.1.2.0\lib\1.0\Common.Logging.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\..\binaries\libraries\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=4.0.4.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\Newtonsoft.Json.4.0.4\lib\net40\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -134,6 +136,7 @@
     <None Include="..\amp.snk">
       <Link>amp.snk</Link>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

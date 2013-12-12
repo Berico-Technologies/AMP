@@ -3,12 +3,9 @@ package amp.examples.streaming.subscriber;
 import amp.eventing.streaming.DefaultStreamingBus;
 import amp.eventing.streaming.IStandardStreamingEventBus;
 import amp.examples.streaming.common.ModernMajorGeneralMessage;
-import cmf.bus.Envelope;
 import cmf.eventing.patterns.streaming.StreamingEventItem;
 import cmf.eventing.patterns.streaming.IStreamingReaderHandler;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-
-import java.util.Map;
 
 public class StreamingReaderSubscriber {
     public static void main(String[] args) throws Exception {

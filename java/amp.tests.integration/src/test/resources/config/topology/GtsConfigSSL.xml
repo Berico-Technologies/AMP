@@ -19,16 +19,14 @@
      <bean id="topoHttpClientProvider" class="amp.utility.http.SslHttpClientProvider"
           c:keystore="/test-certs/amp-test-at-openampere.com.jks"
           c:keystorePassword="1qaz@WSX3edc$RFV" 
-          c:truststore="/test-certs/truststore.jks"
-          c:port="15677" />
+          c:truststore="/test-certs/truststore.jks" />
 
     <bean id="routingSerializer" class="amp.utility.serialization.GsonSerializer" />
 
     <bean id="fallbackProvider" class="amp.topology.client.DefaultApplicationExchangeProvider"
-          p:hostname="rabbit.openampere.com" 
-          p:port="5671" 
-          p:exchangeName="amp.fallback" />
-
+ 	      c:hostname="rabbit.openampere.com"
+	      c:port="5671" />
+ 
     <bean id="routingInfoCache" class="amp.rabbit.transport.CommandableCache"
           c:commandReceiver-ref="commandReceiver"
           c:cacheExpiryInSeconds="600" />
@@ -44,7 +42,7 @@
 
     <bean id="envelopeReceiver" class="amp.rabbit.transport.RabbitEnvelopeReceiver"
           c:topologyService-ref="topologyService"
-          c:channelFactory-ref="channelFactory" />
+          c:connectionFactory-ref="connectionFactory" />
 
     <bean id="Cmd-JsonSerializationProcessor" class="amp.messaging.JsonSerializationProcessor" />
 

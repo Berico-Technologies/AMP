@@ -9,10 +9,13 @@
 
     <bean id="topologyService" class="amp.rabbit.topology.SimpleTopologyService"
           c:clientProfile=""
-          c:name="simpleTopology"
-          c:hostname="rabbit.openampere.com"
-          c:vhost="/"
-          c:port="5672" />
+          c:brokers-ref="brokers"/>
+          
+    <util:list id="brokers" value-type="amp.rabbit.topology.Broker">
+	    <bean class="amp.rabbit.topology.Broker"
+	          c:hostname="rabbit.openampere.com"
+	          c:port="5672" />
+   </util:list>
 
     <bean id="routingInfoCache" class="amp.rabbit.transport.SimpleRoutingInfoCache"
           c:cacheExpiryInSeconds="600" />

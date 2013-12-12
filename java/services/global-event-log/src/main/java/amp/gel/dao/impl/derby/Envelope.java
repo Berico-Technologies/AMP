@@ -13,7 +13,7 @@ import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 
-import cmf.bus.EnvelopeHeaderConstants;
+import amp.messaging.EnvelopeHeaderConstants;
 
 /**
  * This class adapts the cmf.bus.Envelope class as a POJO with JPA annotations.

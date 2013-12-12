@@ -11,7 +11,7 @@
     <constructor-arg name="routingInfoCache" ref="IRoutingInfoCache" />
   </object>
 
-  <object id="IRabbitConnectionFactory" type="amp.rabbit.TokenConnectionFactory, amp.rabbit">
+  <object id="IRabbitConnectionFactory" type="amp.rabbit.connection.TokenConnectionFactory, amp.rabbit">
     <constructor-arg name="anubisUri" value="https://anubis.openampere.com:15678/anubis/identity/authenticate" />
     <constructor-arg name="webRequestFactory" ref="token-IWebRequestFactory" />
     <constructor-arg name="serializer" ref="token-ISerializer" />
@@ -28,6 +28,6 @@
     <constructor-arg name="clientCertPassword" value="1qaz@WSX3edc$RFV" />
   </object>
 
-  <object id="token-ISerializer" type="amp.utility.serialization.Utf8JsonDeserializer&lt;amp.rabbit.TokenConnectionFactory+NamedToken&gt;, amp.utility" />
+  <object id="token-ISerializer" type="amp.utility.serialization.Utf8JsonDeserializer&lt;amp.rabbit.connection.TokenConnectionFactory+NamedToken&gt;, amp.utility" />
 
 </objects>

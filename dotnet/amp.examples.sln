@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "amp.examples.gui.messages", "examples\amp.examples.gui.messages\amp.examples.gui.messages.csproj", "{02D44D96-BA20-4A7C-B7E7-6DE88E0354A7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "amp.examples.gui.duplex", "examples\amp.examples.gui.duplex\amp.examples.gui.duplex.csproj", "{7261EB16-32DF-4E06-A0FB-354C919697D3}"
@@ -10,6 +10,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "amp.examples.streaming.common", "examples\amp.examples.streaming.common\amp.examples.streaming.common.csproj", "{94E1B11C-9B67-40B4-B6CC-FF7FC434F9D5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "amp.examples.streaming.subscriber", "examples\amp.examples.streaming.subscriber\amp.examples.streaming.subscriber.csproj", "{63389086-F5BF-46CC-87A3-2C8C9CAAD267}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8CEB2A4C-55EB-4C88-AE4F-0BCEA4C7D153}"
+	ProjectSection(SolutionItems) = preProject
+		source\GlobalAssemblyInfo.cs = source\GlobalAssemblyInfo.cs
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

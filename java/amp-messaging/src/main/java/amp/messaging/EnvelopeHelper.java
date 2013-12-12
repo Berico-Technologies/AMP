@@ -2,7 +2,7 @@ package amp.messaging;
 
 
 import cmf.bus.Envelope;
-import cmf.bus.EnvelopeHeaderConstants;
+import amp.messaging.EnvelopeHeaderConstants;
 import org.apache.commons.codec.binary.Base64;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
@@ -11,7 +11,7 @@ import java.util.Map.Entry;
 import java.util.UUID;
 
 
-public class EnvelopeHelper {
+public class EnvelopeHelper extends amp.bus.EnvelopeHelper{
 
     private Envelope env;
 
@@ -23,29 +23,7 @@ public class EnvelopeHelper {
         env = envelope;
     }
 
-    public String flatten() {
-        return this.flatten(",");
-    }
-
-    public String flatten(String separator) {
-        StringBuilder sb = new StringBuilder();
-
-        sb.append("[");
-
-        for (Entry<String, String> kvp : env.getHeaders().entrySet()) {
-            sb.append(String.format("%s{%s:%s}", separator, kvp.getKey(), kvp.getValue()));
-        }
-
-        if (sb.length() > 1) {
-            sb.delete(1, 1 + separator.length());
-        }
-
-        sb.append("]");
-
-        return sb.toString();
-    }
-
-    public UUID getCorrelationId() {
+     public UUID getCorrelationId() {
         UUID cid = null;
 
         String cidString = env.getHeader(EnvelopeHeaderConstants.MESSAGE_CORRELATION_ID);
@@ -75,14 +53,6 @@ public class EnvelopeHelper {
         return Base64.decodeBase64(base64String);
     }
 
-    public Envelope getEnvelope() {
-        return env;
-    }
-
-    public String getHeader(String key) {
-        return env.getHeader(key);
-    }
-
     public UUID getMessageId() {
         UUID id = null;
 
@@ -105,10 +75,6 @@ public class EnvelopeHelper {
 
     public String getMessageType() {
         return env.getHeader(EnvelopeHeaderConstants.MESSAGE_TYPE);
-    }
-
-    public byte[] getPayload() {
-        return env.getPayload();
     }
 
     public DateTime getReceiptTime() {
@@ -168,11 +134,6 @@ public class EnvelopeHelper {
         return this;
     }
 
-    public EnvelopeHelper setHeader(String key, String value) {
-        env.setHeader(key, value);
-        return this;
-    }
-
     public EnvelopeHelper setMessageId(UUID id) {
         env.setHeader(EnvelopeHeaderConstants.MESSAGE_ID, id.toString());
         return this;
@@ -190,11 +151,6 @@ public class EnvelopeHelper {
 
     public EnvelopeHelper setMessageType(String messageType) {
         env.setHeader(EnvelopeHeaderConstants.MESSAGE_TYPE, messageType);
-        return this;
-    }
-
-    public EnvelopeHelper setPayload(byte[] payload) {
-        env.setPayload(payload);
         return this;
     }
 

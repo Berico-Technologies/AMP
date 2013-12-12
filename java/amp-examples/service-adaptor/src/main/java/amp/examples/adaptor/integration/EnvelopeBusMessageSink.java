@@ -8,7 +8,7 @@ import org.springframework.integration.Message;
 import org.springframework.integration.MessageChannel;
 
 import cmf.bus.Envelope;
-import cmf.bus.EnvelopeHeaderConstants;
+import amp.messaging.EnvelopeHeaderConstants;
 import cmf.bus.IEnvelopeBus;
 
 public class EnvelopeBusMessageSink implements MessageChannel {

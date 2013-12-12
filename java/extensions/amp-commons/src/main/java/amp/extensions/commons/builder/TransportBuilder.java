@@ -3,7 +3,7 @@ package amp.extensions.commons.builder;
 import amp.bus.ITransportProvider;
 import amp.commanding.DefaultCommandReceiver;
 import amp.commanding.ICommandReceiver;
-import amp.rabbit.IRabbitChannelFactory;
+import amp.rabbit.connection.IRabbitConnectionFactory;
 import amp.rabbit.topology.ITopologyService;
 import amp.rabbit.transport.CommandableCache;
 import amp.rabbit.transport.IRoutingInfoCache;
@@ -20,7 +20,7 @@ public class TransportBuilder extends FluentExtension {
 
     //-- Fields --//
 	ITopologyService topologyService = null;
-	IRabbitChannelFactory channelFactory = null;
+	IRabbitConnectionFactory connectionFactory = null;
 	ITransportProvider transportProvider = null;
     IRoutingInfoCache routingInfoCache = null;
 
@@ -37,12 +37,12 @@ public class TransportBuilder extends FluentExtension {
     }
 
     /**
-     * Set the Channel Factory.
-     * @param channelFactory Channel Factory to use.
+     * Set the Connection Factory.
+     * @param connectionFactory Connection Factory to use.
      */
-    public void setChannelFactory(IRabbitChannelFactory channelFactory){
+    public void setConnectionFactory(IRabbitConnectionFactory connectionFactory){
 
-        this.channelFactory = channelFactory;
+        this.connectionFactory = connectionFactory;
     }
 
     /**
@@ -88,12 +88,12 @@ public class TransportBuilder extends FluentExtension {
 	}
 	
 	/**
-	 * Select the Channel Factory to use.
-	 * @return Channel Factory Builder interface.
+	 * Select the Connection Factory to use.
+	 * @return Connection Factory Builder interface.
 	 */
-	public ChannelFactoryBuilder connectWith(){
+	public ConnectionFactoryBuilder connectWith(){
 		
-		return new ChannelFactoryBuilder(this.parent, this);
+		return new ConnectionFactoryBuilder(this.parent, this);
 	}
 
     /**
@@ -107,7 +107,7 @@ public class TransportBuilder extends FluentExtension {
 
     public void createCommandedCache(long expiryTimeInSeconds) throws BuilderException {
 
-        if ( (null == this.channelFactory) || (null == this.topologyService) ) {
+        if ( (null == this.connectionFactory) || (null == this.topologyService) ) {
 
             throw new BuilderException("Cannot configure a commanded cache until a topology service and channel factory have been configured.");
         }
@@ -115,7 +115,7 @@ public class TransportBuilder extends FluentExtension {
         ICommandReceiver commandChannel = new DefaultCommandReceiver(
                 new RabbitEnvelopeReceiver(
                         topologyService,
-                        channelFactory),
+                        connectionFactory),
                 null);
 
         this.routingInfoCache = new CommandableCache(commandChannel, expiryTimeInSeconds);
@@ -124,11 +124,11 @@ public class TransportBuilder extends FluentExtension {
 	public void buildTransportProvider(){
 
 		assert this.topologyService != null;
-        assert this.channelFactory != null;
+        assert this.connectionFactory != null;
         assert this.routingInfoCache != null;
 
 		this.setTransportProvider(
-			new RabbitTransportProvider(this.topologyService, this.channelFactory, this.routingInfoCache));
+			new RabbitTransportProvider(this.topologyService, this.connectionFactory, this.routingInfoCache));
 	}
 
 	/**

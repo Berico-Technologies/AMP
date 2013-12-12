@@ -3,7 +3,7 @@ package amp.eventing.streaming;
 import amp.messaging.EnvelopeHelper;
 import amp.messaging.IInboundProcessorCallback;
 import cmf.bus.Envelope;
-import cmf.bus.EnvelopeHeaderConstants;
+import amp.messaging.EnvelopeHeaderConstants;
 import cmf.bus.IEnvelopeFilterPredicate;
 import cmf.bus.IRegistration;
 import cmf.eventing.patterns.streaming.IStreamingCollectionHandler;
@@ -15,7 +15,6 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static cmf.eventing.patterns.streaming.StreamingEnvelopeConstants.*;
-import static java.util.Arrays.sort;
 
 /**
  * Specialized {@link cmf.bus.IRegistration} that handles the event by aggregating events from a common sequence

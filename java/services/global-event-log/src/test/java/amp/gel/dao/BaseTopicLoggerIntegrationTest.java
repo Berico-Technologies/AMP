@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import amp.gel.service.TopicCounter;
 import amp.gel.service.TopicLogger;
 import cmf.bus.IEnvelopeBus;
 import cmf.eventing.IEventBus;

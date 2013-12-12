@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 
-import amp.rabbit.DeliveryOutcomes;
+import amp.rabbit.dispatch.DeliveryOutcomes;
 import amp.gel.domain.Table;
 import amp.gel.domain.TimeScale;
 import amp.gel.service.TypeActivityService;

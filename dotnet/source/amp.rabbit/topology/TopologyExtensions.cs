@@ -12,11 +12,19 @@ namespace amp.rabbit.topology
             {
                 isNullOrEmpty = true;
             }
-            else if (null == routing.Routes)
+            else if (null == routing.ProducingRoutes)
             {
                 isNullOrEmpty = true;
             }
-            else if (!routing.Routes.Any())
+            else if (!routing.ProducingRoutes.Any())
+            {
+                isNullOrEmpty = true;
+            }
+            else if (null == routing.ConsumingRoutes)
+            {
+                isNullOrEmpty = true;
+            }
+            else if (!routing.ConsumingRoutes.Any())
             {
                 isNullOrEmpty = true;
             }

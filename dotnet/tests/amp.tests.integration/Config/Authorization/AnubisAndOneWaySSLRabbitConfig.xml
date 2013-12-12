@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<objects xmlns="http://www.springframework.net">
+
+  <object id="IEnvelopeBus" type="amp.bus.DefaultEnvelopeBus, amp.bus">
+    <constructor-arg name="transportProvider" ref="ITransportProvider" />
+  </object>
+
+  <object id="ITransportProvider" type="amp.rabbit.transport.RabbitTransportProvider, amp.rabbit">
+    <constructor-arg name="topologyService" ref="ITopologyService" />
+    <constructor-arg name="connFactory" ref="IRabbitConnectionFactory" />
+    <constructor-arg name="routingInfoCache" ref="IRoutingInfoCache" />
+  </object>
+
+  <object id="IRabbitConnectionFactory" type="amp.rabbit.connection.TokenConnectionFactory, amp.rabbit">
+    <constructor-arg name="anubisUri" value="https://anubis.openampere.com:15678/anubis/identity/authenticate" />
+    <constructor-arg name="webRequestFactory" ref="token-IWebRequestFactory" />
+    <constructor-arg name="serializer" ref="token-ISerializer" />
+    <constructor-arg name="secureConnectionFactory" ref="secuire-IRabbitConnectionFactory" />
+  </object>
+
+  <object id="token-IWebRequestFactory" type="amp.utility.http.CertifacateWebRequestFactory, amp.utility" >
+    <constructor-arg name="certificateProvider" ref="ICertificateProvider" />
+  </object>
+
+  <!--NOTE: In a production environment, the amp.bus.security.WindowsCertificateStoreCertProvider
+      certificate provider is a more secure choice.  But it is hard to test with.-->
+  <object id="ICertificateProvider" type="amp.bus.security.FileBasedCertProvider, amp.bus.security" >
+    <constructor-arg name="clientCertFilename" value="..\..\..\..\shared\test-certs\amp-test-cert.pfx" />
+    <constructor-arg name="clientCertPassword" value="1qaz@WSX3edc$RFV" />
+  </object>
+
+  <object id="token-ISerializer" type="amp.utility.serialization.Utf8JsonDeserializer&lt;amp.rabbit.connection.TokenConnectionFactory+NamedToken&gt;, amp.utility" />
+
+  <object id="secuire-IRabbitConnectionFactory" type="amp.rabbit.connection.SslConnectionFactory, amp.rabbit" />
+
+</objects>

@@ -13,19 +13,18 @@
 
     <bean id="transportProvider" class="amp.rabbit.transport.RabbitTransportProvider"
           c:topologyService-ref="topologyService"
-          c:channelFactory-ref="channelFactory"
+          c:connectionFactory-ref="connectionFactory"
           c:routingInfoCache-ref="routingInfoCache" />
 
-    <bean id="channelFactory" class="amp.rabbit.TokenChannelFactory"
+    <bean id="connectionFactory" class="amp.rabbit.connection.TokenConnectionFactory"
           c:httpClientFactory-ref="tokenHttpClientProvider" 
           c:anubisUri="https://anubis.openampere.com:15678/anubis/identity/authenticate" 
           c:serializer-ref="tokenSerializer"/>
 
     <bean id="tokenHttpClientProvider" class="amp.utility.http.SslHttpClientProvider"
-          c:keystore="src/test/resources/test-certs/amp-test-at-openampere.com.jks" 
+          c:keystore="/test-certs/amp-test-at-openampere.com.jks"
           c:keystorePassword="1qaz@WSX3edc$RFV" 
-          c:truststore="src/test/resources/test-certs/trust.openampere.com.jks"
-          c:port="15678"/>
+          c:truststore="/test-certs/truststore.jks"/>
 
     <bean id="tokenSerializer" class="amp.utility.serialization.GsonSerializer" />
  

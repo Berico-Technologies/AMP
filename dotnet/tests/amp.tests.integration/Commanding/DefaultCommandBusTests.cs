@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Net.Security;
 using System.Threading;
 using amp.commanding;
 using NUnit.Framework;
@@ -17,7 +16,7 @@ namespace amp.tests.integration.Commanding
         [TestFixtureSetUp]
         public virtual void TestFixtureSetUp()
         {
-            _context = new XmlApplicationContext(Config.Bus.All, Config.Authorization.AnubisTwoWaySsl, Config.Topology.GtsSSL);
+            _context = new XmlApplicationContext(Config.Bus.All, Config.Authorization.AnubisOneWaySsl, Config.Topology.GtsSSL);
             _bus = _context.GetObject("ICommandBus") as ICommandBus;
         }
 

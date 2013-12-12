@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import amp.gel.dao.BaseTopicLoggerIntegrationTest.SimplePojo;
 import cmf.bus.Envelope;
-import cmf.bus.EnvelopeHeaderConstants;
+import amp.messaging.EnvelopeHeaderConstants;
 import cmf.bus.IEnvelopeFilterPredicate;
 import cmf.bus.IRegistration;
 import com.google.gson.Gson;

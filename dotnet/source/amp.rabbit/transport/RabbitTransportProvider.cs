@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using amp.bus;
 using amp.messaging;
+using amp.rabbit.connection;
 using amp.rabbit.topology;
 using cmf.bus;
 using Common.Logging;
-using RabbitMQ.Client;
 
 namespace amp.rabbit.transport
 {
@@ -18,9 +16,10 @@ namespace amp.rabbit.transport
 
         private static readonly ILog Log = LogManager.GetLogger(typeof(RabbitTransportProvider));
 
-        protected IDictionary<IRegistration, RabbitListener> _listeners;
+        protected IDictionary<IRegistration, MultiConnectionRabbitReceiver> _listeners;
         protected ITopologyService _topoSvc;
-        protected IRabbitConnectionFactory _connFactory;
+        protected IConnectionManagerCache _connFactory;
+        protected MultiConnectionRabbitSender _rabbitSender;
         protected IRoutingInfoCache _routingInfoCache;
 
 
@@ -30,10 +29,11 @@ namespace amp.rabbit.transport
             IRoutingInfoCache routingInfoCache)
         {
             _topoSvc = topologyService;
-            _connFactory = connFactory;
+            _connFactory = new ConnectionManagerCache(connFactory);
+            _rabbitSender = new MultiConnectionRabbitSender(_connFactory);
             _routingInfoCache = routingInfoCache;
 
-            _listeners = new Dictionary<IRegistration, RabbitListener>();
+            _listeners = new Dictionary<IRegistration, MultiConnectionRabbitReceiver>();
         }
 
 
@@ -44,30 +44,8 @@ namespace amp.rabbit.transport
             // first, get the topology based on the headers
             RoutingInfo routing = this.GetRoutingFromCacheOrService(_routingInfoCache, _topoSvc, env.Headers);
 
-            // next, pull out all the producer exchanges
-            IEnumerable<Exchange> exchanges =
-                from route in routing.Routes
-                select route.ProducerExchange;
-
-            // for each exchange, send the envelope
-            foreach (Exchange ex in exchanges)
-            {
-                Log.Debug("Sending to exchange: " + ex.ToString());
-                IConnection conn = _connFactory.ConnectTo(ex);
-                
-                using (IModel channel = conn.CreateModel())
-                {
-                    IBasicProperties props = channel.CreateBasicProperties();
-                    props.Headers = env.Headers as IDictionary;
-
-                    channel.ExchangeDeclare(ex.Name, ex.ExchangeType, ex.IsDurable, ex.IsAutoDelete, ex.Arguments);
-                    channel.BasicPublish(ex.Name, ex.RoutingKey, props, env.Payload);
-
-                    // close the channel, but not the connection.  Channels are cheap.
-                    channel.Close();
-                }
-            }
-
+            _rabbitSender.Send(routing, env);
+         
             Log.Debug("Leave Send");
         }
 
@@ -117,33 +95,11 @@ namespace amp.rabbit.transport
             // first, get the topology based on the registration info
             RoutingInfo routing = this.GetRoutingFromCacheOrService(_routingInfoCache, _topoSvc, registration.Info);
 
-            // next, pull out all the consumer exchanges
-            IEnumerable<Exchange> exchanges =
-                from route in routing.Routes
-                select route.ConsumerExchange;
+            var receiver = new MultiConnectionRabbitReceiver(_connFactory, routing, registration, listener_OnEnvelopeReceived);
 
-            foreach (Exchange ex in exchanges)
-            {
-                IConnection conn = _connFactory.ConnectTo(ex);
+            //TODO: Is this a good idea?  What if they register the same registration multiple times (easy way to do multi-threading...)  Just use a list instead!
+            _listeners.Add(registration, receiver);
 
-                // create a listener
-                RabbitListener listener = new RabbitListener(registration, ex, conn);
-                listener.OnEnvelopeReceived += this.listener_OnEnvelopeReceived;
-                listener.OnClose += _listeners.Remove;
-
-                // put it on another thread so as not to block this one but
-                // don't continue on this thread until we've started listening
-                ManualResetEvent startEvent = new ManualResetEvent(false);
-                Thread listenerThread = new Thread(listener.Start);
-                listenerThread.Name = string.Format("{0} on {1}:{2}{3}", ex.QueueName, ex.HostName, ex.Port, ex.VirtualHost);
-                listenerThread.Start(startEvent);
-
-                // wait for the RabbitListener to start
-                startEvent.WaitOne(new TimeSpan(0, 0, 30));
-
-                // store the listener
-                _listeners.Add(registration, listener);
-            }
 
             Log.Debug("Leave Register");
         }
@@ -152,8 +108,8 @@ namespace amp.rabbit.transport
         {
             if (_listeners.ContainsKey(registration))
             {
-                RabbitListener listener = _listeners[registration];
-                listener.Stop();
+                MultiConnectionRabbitReceiver listener = _listeners[registration];
+                listener.StopListening();
 
                 _listeners.Remove(registration);
             }
@@ -185,7 +141,7 @@ namespace amp.rabbit.transport
             if (disposing)
             {
                 // get rid of managed resources
-                try { _listeners.Values.ToList().ForEach(l => l.Stop()); }
+                try { _listeners.Values.ToList().ForEach(l => l.Dispose()); }
                 catch { }
 
                 try { _connFactory.Dispose(); }

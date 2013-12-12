@@ -1,11 +1,5 @@
 package amp.extensions.commons.builder;
 
-import amp.commanding.DefaultCommandReceiver;
-import amp.commanding.ICommandReceiver;
-import amp.rabbit.IRabbitChannelFactory;
-import amp.rabbit.topology.ITopologyService;
-import amp.rabbit.transport.CommandableCache;
-import amp.rabbit.transport.RabbitEnvelopeReceiver;
 
 /**
  * Created with IntelliJ IDEA.

@@ -1,7 +1,6 @@
 package amp.anubis.tests;
 
 import amp.anubis.core.AttributedNamedToken;
-import amp.anubis.core.NamedToken;
 import amp.anubis.core.IRabbitAccessManager;
 import amp.anubis.core.ITokenManager;
 import amp.anubis.services.TokenRabbitAccessManager;
