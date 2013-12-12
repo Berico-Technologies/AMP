@@ -95,6 +95,7 @@ ipch/
 [Rr]elease*/
 Ankh.NoLoad
 packages/
+*.nupkg
 
 # Emacs temporary #foo# files
 \#*
