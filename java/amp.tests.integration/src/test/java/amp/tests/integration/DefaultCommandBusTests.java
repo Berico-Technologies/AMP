@@ -8,7 +8,7 @@ import static org.junit.Assert.*;
 import static com.jayway.awaitility.Awaitility.*;
 import static org.hamcrest.Matchers.*;
 
-import org.springframework.context.support.FileSystemXmlApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import amp.commanding.ICommandBus;
 import amp.commanding.ICommandHandler;
@@ -16,12 +16,12 @@ import amp.messaging.MessageException;
 
 public class DefaultCommandBusTests {
     
-	protected static FileSystemXmlApplicationContext context;
+	protected static ClassPathXmlApplicationContext context;
 	protected static ICommandBus bus;
 	
 	@BeforeClass
 	public static void BeforeAllTests(){
-		context = new FileSystemXmlApplicationContext(DefaultEventBusTests.getConfigFiles());
+		context = new ClassPathXmlApplicationContext(DefaultEventBusTests.getConfigFiles());
 		bus = (ICommandBus) context.getBean("commandBus");
 	}
 	

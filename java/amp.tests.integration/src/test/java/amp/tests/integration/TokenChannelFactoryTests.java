@@ -3,7 +3,7 @@ package amp.tests.integration;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.springframework.context.support.FileSystemXmlApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.rabbitmq.client.ConnectionFactory;
 
@@ -15,12 +15,12 @@ import static org.hamcrest.Matchers.*;
 
 public class TokenChannelFactoryTests {
     
-	protected static FileSystemXmlApplicationContext context;
+	protected static ClassPathXmlApplicationContext context;
 	protected static TokenChannelFactory factory;
 	
 	@BeforeClass
 	public static void BeforeAllTests(){
-		context = new FileSystemXmlApplicationContext(Config.Authorization.AnubisTwoWaySsl, Config.Topology.GtsSSL);
+		context = new ClassPathXmlApplicationContext(Config.Authorization.AnubisTwoWaySsl, Config.Topology.GtsSSL);
 		factory = (TokenChannelFactory) context.getBean("channelFactory");
 	}
 	

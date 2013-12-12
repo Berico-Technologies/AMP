@@ -1,9 +1,7 @@
 package amp.rabbit;
 
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.KeyStore;
@@ -58,11 +56,16 @@ public class CertificateChannelFactory extends BaseChannelFactory {
 
         try {
 
-            loadedKeystore = getAndLoad(this.keystore, this.keystorePassword);
+
+            loadedKeystore = CertificateChannelFactory.loadKeystore(
+                    this.openResource(this.keystore),
+                    this.keystorePassword);
 
             if (this.truststore != null) {
 
-                loadedTruststore = getAndLoad(this.truststore, null);
+                loadedTruststore = CertificateChannelFactory.loadKeystore(
+                        this.openResource(this.truststore),
+                        null);
             }
 
         } catch (Exception e){
@@ -85,10 +88,32 @@ public class CertificateChannelFactory extends BaseChannelFactory {
         factory.useSslProtocol(ctx);
 	}
 
+    public InputStream openResource(String resourceName) throws FileNotFoundException {
+
+
+        InputStream stream;
+
+        // try to open resource as a file on the file system
+        try {
+            stream = new FileInputStream(resourceName);
+            return stream;
+        } catch (Exception ex) {} // it's not a file path
+
+
+        // try as an embedded resource
+        stream = this.getClass().getClassLoader().getResourceAsStream(resourceName);
+        if (stream != null) {
+            return stream;
+        }
+
+
+        // it is neither on the file system, nor embedded
+        throw new FileNotFoundException("Failed to find file: " + resourceName);
+    }
 
     /**
      * Get an instance of the KeyStore and Load it with Certs using the supplied password.
-     * @param path Location of the KeyStore
+     * @param stream InputStreamReader with KeyStore opened for reading.
      * @param password Password, which can be null for the trust store.
      * @return A loaded KeyStore instance.
      * @throws java.security.KeyStoreException
@@ -96,24 +121,13 @@ public class CertificateChannelFactory extends BaseChannelFactory {
      * @throws java.security.cert.CertificateException
      * @throws java.io.IOException
      */
-    static KeyStore getAndLoad(String path, String password)
+    static KeyStore loadKeystore(InputStream stream, String password)
             throws KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException, URISyntaxException {
 
         char[] charPassword = (password == null)? null : password.toCharArray();
 
         KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
-
-        File keystoreFile = new File(path);
-
-        if (!keystoreFile.exists()) {
-            // try to find it on the classpath
-            URL url = CertificateChannelFactory.class.getResource(path);
-            keystoreFile = (null != url) ? new File(url.toURI()) : new File(path);
-        }
-
-        FileInputStream fis = new FileInputStream(keystoreFile);
-
-        keystore.load(fis, charPassword);
+        keystore.load(stream, charPassword);
 
         return keystore;
     }
