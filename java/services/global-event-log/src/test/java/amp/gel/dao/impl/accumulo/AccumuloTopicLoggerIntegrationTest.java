@@ -2,6 +2,7 @@ package amp.gel.dao.impl.accumulo;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -25,7 +26,7 @@ public class AccumuloTopicLoggerIntegrationTest extends
 		super.tearDown();
 	}
 
-	@Test
+	@Test @Ignore
 	public void test() {
 		super.test();
 	}
