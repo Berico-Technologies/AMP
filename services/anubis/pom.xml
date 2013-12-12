@@ -47,7 +47,7 @@
 		</dependency>
 		<dependency>
 			<groupId>amp</groupId>
-			<artifactId>amp.bus.rabbit</artifactId>
+			<artifactId>amp.rabbit</artifactId>
 			<version>${amp.version}</version>
 		</dependency>
 		<dependency>
