@@ -16,7 +16,7 @@
     <!-- Shared properties -->
     <properties>
         <bundle.vendor>Berico Technologies</bundle.vendor>
-        <cmf.version>3.3.0-SNAPSHOT</cmf.version>
+        <cmf.version>${project.version}</cmf.version>
         <commons-codec.version>1.6</commons-codec.version>
         <commons-lang.version>2.6</commons-lang.version>
         <gson.version>2.2.2</gson.version>

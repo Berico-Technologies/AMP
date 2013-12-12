@@ -12,7 +12,7 @@
 	<url>http://ampere.berico.us</url>
 
 	<properties>
-		<cmf.version>3.3.0-SNAPSHOT</cmf.version>
+		<cmf.version>${project.version}</cmf.version>
 		<amp.version>${project.version}</amp.version>
  		<dropwizard.version>0.6.1</dropwizard.version>
         <fallwizard.version>1.1.0</fallwizard.version>
