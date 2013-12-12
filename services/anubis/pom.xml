@@ -5,7 +5,7 @@
 
 	<groupId>amp</groupId>
 	<artifactId>anubis</artifactId>
-	<version>3.3.0-SNAPSHOT</version>
+	<version>3.2.1</version>
 	<packaging>jar</packaging>
 
 	<name>AMP Quick Start</name>
