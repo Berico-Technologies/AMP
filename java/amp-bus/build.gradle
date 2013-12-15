@@ -1,0 +1,7 @@
+description = 'AMP implementation of the CMF Envelope Bus'
+
+dependencies {
+    compile "cmf:cmf.bus:${cmfVersion}"
+    compile "commons-codec:commons-codec:${commonsCodecVersion}"
+    compile "joda-time:joda-time:${jodaTimeVersion}"
+}

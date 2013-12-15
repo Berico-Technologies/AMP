@@ -1,0 +1,15 @@
+description="AMP Extensions - Commons"
+
+dependencies {
+	compile project(":amp-bus")
+	compile project(":amp-messaging")
+	compile project(":amp-eventing")
+	compile project(":amp-rabbit")
+	compile project(":amp-bus-security")
+	compile project(":services:global-topology-client")
+	compile project(":amp-commanding")
+	compile "cmf:cmf.bus:${cmfVersion}"
+	compile "cmf:cmf.eventing:${cmfVersion}"
+	compile "ch.qos.logback:logback-classic:${logbackVersion}"
+	compile "ch.qos.logback:logback-core:${logbackVersion}"
+}

@@ -26,7 +26,6 @@ import amp.rabbit.topology.Exchange;
 import amp.rabbit.topology.SimpleTopologyService;
 import amp.rabbit.transport.RabbitTransportProvider;
 import amp.rabbit.transport.SimpleRoutingInfoCache;
-
 import cmf.bus.Envelope;
 import amp.messaging.EnvelopeHeaderConstants;
 import cmf.bus.IEnvelopeFilterPredicate;
@@ -210,7 +209,7 @@ public class ConnectionManagementTests {
 		}));
 	}
 
-    private void simulateChannelClosure(boolean initiatedByApplication) {
+    private void simulateChannelClosure(boolean initiatedByApplication) throws Exception{
     	
     	waitAtMost(250, TimeUnit.MILLISECONDS).untilCall(to(_channels).size(), is(1));
     	
@@ -221,7 +220,7 @@ public class ConnectionManagementTests {
     	}
     }
 
-    private void simulateConnectionClosure(boolean initiatedByApplication) {
+    private void simulateConnectionClosure(boolean initiatedByApplication) throws Exception {
     	
     	waitAtMost(250, TimeUnit.MILLISECONDS).untilCall(to(_channels).size(), is(1));
 

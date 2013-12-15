@@ -1,0 +1,11 @@
+description="AMP implementation of the CMF Event Bus"
+
+dependencies {
+    compile project(":amp-messaging")
+    compile project(":amp-utility")
+    compile "cmf:cmf.bus:${cmfVersion}"
+    compile "cmf:cmf.eventing:${cmfVersion}"
+    compile "commons-codec:commons-codec:${commonsCodecVersion}"
+    compile "commons-lang:commons-lang:${commonsLangVersion}"
+    compile "joda-time:joda-time:${jodaTimeVersion}"
+}

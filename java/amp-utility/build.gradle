@@ -1,0 +1,11 @@
+description="AMP Utility Library"
+
+ext {
+  httpVersion="4.2.3"
+} 
+    
+dependencies {
+    compile "com.google.code.gson:gson:${gsonVersion}"
+    compile "org.apache.httpcomponents:httpclient:${httpVersion}"
+
+}

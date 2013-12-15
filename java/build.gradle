@@ -1,0 +1,90 @@
+group="amp"
+
+
+buildscript {
+	repositories {
+		mavenLocal()
+		mavenCentral()
+		maven {
+			url 'http://nexus.bericotechnologies.com/content/repositories/releases/'
+		}
+		dependencies {
+			classpath group: 'com.bericotech', name: 'dropwizard-gradle-plugin', version: '1.1'
+		}
+	}
+}
+
+ext {
+	cmfVersion = '3.3.0-SNAPSHOT'
+	commonsCodecVersion='1.6'
+    commonsLangVersion='2.6'
+    gsonVersion='2.2.2'
+    guavaVersion='14.0.1'
+    jodaTimeVersion='2.1'
+    junitVersion='4.11'
+    slf4jVersion='1.7.5'
+    springframeworkVersion='3.2.2.RELEASE'
+    rabbitmqVersion='3.1.3'
+    logbackVersion='1.0.10'
+    mockitoVersion='1.9.5'
+}
+
+
+allprojects {
+
+	repositories {
+		mavenLocal()
+		mavenCentral()
+        maven { url "http://repository.springsource.com/maven/bundles/release" }
+		maven { url "http://nexus.berico.us/content/repositories/releases/"}
+		maven { url "http://maven.springframework.org/milestone"}
+	}
+}
+
+apply from: file('gradle/maven.gradle')
+subprojects {
+	apply plugin: 'java'
+	apply plugin: 'eclipse'
+	apply plugin: 'idea'
+	apply from: project.rootDir.getAbsolutePath()+"/gradle/integrationTests.gradle"
+	
+
+	eclipse {
+		classpath {
+			downloadSources=true
+		}
+	}
+
+	sourceCompatibility	= 1.6
+
+	eclipse {
+    		classpath {
+       			downloadSources=true
+    		}
+	}
+
+	configurations {
+		compile
+		runtime
+		all*.exclude group: 'commons-logging' // this is where we exclude
+		all*.exclude module: 'slf4j-log4j12'
+		all*.exclude module: 'log4j-over-slf4j'
+		all*.exclude module: 'slf4j-jdk14'
+	}
+
+	//common deps
+	dependencies {
+		testCompile "org.springframework:spring-test:${springframeworkVersion}"
+		testCompile "junit:junit:4.11"
+		testCompile "org.hamcrest:hamcrest-all:1.3"
+		testCompile "org.mockito:mockito-all:${mockitoVersion}"
+		testCompile "com.jayway.awaitility:awaitility:1.3.4"
+		compile "org.slf4j:slf4j-api:${slf4jVersion}"
+		compile "org.slf4j:jcl-over-slf4j:${slf4jVersion}"
+	}
+}
+
+
+wrapper {
+    gradleVersion = '1.9'
+}

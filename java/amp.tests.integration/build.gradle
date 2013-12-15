@@ -1,0 +1,15 @@
+description="Integration tests for AMP implementation of the CMF Envelope Bus"
+
+dependencies {
+	compile project(":amp-bus")
+	compile project(":amp-eventing")
+	compile project(":amp-bus-security")
+	compile project(":services:global-topology-client")
+	compile "cmf:cmf.bus:${cmfVersion}"
+	compile "cmf:cmf.eventing:${cmfVersion}"
+	compile "org.springframework:spring-beans:${springframeworkVersion}"
+	compile "org.springframework:spring-context:${springframeworkVersion}"
+	compile "org.springframework:spring-core:${springframeworkVersion}"
+	compile "ch.qos.logback:logback-classic:${logbackVersion}"
+	compile "ch.qos.logback:logback-core:${logbackVersion}"
+}

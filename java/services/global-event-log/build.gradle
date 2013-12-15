@@ -1,0 +1,51 @@
+apply plugin: 'dropwizard'
+
+description="AMP Global Event Log"
+
+ext {
+	accumuloVersion="1.4.3"
+	hadoopVersion="0.20.203.0"
+	zookeeperVersion="3.3.1"		
+	fallwizardVersion="1.1.1"
+	hibernateVersion="3.3.2.GA"
+	hibernateAnnotationsVersion="3.4.0.GA"
+	commonsDbcpVersion="1.4"
+	apacheDerbyVersion="10.9.1.0"
+}
+
+dependencies {
+	compile project(":amp-bus")
+	compile project(":amp-rabbit")
+	compile project(":amp-eventing")
+	compile project(":amp-bus-security")
+	compile project(":services:global-topology-client")
+	compile "com.berico:fallwizard:${fallwizardVersion}"
+	compile "org.springframework:spring-context:${springframeworkVersion}"
+	compile "joda-time:joda-time:${jodaTimeVersion}"
+	compile "cmf:cmf.bus:${cmfVersion}"
+	compile "cmf:cmf.eventing:${cmfVersion}"
+	compile "com.google.code.gson:gson:${gsonVersion}"
+	compile "org.apache.accumulo:accumulo-core:${accumuloVersion}"
+	compile "org.apache.hadoop:hadoop-core:${hadoopVersion}"
+	compile "org.apache.zookeeper:zookeeper:${zookeeperVersion}"
+	compile "ch.qos.logback:logback-classic:${logbackVersion}"
+	compile "ch.qos.logback:logback-core:${logbackVersion}"
+	compile "org.hibernate:hibernate-core:${hibernateVersion}"
+	compile "org.hibernate:hibernate-annotations:${hibernateAnnotationsVersion}"
+	compile("org.hibernate:hibernate-entitymanager:${hibernateVersion}") {
+		exclude module: 'ehcache'
+	}
+	compile "org.springframework:spring-orm:${springframeworkVersion}"
+	compile "commons-dbcp:commons-dbcp:${commonsDbcpVersion}"
+	compile "org.apache.derby:derby:${apacheDerbyVersion}"
+	compile "org.apache.derby:derbyclient:${apacheDerbyVersion}"
+	compile "org.apache.derby:derbynet:${apacheDerbyVersion}"
+	compile 'commons-collections:commons-collections:3.2.1'
+}
+
+dropwizard {
+	mainClassName="amp.gel.TopicLoggerService"
+}
+
+
+	

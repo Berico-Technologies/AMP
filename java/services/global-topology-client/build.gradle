@@ -1,0 +1,13 @@
+description="AMP Global Topology Client"
+
+dependencies {
+    compile project(":amp-bus")
+    compile project(":amp-rabbit")
+    compile project(":amp-eventing")
+    compile "cmf:cmf.bus:${cmfVersion}"
+    compile "ch.qos.logback:logback-core:${logbackVersion}"
+    compile "ch.qos.logback:logback-classic:${logbackVersion}"
+    compile "com.google.guava:guava:${guavaVersion}"
+    testCompile "org.springframework:spring-context:${springframeworkVersion}"
+    testCompile "com.berico:test-utils:1.0.0"
+}

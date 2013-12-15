@@ -1,0 +1,5 @@
+description="AMP Security Implementations"
+
+dependencies {
+    compile project(":amp-bus")
+}  

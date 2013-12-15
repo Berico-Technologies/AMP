@@ -1,0 +1,86 @@
+// Maven side of things
+subprojects {
+	apply plugin: 'maven' // Java plugin has to have been already applied for the conf2scope mappings to work
+
+	uploadArchives {
+		repositories {
+			mavenDeployer {
+				repository(url: "http://nexus.berico.us/content/repositories/releases/") {
+					authentication(userName: mavenUser, password: mavenPassword)
+				}
+				pom.project {
+					name "${project.name}"
+					description "${project.name} developed by Berico Technologies"
+					developers {
+						developer {
+							id 'John Ruiz'
+							organization 'Berico Technologies'
+							email 'jruiz@bericotechnologies.com'
+							roles { role 'Lead Developer' }
+							timezone '-5'
+						}
+						developer {
+							id 'Richard Clayton'
+							organization 'Berico Technologies'
+							email 'rclayton@bericotechnologies.com'
+							roles { role 'Developer' }
+							timezone '-5'
+						}
+						developer {
+							id 'Jared Holmberg'
+							organization 'Berico Technologies'
+							email 'jholmberg@bericotechnologies.com'
+							roles { 'General Do-Gooder' }
+							timezone '-5'
+						}
+						developer {
+							id 'Minh Nguyen'
+							organization 'Berico Technologies'
+							email 'mnguyen@bericotechnologies.com'
+							roles { role 'Global Event Log Developer' }
+							timezone '-5'
+						}
+						developer {
+							id 'Ken Baltrinic'
+							organization 'Berico Technologies'
+							email 'kbaltrinic@bericotechnologies.com'
+							roles { role 'Major Contributor and Code Reviewer' }
+							timezone '-5'
+						}
+						developer {
+							id 'Drew Tayman'
+							organization 'Berico Technologies'
+							email 'dtayman@bericotechnologies.com'
+							roles { role 'JavaScript Client Developer' }
+							timezone '-5'
+						}
+						developer {
+							id 'Travis Camechis'
+							organization 'Berico Technologies'
+							email 'tcamechis@bericotechnologies.com'
+							roles { role 'General Developer' }
+							timezone '-5'
+						}
+					}
+					licenses {
+						license {
+							name 'The Apache Software License, Version 2.0'
+							url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+							distribution 'repo'
+						}
+					}
+					url "http://www.openampere.com/"
+					scm {
+						connection "scm:git:git@github.com:Berico-Technologies/AMP.git"
+						url "https://github.com/Berico-Technologies/AMP"
+						developerConnection "scm:git:git@github.com:Berico-Technologies/AMP.git"
+					}
+					issueManagement {
+						system 'github'
+						url "https://github.com/Berico-Technologies/AMP/issues"
+					}
+				}
+			}
+		}
+	}
+}

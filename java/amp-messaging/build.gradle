@@ -1,0 +1,10 @@
+description="AMP Messaging common implementation"
+
+dependencies {
+    compile project(":amp-bus")
+    compile project(":amp-bus-security")
+    compile "cmf:cmf.bus:${cmfVersion}"
+    compile "com.google.code.gson:gson:${gsonVersion}"
+    compile "commons-lang:commons-lang:${commonsLangVersion}"
+    compile "joda-time:joda-time:${jodaTimeVersion}"
+}
