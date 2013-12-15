@@ -1,18 +1,20 @@
 apply plugin: 'dropwizard'
 apply plugin: 'maven'
-apply plugin: 'rpm'
+apply plugin: 'os-package'
 
 
 buildscript {
 	repositories {
 			mavenCentral()
 			maven {
+				url 'http://dl.bintray.com/nebula/gradle-plugins'
+			}
+			maven {
 					url 'http://nexus.bericotechnologies.com/content/repositories/releases/'
 			}
 			dependencies {
 					classpath group: 'com.bericotech', name: 'dropwizard-gradle-plugin', version: '1.1'
-					classpath 'com.trigonic:gradle-rpm-plugin:1.4'
-
+					classpath "com.netflix.nebula:gradle-ospackage-plugin:1.9.1"
 			}
 	}
 }
@@ -69,8 +71,7 @@ dropwizard {
 }
 
 
-
-task rpm(type: Rpm) {
+ospackage {
 	packageName = 'anubis'
 	version = project.version
 	release = 2
@@ -106,5 +107,5 @@ task rpm(type: Rpm) {
 
 
 wrapper {
-	gradleVersion = '1.7'
+	gradleVersion = '1.9'
 }
