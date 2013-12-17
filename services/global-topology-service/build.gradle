@@ -1,7 +1,9 @@
 apply plugin: 'dropwizard'
 apply plugin: 'maven'
 apply plugin: 'rpm'
-apply plugin: 'mimosa'
+
+// UI will be apart of the 4.x unified Web console and not located directly with each service.
+//apply plugin: 'mimosa'
 
 group = 'amp'
 version = '3.3.0-SNAPSHOT'
@@ -101,4 +103,5 @@ task rpm(type: Rpm) {
 wrapper {
 	gradleVersion = '1.7'
 }
-processResources.dependsOn(mimosaTask)
+
+//processResources.dependsOn(mimosaTask)
