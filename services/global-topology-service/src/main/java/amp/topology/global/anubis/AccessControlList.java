@@ -2,7 +2,6 @@ package amp.topology.global.anubis;
 
 import com.google.common.collect.Maps;
 
-import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
 

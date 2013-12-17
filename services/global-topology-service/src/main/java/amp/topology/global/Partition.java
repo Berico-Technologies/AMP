@@ -17,10 +17,65 @@ public interface Partition {
     String getId();
 
     /**
+     * Attempt to activate the partition.
+     * @throws Exception could represent an error in attempting to achieve the active state,
+     * like a misconfiguration or inability to provision resources.
+     */
+    void activate() throws Exception;
+
+    /**
+     * Deactive the partition.
+     * @throws Exception could represent an error in attempting to achieve the inactive state,
+     * like having active clients and not being able to remove them.
+     */
+    void deactive() throws Exception;
+
+    /**
+     * Called when the Partition is instantiated.  This is an opportunity for the Partition to provision any resources
+     * it may need to function before becoming active.
+     * @throws Exception An error encountered during the setup process.
+     */
+    void setup() throws Exception;
+
+    /**
+     * Called when the Partition is being removed.  The Partition is given a chance to remove any configuration
+     * it has left on the system.
+     * @throws Exception An error encountered during the cleanup process.
+     */
+    void cleanup() throws Exception;
+
+    /**
      * Get the Current state of the partition.
      * @return Partition state.
      */
     PartitionStates getState();
+
+    /**
+     * The states a Partition can exist in.
+     */
+    public enum PartitionStates {
+        /**
+         * The partition is in error by some means, and will not participate
+         * in topology queries.
+         */
+        IN_ERROR,
+        /**
+         * The partition is in the process of becoming active.
+         */
+        ACTIVATING,
+        /**
+         * The partition is active and accepting requests.
+         */
+        ACTIVE,
+        /**
+         * The partition is in the process of becoming inactive.
+         */
+        DEACTIVATING,
+        /**
+         * The partition is inactive and will not participate in topology queries.
+         */
+        INACTIVE
+    }
 
     /**
      * Verify the state of the partition.  This is called to explicitly verify the state of the
@@ -41,45 +96,16 @@ public interface Partition {
     boolean verify() throws Exception;
 
     /**
-     * Attempt to activate the partition.
-     * @throws Exception could represent an error in attempting to achieve the active state,
-     * like a misconfiguration or inability to provision resources.
+     * Add a listener to the Partition
+     * @param listener
      */
-    void activate() throws Exception;
+    void addListener(Listener listener);
 
     /**
-     * Deactive the partition.
-     * @throws Exception could represent an error in attempting to achieve the inactive state,
-     * like having active clients and not being able to remove them.
+     * Remove a listener from the Partition
+     * @param listener
      */
-    void deactive() throws Exception;
-
-    /**
-     * The states a Partition can exist in.
-     */
-    public enum PartitionStates {
-        /**
-         * The partition is in error by some means, and will not participate
-         * in topology queries.
-         */
-        IN_ERROR,
-        /**
-         * The partition is in the process of becoming active.
-         */
-        STARTING,
-        /**
-         * The partition is active and accepting requests.
-         */
-        ACTIVE,
-        /**
-         * The partition is in the process of becoming inactive.
-         */
-        STOPPING,
-        /**
-         * The partition is inactive and will not participate in topology queries.
-         */
-        INACTIVE
-    }
+    void removeListener(Listener listener);
 
     /**
      * Listener for life cycle events on the partition.

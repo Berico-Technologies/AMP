@@ -12,4 +12,8 @@ public class Constants extends EnvelopeHeaderConstants {
     public static final String PROTOCOL_AMQP = "AMQP";
     public static final String PROTOCOL_WEBSTOMP = "WebStomp";
 
+    /**
+     * TODO: This should be in CMF.
+     */
+    public static final String MESSAGE_DIRECTION = "cmf.message.direction";
 }

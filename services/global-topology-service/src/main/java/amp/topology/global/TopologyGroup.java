@@ -2,6 +2,7 @@ package amp.topology.global;
 
 import amp.topology.global.anubis.AccessControlList;
 import amp.topology.global.exceptions.PartitionNotExistException;
+import amp.topology.global.filtering.RouteRequirements;
 
 import java.util.Collection;
 
@@ -12,6 +13,10 @@ import java.util.Collection;
  * the same AccessControls.  More than likely, this will also mean they
  * use the same protocol and are intended to connect to a preordained set
  * of groups.
+ *
+ * The TopologyGroup is responsible for managing the life cycle of it's
+ * partitions, which includes calling life cycle methods like setup, cleanup,
+ * active, and deactive.
  *
  * @author Richard Clayton (Berico Technologies)
  */
@@ -52,10 +57,15 @@ public interface TopologyGroup<PARTITION extends Partition> {
 
 
     /**
-     * Get applicable partitions based on a Request.
+     * Get applicable partitions based on a Request.  It is up to the Group to decide whether
+     * a client should receive partitions, and which partitions those should be.
+     *
+     * @param requirements Client Requirements
      * @return
      */
-    Collection<PARTITION> filter();
+    Collection<PARTITION> filter(RouteRequirements requirements);
+
+
 
     // TODO: Implement metrics based expansion/contraction
     // Expansion and contraction will be implementation specific in the meantime.
