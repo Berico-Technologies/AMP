@@ -1,6 +1,4 @@
-package amp.topology.global.anubis;
-
-import java.util.Collection;
+package amp.topology.anubis;
 
 /**
  * This should come out of the Anubis API; it's here to serve as a stub

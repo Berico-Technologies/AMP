@@ -1,4 +1,4 @@
-package amp.topology.global.anubis;
+package amp.topology.anubis;
 
 import java.util.Collection;
 

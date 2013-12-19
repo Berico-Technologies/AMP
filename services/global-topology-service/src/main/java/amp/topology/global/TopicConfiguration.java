@@ -1,6 +1,6 @@
 package amp.topology.global;
 
-import amp.topology.global.anubis.AccessControlList;
+import amp.topology.anubis.AccessControlList;
 import amp.topology.global.exceptions.ConnectorNotExistException;
 import amp.topology.global.exceptions.TopologyGroupNotExistException;
 import amp.topology.global.filtering.RouteFilterResults;

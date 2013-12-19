@@ -152,7 +152,7 @@ public interface Connector<PRODUCING_PARTITION extends Partition, CONSUMING_PART
          * @param newState The state the Connector is moving to.
          * @param reasonForChange The reason why the Connector has changed state.
          */
-        void onPartitionStateChange(
+        void onConnectorStateChange(
                 Connector<? extends Partition, ? extends Partition> thisConnector,
                 ConnectorStates oldState,
                 ConnectorStates newState,

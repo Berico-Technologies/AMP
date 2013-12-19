@@ -1,6 +1,6 @@
 package amp.topology.global.filtering;
 
-import amp.topology.global.anubis.Actor;
+import amp.topology.anubis.Actor;
 
 import java.util.Map;
 
@@ -37,6 +37,12 @@ public interface RouteRequirements extends Map<String, String> {
      * @return Pattern (PubSub, RPC, ScatterGather)
      */
     String getMessagePattern();
+
+    /**
+     * It's unlikely that the requirements will have the original actor.
+     * @param actor Actor making the request.
+     */
+    void setActor(Actor actor);
 
     /**
      * The secure identity of the client.

@@ -1,4 +1,4 @@
-package amp.topology.global.anubis;
+package amp.topology.anubis;
 
 /**
  * An evaluation of whether an actor should be allowed to do something.

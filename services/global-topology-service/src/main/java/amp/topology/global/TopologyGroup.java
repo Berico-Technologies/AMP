@@ -1,6 +1,6 @@
 package amp.topology.global;
 
-import amp.topology.global.anubis.AccessControlList;
+import amp.topology.anubis.AccessControlList;
 import amp.topology.global.exceptions.PartitionNotExistException;
 import amp.topology.global.filtering.RouteRequirements;
 
@@ -65,6 +65,20 @@ public interface TopologyGroup<PARTITION extends Partition> {
      */
     Collection<PARTITION> filter(RouteRequirements requirements);
 
+
+    /**
+     * Called when the Group is instantiated.  This is an opportunity for the Group to do whatever it needs to do
+     * (like create an initial partition) in order to become ready.
+     * @throws Exception An error encountered during the setup process.
+     */
+    void setup() throws Exception;
+
+    /**
+     * Called when the Group is being removed.  The Group is given a chance to shutdown and clean up partitions
+     * it may have provisioned during the course of its life.
+     * @throws Exception An error encountered during the cleanup process.
+     */
+    void remove() throws Exception;
 
 
     // TODO: Implement metrics based expansion/contraction

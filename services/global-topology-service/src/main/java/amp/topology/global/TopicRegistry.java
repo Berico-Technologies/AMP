@@ -7,7 +7,7 @@ import amp.topology.global.exceptions.TopologyConfigurationNotExistException;
  *
  * @author Richard Clayton (Berico Technologies)
  */
-public interface TopologyRegistry {
+public interface TopicRegistry {
 
     /**
      * Get a TopicConfiguration by Id.

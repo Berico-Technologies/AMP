@@ -1,9 +1,6 @@
 package amp.topology.global.filtering;
 
-import amp.topology.global.Connector;
-import amp.topology.global.ConsumerGroup;
-import amp.topology.global.Partition;
-import amp.topology.global.ProducerGroup;
+import amp.topology.global.*;
 import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
@@ -13,7 +10,7 @@ import java.util.Collection;
 /**
  * Container for all the applicable TopologyGroups and Connectors based on RouteRequirements.
  *
- * It's up the requestor to interpret those results into lower level topology.
+ * It's up the requester to interpret those results into lower level topology.
  *
  * @author Richard Clayton (Berico Technologies)
  */
@@ -25,17 +22,22 @@ public class RouteFilterResults {
 
     private final Collection<ConsumerGroup<? extends Partition>> consumerGroups;
 
+    private final RouteRequirements requirements;
+
     /**
      * Instantiate the object with applicable Topology constructs.
+     * @param requirements Underlying requirements for the Route (used to return partitions).
      * @param producerGroups Applicable Producer Groups.
      * @param connectors Applicable Connectors.
      * @param consumerGroups Applicable Consumer Groups.
      */
     public RouteFilterResults(
+            RouteRequirements requirements,
             Collection<ProducerGroup<? extends Partition>> producerGroups,
             Collection<Connector<? extends Partition, ? extends Partition>> connectors,
             Collection<ConsumerGroup<? extends Partition>> consumerGroups) {
 
+        this.requirements = requirements;
         this.producerGroups = producerGroups;
         this.connectors = connectors;
         this.consumerGroups = consumerGroups;
@@ -47,6 +49,27 @@ public class RouteFilterResults {
      */
     public Collection<ProducerGroup<? extends Partition>> getProducerGroups() {
         return producerGroups;
+    }
+
+    /**
+     * Get the applicable Producer Partitions.
+     * @return Producer Partitions
+     */
+    public Collection<? extends Partition> getProducerPartitions(){
+
+        ArrayList<Partition> partitions = Lists.newArrayList();
+
+        for (ProducerGroup<? extends Partition> group : producerGroups){
+
+            Collection<? extends Partition> applicablePartitions = group.filter(requirements);
+
+            if (applicablePartitions != null && applicablePartitions.size() > 0){
+
+                partitions.addAll(applicablePartitions);
+            }
+        }
+
+        return partitions;
     }
 
     /**
@@ -66,6 +89,28 @@ public class RouteFilterResults {
     }
 
     /**
+     * Get the applicable Partitions.
+     * @return Collection of Consumer Partitions
+     */
+    public Collection<? extends Partition> getConsumerPartitions(){
+
+        ArrayList<Partition> partitions = Lists.newArrayList();
+
+        for (ConsumerGroup<? extends Partition> group : consumerGroups){
+
+            Collection<? extends Partition> applicablePartitions = group.filter(requirements);
+
+            if (applicablePartitions != null && applicablePartitions.size() > 0){
+
+                partitions.addAll(applicablePartitions);
+            }
+        }
+
+        return partitions;
+    }
+
+
+    /**
      * EMPTY instance, for which you can perform comparisons.
      */
     public static final EmptyRouteFilterResults EMPTY = new EmptyRouteFilterResults();
@@ -81,6 +126,7 @@ public class RouteFilterResults {
          */
         public EmptyRouteFilterResults() {
             super(
+                    null,
                     new ArrayList<ProducerGroup<? extends Partition>>(),
                     new ArrayList<Connector<? extends Partition, ? extends Partition>>(),
                     new ArrayList<ConsumerGroup<? extends Partition>>());
@@ -91,9 +137,9 @@ public class RouteFilterResults {
      * Get a builder for this monster.
      * @return A builder instance.
      */
-    public static Builder Builder(){
+    public static Builder Builder(RouteRequirements requirements){
 
-        return new Builder();
+        return new Builder(requirements);
     }
 
     /**
@@ -101,11 +147,17 @@ public class RouteFilterResults {
      */
     public static class Builder {
 
+        RouteRequirements requirements;
+
         ArrayList<ProducerGroup<? extends Partition>> pgroups = Lists.newArrayList();
 
         ArrayList<ConsumerGroup<? extends Partition>> cgroups = Lists.newArrayList();
 
         ArrayList<Connector<? extends Partition, ? extends Partition>> connectors = Lists.newArrayList();
+
+        public Builder(RouteRequirements requirements){
+            this.requirements = requirements;
+        }
 
         public Builder pgroups(ProducerGroup<? extends Partition>... pgroups){
 
@@ -130,7 +182,7 @@ public class RouteFilterResults {
 
         public RouteFilterResults build(){
 
-            return new RouteFilterResults(pgroups, connectors, cgroups);
+            return new RouteFilterResults(requirements, pgroups, connectors, cgroups);
         }
     }
 }
