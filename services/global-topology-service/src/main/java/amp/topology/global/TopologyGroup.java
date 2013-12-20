@@ -3,6 +3,7 @@ package amp.topology.global;
 import amp.topology.anubis.AccessControlList;
 import amp.topology.global.exceptions.PartitionNotExistException;
 import amp.topology.global.filtering.RouteRequirements;
+import com.google.common.reflect.TypeToken;
 
 import java.util.Collection;
 
@@ -78,7 +79,7 @@ public interface TopologyGroup<PARTITION extends Partition> {
      * it may have provisioned during the course of its life.
      * @throws Exception An error encountered during the cleanup process.
      */
-    void remove() throws Exception;
+    void cleanup() throws Exception;
 
 
     // TODO: Implement metrics based expansion/contraction
@@ -94,25 +95,27 @@ public interface TopologyGroup<PARTITION extends Partition> {
 
     /**
      * Remove a Listener
-     * @param listener Listener to remove.
+     * @param listener Listener to cleanup.
      */
     void removeListener(Listener listener);
 
     /**
      * Called when partitions are added or removed from the group.
+     *
+     * Because of funkiness with Generics, you will need to cast the Partition to the
+     * correct type if you want to access implementation specific behavior.
      */
     public interface Listener {
-
         /**
          * Fired when a partition is added.
          * @param partitionToAdd Partition to add.
          */
-        void onPartitionAdded(PARTITION partitionToAdd);
+        void onPartitionAdded(Partition partitionToAdd);
 
         /**
          * Fired when a partition is removed.
-         * @param partitionToRemove Partition to remove.
+         * @param partitionToRemove Partition to cleanup.
          */
-        void onPartitionRemoved(PARTITION partitionToRemove);
+        void onPartitionRemoved(Partition partitionToRemove);
     }
 }

@@ -86,7 +86,7 @@ public interface Connector<PRODUCING_PARTITION extends Partition, CONSUMING_PART
     void setup() throws Exception;
 
     /**
-     * Called when the Connector is being removed.  The Connector is given a chance to remove any configuration
+     * Called when the Connector is being removed.  The Connector is given a chance to cleanup any configuration
      * it has left on the system.
      * @throws Exception An error encountered during the cleanup process.
      */
@@ -96,6 +96,10 @@ public interface Connector<PRODUCING_PARTITION extends Partition, CONSUMING_PART
      * Describes the potential states a connector can exist in.
      */
     public enum ConnectorStates {
+        /**
+         * The Connector has never been setup or activated.
+         */
+        NONEXISTENT,
         /**
          * The state of the connector or it's underlying TopologyGroups are in error.
          */

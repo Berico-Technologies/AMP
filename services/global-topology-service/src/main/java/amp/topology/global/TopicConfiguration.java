@@ -67,22 +67,24 @@ public interface TopicConfiguration {
      * it may have provisioned during the course of its life.
      * @throws Exception An error encountered during the cleanup process.
      */
-    void remove() throws Exception;
+    void cleanup() throws Exception;
 
     ///// CRUD for Producer Groups ////////////////////////////////////////////////////////////////////////////////////
 
     /**
-     * Add a Producer Group
+     * Add a Producer Group (will call "setup" on the group), and fails to add the Group if there is a
+     * problem setting up the group.
      * @param producerGroup
+     * @throws Exception Thrown if there is a problem setting up the Group.
      */
-    void addProducerGroup(ProducerGroup<? extends  Partition> producerGroup);
+    void addProducerGroup(ProducerGroup<? extends  Partition> producerGroup) throws Exception;
 
     /**
      * Remove a Producer Group by Id
      * @param id
-     * @throws TopologyGroupNotExistException
+     * @throws Exception
      */
-    void removeProducerGroup(String id) throws TopologyGroupNotExistException;
+    void removeProducerGroup(String id) throws Exception;
 
     /**
      * Get a Producer Group by Id
@@ -102,17 +104,19 @@ public interface TopicConfiguration {
     ///// CRUD for Consumer Groups ////////////////////////////////////////////////////////////////////////////////////
 
     /**
-     * Add a Consumer Group
+     * Add a Consumer Group (will call "setup" on the group), and fails to add the Group if there is a
+     * problem setting up the group.
      * @param consumerGroup
+     * @throws Exception Thrown if there is a problem setting up the Group.
      */
-    void addConsumerGroup(ConsumerGroup<? extends Partition> consumerGroup);
+    void addConsumerGroup(ConsumerGroup<? extends Partition> consumerGroup) throws Exception;
 
     /**
      * Remove a Consumer Group by Id
      * @param id
-     * @throws TopologyGroupNotExistException
+     * @throws Exception
      */
-    void removeConsumerGroup(String id) throws TopologyGroupNotExistException;
+    void removeConsumerGroup(String id) throws Exception;
 
     /**
      * Get a Consumer Group by Id
@@ -132,17 +136,18 @@ public interface TopicConfiguration {
     ///// CRUD for Connectors /////////////////////////////////////////////////////////////////////////////////////////
 
     /**
-     * Add a Connector
+     * Add a Connector (will call "setup" on the connector), and fails to add the Connector if there is a
+     * problem in the setup process.
      * @param connector
      */
-    void addConnector(Connector<? extends Partition, ? extends Partition> connector);
+    void addConnector(Connector<? extends Partition, ? extends Partition> connector) throws Exception;
 
     /**
      * Remove a Connector
      * @param id
-     * @throws ConnectorNotExistException
+     * @throws Exception
      */
-    void removeConnector(String id) throws ConnectorNotExistException;
+    void removeConnector(String id) throws Exception;
 
     /**
      * Get a Connector by Id

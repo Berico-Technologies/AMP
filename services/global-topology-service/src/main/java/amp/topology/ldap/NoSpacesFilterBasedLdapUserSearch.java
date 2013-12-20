@@ -29,7 +29,7 @@ public class NoSpacesFilterBasedLdapUserSearch extends FilterBasedLdapUserSearch
         }
 
 
-        // due to the way I loop, there's an extra comma which we need to remove
+        // due to the way I loop, there's an extra comma which we need to cleanup
         // but only if we had tokens (not a garauntee),
         if (tokens.length > 0) {
             buffer.deleteCharAt(buffer.length() - 1);

@@ -26,7 +26,7 @@ public interface Partition {
     /**
      * Deactive the partition.
      * @throws Exception could represent an error in attempting to achieve the inactive state,
-     * like having active clients and not being able to remove them.
+     * like having active clients and not being able to cleanup them.
      */
     void deactive() throws Exception;
 
@@ -38,7 +38,7 @@ public interface Partition {
     void setup() throws Exception;
 
     /**
-     * Called when the Partition is being removed.  The Partition is given a chance to remove any configuration
+     * Called when the Partition is being removed.  The Partition is given a chance to cleanup any configuration
      * it has left on the system.
      * @throws Exception An error encountered during the cleanup process.
      */
@@ -54,6 +54,10 @@ public interface Partition {
      * The states a Partition can exist in.
      */
     public enum PartitionStates {
+        /**
+         * The Partition has never been setup or activated.
+         */
+        NONEXISTENT,
         /**
          * The partition is in error by some means, and will not participate
          * in topology queries.
