@@ -5,13 +5,13 @@ using Common.Logging;
 
 namespace amp.utility.http
 {
-    class CertifacateWebRequestFactory : IWebRequestFactory
+    public class CertificateWebRequestFactory : IWebRequestFactory
     {
         private readonly ILog _log;
 
         private readonly ICertificateProvider _certificateProvider;
 
-        public CertifacateWebRequestFactory(ICertificateProvider certificateProvider)
+        public CertificateWebRequestFactory(ICertificateProvider certificateProvider)
         {
             _log = LogManager.GetLogger(this.GetType());
             _certificateProvider = certificateProvider;
