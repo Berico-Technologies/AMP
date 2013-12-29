@@ -1,9 +1,10 @@
 package amp.topology.protocols.rabbit;
 
 import amp.rabbit.topology.RoutingInfo;
+import amp.topology.anubis.Actor;
+import amp.topology.anubis.SpringActor;
 import amp.topology.global.TopicConfiguration;
 import amp.topology.global.TopicRegistry;
-import amp.topology.anubis.Actor;
 import amp.topology.global.filtering.RouteFilterResults;
 import amp.topology.protocols.common.Versioned;
 import amp.topology.protocols.rabbit.requirements.RabbitRouteRequirements;
@@ -26,11 +27,6 @@ public class RabbitRouteProviderResource {
     @Autowired
     private TopicRegistry topicRegistry;
 
-    //@Autowired
-    //private AmqpTopologyAdaptor topologyAdaptor;
-
-
-
     @POST
     @Path("/3.3.0")
     @Timed
@@ -40,7 +36,7 @@ public class RabbitRouteProviderResource {
             throws Exception {
 
         // TODO: Actor is what we should get back from Anubis-based Spring Security plugin.
-        Actor client = (Actor)clientMakingRequest;
+        Actor client = new SpringActor(clientMakingRequest);
 
         routeRequirements.setActor(client);
 
@@ -50,8 +46,10 @@ public class RabbitRouteProviderResource {
         // Get the applicable topology constructs (PGroups, CGroups, Connectors)
         RouteFilterResults routeResults = topicConf.filter(routeRequirements);
 
-        // Adapt the topology constructs into AMQP Routing Info
-        //return topologyAdaptor.adapt(routeResults);
-        return null;
+        // Convert the results into routing info.
+        RoutingInfo routingInfo = RouteFilterResultsAdaptor.convert(routeResults, routeRequirements);
+
+        // return the results.
+        return routingInfo;
     }
 }
