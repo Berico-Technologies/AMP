@@ -1,4 +1,4 @@
-package amp.topology.ldap;
+package amp.topology.anubis.ldap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

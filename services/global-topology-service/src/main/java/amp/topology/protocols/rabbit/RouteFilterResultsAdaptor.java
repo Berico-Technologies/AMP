@@ -55,7 +55,7 @@ public class RouteFilterResultsAdaptor {
 
         for (Partition p : routeResults.getProducerPartitions()){
 
-            if (p.getClass().isAssignableFrom(ProducingRouteProvider.class)){
+            if (ProducingRouteProvider.class.isAssignableFrom(p.getClass())){
 
                 ProducingRouteProvider provider = (ProducingRouteProvider)p;
 
@@ -82,7 +82,7 @@ public class RouteFilterResultsAdaptor {
 
         for (Partition p : routeResults.getConsumerPartitions()){
 
-            if (p.getClass().isAssignableFrom(ConsumingRouteProvider.class)){
+            if (ConsumingRouteProvider.class.isAssignableFrom(p.getClass())){
 
                 ConsumingRouteProvider provider = (ConsumingRouteProvider)p;
 

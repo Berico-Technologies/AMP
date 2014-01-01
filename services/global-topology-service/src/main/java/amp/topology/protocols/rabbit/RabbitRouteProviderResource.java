@@ -52,4 +52,13 @@ public class RabbitRouteProviderResource {
         // return the results.
         return routingInfo;
     }
+
+    /**
+     * Set the Topic Registry (used for Unit Testing purposes).
+     * @param topicRegistry
+     */
+    public void setTopicRegistry(TopicRegistry topicRegistry) {
+
+        this.topicRegistry = topicRegistry;
+    }
 }

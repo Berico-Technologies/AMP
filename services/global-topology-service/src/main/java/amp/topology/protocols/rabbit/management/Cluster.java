@@ -25,7 +25,7 @@ public class Cluster extends CopyOnWriteArraySet<Broker> {
 
     private Object managementEndpointsLock = new Object();
 
-    private Set<ManagementEndpoint> managementEndpoints = Sets.newCopyOnWriteArraySet();
+    Set<ManagementEndpoint> managementEndpoints = Sets.newCopyOnWriteArraySet();
 
     /**
      * Provide the Name of the Cluster, using the default virtual host ("/").
@@ -197,8 +197,10 @@ public class Cluster extends CopyOnWriteArraySet<Broker> {
          * and return whatever value you want.
          * @param rmq RabbitMQ Management Service API.
          * @return The value you desire.
+         * @throws Exception an error that may occur during the execution of the task
+         * by the client.
          */
-        RETURN execute(RabbitMgmtService rmq);
+        RETURN execute(RabbitMgmtService rmq) throws Exception;
     }
 
     /**
@@ -219,9 +221,9 @@ public class Cluster extends CopyOnWriteArraySet<Broker> {
 
         for (ManagementEndpoint me : this.managementEndpoints){
 
-            RabbitMgmtService rms = me.getManagementService();
-
             try {
+
+                RabbitMgmtService rms = me.getManagementService();
 
                 RETURN retValue = taskToExecute.execute(rms);
 

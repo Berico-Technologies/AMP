@@ -12,7 +12,7 @@
                      manager-dn="${ldap.managerDn:CN=LDAP Bind Account,CN=Users,DC=openampere,DC=com}"
                      manager-password="${ldap.managerPwd:1qaz@WSX3edc$RFV}" />
 
-    <bean id="filterBasedLdapUserSearch" class="amp.topology.ldap.NoSpacesFilterBasedLdapUserSearch">
+    <bean id="filterBasedLdapUserSearch" class="amp.topology.anubis.ldap.NoSpacesFilterBasedLdapUserSearch">
         <constructor-arg value="cn=Users" />
         <constructor-arg value="(distinguishedName={0})" />
         <constructor-arg ref="ldapServer" />
@@ -20,7 +20,7 @@
         <property name="derefLinkFlag" value="true" />
     </bean>
 
-    <bean id="authoritiesPopulator" class="amp.topology.ldap.IncludeDomainUsersLdapAuthoritiesPopulator">
+    <bean id="authoritiesPopulator" class="amp.topology.anubis.ldap.IncludeDomainUsersLdapAuthoritiesPopulator">
         <constructor-arg ref="ldapServer" />
         <constructor-arg value="cn=Users" />
         <property name="searchSubtree" value="true" />
