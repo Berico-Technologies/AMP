@@ -1,10 +1,10 @@
 package amp.topology;
 
 import com.bazaarvoice.dropwizard.assets.ConfiguredAssetsBundle;
-import com.berico.fallwizard.SpringService;
+import com.bericotech.fallwizard.FallwizardService;
 import com.yammer.dropwizard.config.Bootstrap;
 
-public class TopologyService extends SpringService<TopologyConfiguration>
+public class TopologyService extends FallwizardService<TopologyConfiguration>
 {
     public static void main( String[] args ) throws Exception
     {

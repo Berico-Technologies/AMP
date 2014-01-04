@@ -90,9 +90,9 @@ public interface Partition {
      * out of sync with the underlying infrastructure, it is expected that the verify method will
      * correct the valid state and fire event handlers (while indicating that the state was invalid = FALSE).
      *
-     * @return If the current state is correct, the method will return TRUE.  This means that if the
+     * @return If the latest state is correct, the method will return TRUE.  This means that if the
      * Partition State is in error, and verify() determines that it is in error, this method will return
-     * TRUE.  If the current state does not match the actual state of the partition, the method should
+     * TRUE.  If the latest state does not match the actual state of the partition, the method should
      * return FALSE.  If any bad occurs during verification, the method may throw an exception.
      * @throws Exception Could be caused by bad configuration, an nested exception propagated during
      * the verification check, etc.

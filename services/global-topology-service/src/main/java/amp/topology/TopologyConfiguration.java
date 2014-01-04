@@ -7,10 +7,10 @@ import javax.validation.constraints.NotNull;
 
 import com.bazaarvoice.dropwizard.assets.AssetsBundleConfiguration;
 import com.bazaarvoice.dropwizard.assets.AssetsConfiguration;
-import com.berico.fallwizard.SpringConfiguration;
+import com.bericotech.fallwizard.configuration.FallwizardConfiguration;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class TopologyConfiguration extends SpringConfiguration implements AssetsBundleConfiguration {
+public class TopologyConfiguration extends FallwizardConfiguration implements AssetsBundleConfiguration {
 
 	@Valid
 	@NotNull

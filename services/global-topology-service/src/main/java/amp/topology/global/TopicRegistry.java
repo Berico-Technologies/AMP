@@ -44,4 +44,10 @@ public interface TopicRegistry {
      * if you are holding onto the iterator for too long.
      */
     Iterable<TopicConfiguration> entries() throws Exception;
+
+    /**
+     * Get the time the Topology was last modified.
+     * @return Time last modified in millis.
+     */
+    long lastModified();
 }

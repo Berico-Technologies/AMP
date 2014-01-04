@@ -124,7 +124,7 @@ public abstract class BaseConnector<PPART extends Partition, CPART extends Parti
     }
 
     /**
-     * Get the current state of the Connector.
+     * Get the latest state of the Connector.
      * @return State of the Connector.
      */
     @Override

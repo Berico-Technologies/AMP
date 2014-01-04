@@ -44,7 +44,7 @@ public abstract class BasePartition implements Partition {
     }
 
     /**
-     * Get the current state of the partition.
+     * Get the latest state of the partition.
      * @return Current partition state.
      */
     @Override

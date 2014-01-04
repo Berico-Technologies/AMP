@@ -1,6 +1,7 @@
-applicationContext: ['configuration/applicationContext.xml', 'configuration/inmemContext.xml', 'configuration/x509SecurityContext.xml', 'configuration/snapshotContext.xml', 'configuration/ldapUserDetailsContext.xml']
+spring:
+    applicationContext: ['configuration/applicationContext.xml']
 
-useSpringSecurity: true
+    useSpringSecurity: true
 
 logging:
     level: INFO

@@ -44,7 +44,7 @@ public interface Connector<PRODUCING_PARTITION extends Partition, CONSUMING_PART
     ConsumerGroup<CONSUMING_PARTITION> getConsumerGroup();
 
     /**
-     * The current state of the connector.
+     * The latest state of the connector.
      * @return Connector State.
      */
     ConnectorStates getState();
