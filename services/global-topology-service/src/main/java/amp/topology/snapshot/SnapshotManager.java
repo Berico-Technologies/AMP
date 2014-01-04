@@ -2,6 +2,7 @@ package amp.topology.snapshot;
 
 import amp.topology.snapshot.exceptions.TopicConfigurationChangeExceptionRollup;
 import amp.topology.snapshot.exceptions.SnapshotDoesNotExistException;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -21,6 +22,7 @@ public interface SnapshotManager {
      * @return Current state of topology.
      * @throws Exception an error encountered during the persistence of the snapshot.
      */
+    @PreAuthorize("hasRole('gts-snapshot-export')")
     Snapshot export(@Nullable String description) throws Exception;
 
     /**
@@ -33,12 +35,14 @@ public interface SnapshotManager {
      *
      * @return Last exported state of the topology.
      */
+    @PreAuthorize("hasRole('gts-snapshot-describe')")
     @Nullable Snapshot latest();
 
     /**
      * Get the last time the topology was persisted.
      * @return last time the topology was persisted
      */
+    @PreAuthorize("hasRole('gts-snapshot-info')")
     long lastPersisted();
 
     /**
@@ -48,12 +52,14 @@ public interface SnapshotManager {
      * @throws SnapshotDoesNotExistException encountered if the supplied ID does not match
      * an existing snapshot.
      */
+    @PreAuthorize("hasRole('gts-snapshot-describe')")
     Snapshot get(String snapshotId) throws Exception;
 
     /**
      * Return a list of descriptors for all available snapshots.
      * @return All available snapshots.
      */
+    @PreAuthorize("hasRole('gts-snapshot-list')")
     Collection<SnapshotDescriptor> list();
 
     /**
@@ -74,6 +80,7 @@ public interface SnapshotManager {
      * @param snapshot Snapshot to use as configuration.
      * @throws TopicConfigurationChangeExceptionRollup a composite of errors that occurred during the operation.
      */
+    @PreAuthorize("hasRole('gts-snapshot-overwrite')")
     void overwrite(Snapshot snapshot) throws TopicConfigurationChangeExceptionRollup;
 
     /**
@@ -89,5 +96,6 @@ public interface SnapshotManager {
      * @param snapshot Snapshot to merge.
      * @throws Exception a composite of errors that occurred during the operation..
      */
+    @PreAuthorize("hasRole('gts-snapshot-merge')")
     void merge(Snapshot snapshot) throws TopicConfigurationChangeExceptionRollup;
 }

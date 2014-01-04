@@ -1,6 +1,7 @@
 package amp.topology.global;
 
 import amp.topology.global.exceptions.TopologyConfigurationNotExistException;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
  * Responsible for storing and providing access to the Topology tree.
@@ -15,6 +16,7 @@ public interface TopicRegistry {
      * @return TopicConfiguration
      * @throws TopologyConfigurationNotExistException Thrown if there is no such topic.
      */
+    @PreAuthorize("hasRole('gts-snapshot-describe')")
     TopicConfiguration get(String id) throws TopologyConfigurationNotExistException;
 
     /**
@@ -22,12 +24,14 @@ public interface TopicRegistry {
      * @param id of the topic configuration.
      * @return TRUE if a TopicConfiguration with that id exists.
      */
+    @PreAuthorize("hasRole('gts-snapshot-describe')")
     boolean exists(String id);
 
     /**
      * Register a new TopicConfiguration with the registry.
      * @param topicConfiguration TopicConfiguration to register.
      */
+    @PreAuthorize("hasRole('gts-snapshot-add')")
     void register(TopicConfiguration topicConfiguration);
 
     /**
@@ -35,6 +39,7 @@ public interface TopicRegistry {
      * @param id Id of the TopicConfiguration.
      * @throws TopologyConfigurationNotExistException Thrown if there is no such topic.
      */
+    @PreAuthorize("hasRole('gts-snapshot-remove')")
     void unregister(String id) throws TopologyConfigurationNotExistException;
 
     /**
@@ -43,11 +48,13 @@ public interface TopicRegistry {
      * @throws Exception Could be caused by the underlying storage mechanism, particularly,
      * if you are holding onto the iterator for too long.
      */
+    @PreAuthorize("hasRole('gts-snapshot-list')")
     Iterable<TopicConfiguration> entries() throws Exception;
 
     /**
      * Get the time the Topology was last modified.
      * @return Time last modified in millis.
      */
+    @PreAuthorize("hasRole('gts-snapshot-info')")
     long lastModified();
 }

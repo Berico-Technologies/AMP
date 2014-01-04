@@ -3,8 +3,10 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:c="http://www.springframework.org/schema/c"
 	xmlns:security="http://www.springframework.org/schema/security"
-	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd
+	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.2.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <security:global-method-security pre-post-annotations="enabled" />
 
 	<security:http use-expressions="true">
 		<security:intercept-url pattern="/*" access="hasRole('Domain Users')" />
@@ -17,5 +19,6 @@
 	<security:authentication-manager>
         <security:authentication-provider user-service-ref="ldapUserDetailsService" />
 	</security:authentication-manager>
-	
+
+
 </beans>
