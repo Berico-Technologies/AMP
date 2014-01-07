@@ -1,0 +1,26 @@
+spring:
+    applicationContext: ['configuration/applicationContext.xml', 'configuration/basicAuthSecurityContext.xml']
+
+    useSpringSecurity: true
+
+logging:
+    level: INFO
+    console:
+        enabled: true
+        threshold: INFO
+        
+http:
+    port: 15677
+    adminUsername: admin
+    adminPassword: admin123
+    rootPath: /service/*
+    connectorType: nonblocking+ssl
+    ssl:
+        keyStore: ./keys/oamp-gts.jks
+        keyStorePassword: 1qaz@WSX3edc$RFV
+        trustStore: ./keys/truststore.jks
+        trustStorePassword: 1qaz@WSX3edc$RFV
+        # When using Basic Auth, you will want these set to 'false',
+        # and most certainly 'true' for x509 authentication.
+        needClientAuth: true
+        wantClientAuth: true

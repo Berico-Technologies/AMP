@@ -30,17 +30,19 @@ public interface TopicRegistry {
     /**
      * Register a new TopicConfiguration with the registry.
      * @param topicConfiguration TopicConfiguration to register.
+     * @throws Exception Thrown if an error occurs during the setup of the TopicConfiguration.
      */
     @PreAuthorize("hasRole('gts-snapshot-add')")
-    void register(TopicConfiguration topicConfiguration);
+    void register(TopicConfiguration topicConfiguration) throws Exception;
 
     /**
      * Unregister a TopicConfiguration with the register.
      * @param id Id of the TopicConfiguration.
      * @throws TopologyConfigurationNotExistException Thrown if there is no such topic.
+     * @throws Exception If an exception is encountered cleaning up the TopicConfiguration.
      */
     @PreAuthorize("hasRole('gts-snapshot-remove')")
-    void unregister(String id) throws TopologyConfigurationNotExistException;
+    void unregister(String id) throws Exception;
 
     /**
      * Provide an iterable instance for navigating the list of registered Topics.

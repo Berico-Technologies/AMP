@@ -1,5 +1,5 @@
 spring:
-    applicationContext: ['configuration/applicationContext.xml']
+    applicationContext: ['configuration/applicationContext.xml', 'configuration/basicAuthSecurityContext.xml']
 
     useSpringSecurity: true
 
@@ -8,7 +8,7 @@ logging:
     console:
         enabled: true
         threshold: DEBUG
-        
+
 http:
     port: 15677
     adminUsername: admin
@@ -22,8 +22,8 @@ http:
         trustStorePassword: 1qaz@WSX3edc$RFV
         # When using Basic Auth, you will want these set to 'false',
         # and most certainly 'true' for x509 authentication.
-        needClientAuth: true
-        wantClientAuth: true
+        needClientAuth: false
+        wantClientAuth: false
 
 assets:
     overrides:

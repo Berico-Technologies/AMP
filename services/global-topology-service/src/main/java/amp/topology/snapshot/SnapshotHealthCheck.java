@@ -10,7 +10,7 @@ import com.yammer.metrics.core.HealthCheck;
  */
 public class SnapshotHealthCheck extends HealthCheck {
 
-    private static long UNHEALTH_STALE_SNAPSHOT_TIME = 30 * 60 * 1000;
+    public static long UNHEALTH_STALE_SNAPSHOT_TIME = 30 * 60 * 1000;
 
     SnapshotManager snapshotManager;
 

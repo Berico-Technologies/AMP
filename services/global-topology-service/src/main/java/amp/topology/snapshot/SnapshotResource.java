@@ -24,9 +24,9 @@ import java.util.Collection;
  *
  * @author Richard Clayton (Berico Technologies)
  */
-@Path("topology/snapshot/")
+@Path("topology/snapshots")
 @Api(
-    value = "service/topology/snapshot",
+    value = "service/topology/snapshots",
     description = "Operations to perform Snapshoting of the Global Topology."
 )
 @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -43,7 +43,7 @@ public class SnapshotResource {
 
     @POST
     @Consumes(MediaType.TEXT_PLAIN)
-    @Path("export")
+    @Path("/export")
     @ApiOperation(
         value = "Export a Snapshot of the Global Topology.",
         notes = "Snapshot the current topology and return it to the requester.",
@@ -51,9 +51,7 @@ public class SnapshotResource {
         authorizations = "gts-snapshot-export"
     )
     @Timed
-    public Response export(
-            @QueryParam("fmt") @DefaultValue("xml") String format,
-            Optional<String> description){
+    public Response export(Optional<String> description){
 
         Snapshot snapshot;
 
@@ -72,7 +70,7 @@ public class SnapshotResource {
     }
 
     @GET
-    @Path("latest")
+    @Path("/latest")
     @Timed
     @ApiOperation(
         value = "Retrieve the Latest Snapshot.",
@@ -105,7 +103,7 @@ public class SnapshotResource {
     }
 
     @GET
-    @Path("last-persisted")
+    @Path("/last-persisted")
     @Timed
     @ApiOperation(
             value = "Get the last time a Snapshot was made.",
@@ -119,7 +117,7 @@ public class SnapshotResource {
     }
 
     @GET
-    @Path("snapshot/{id}")
+    @Path("/snapshot/{id}")
     @Timed
     @ApiOperation(
             value = "Get a Snapshot by id.",
@@ -153,7 +151,7 @@ public class SnapshotResource {
     }
 
     @GET
-    @Path("list")
+    @Path("/list")
     @Timed
     @ApiOperation(
             value = "Retrieve the set of known Snapshots.",
@@ -177,7 +175,7 @@ public class SnapshotResource {
     }
 
     @POST
-    @Path("overwrite/{id}")
+    @Path("/overwrite/{id}")
     @Timed
     @ApiOperation(
             value = "Overwrite the existing Topology with the specified Snapshot.",
@@ -210,7 +208,7 @@ public class SnapshotResource {
     }
 
     @POST
-    @Path("overwrite")
+    @Path("/overwrite")
     @Timed
     @ApiOperation(
             value = "Overwrite the existing Topology with the supplied Snapshot.",
@@ -235,7 +233,7 @@ public class SnapshotResource {
 
 
     @POST
-    @Path("merge/{id}")
+    @Path("/merge/{id}")
     @Timed
     @ApiOperation(
             value = "Merge the Snapshot with the existing topology.",
@@ -268,7 +266,7 @@ public class SnapshotResource {
     }
 
     @POST
-    @Path("merge")
+    @Path("/merge")
     @Timed
     @ApiOperation(
             value = "Merge the Snapshot with the existing topology.",
