@@ -30,25 +30,27 @@ public class FileSystemSnapshotManager implements SnapshotManager {
 
     private static final Logger logger = LoggerFactory.getLogger(FileSystemSnapshotManager.class);
 
-    @Autowired
-    private TopicRegistry topicRegistry;
+    TopicRegistry topicRegistry;
 
-    @Autowired
-    private SnapshotSerializer serializer;
+    SnapshotSerializer serializer;
 
-    private File snapshotDirectory;
+    File snapshotDirectory;
 
-    private Snapshot currentSnapshot;
+    Snapshot currentSnapshot;
 
     /**
      * Instantiate the FileSystemSnapshotManager with the TopicRegistry, desired serializer, and
      * location of the snapshot directory.
-     * @param snapshotDirectory
+     * @param snapshotDirectory Directory to store the snapshots.
+     * @param topicRegistry The topic registry.
+     * @param serializer The serializer to use for the snapshot objects.
      */
-    public FileSystemSnapshotManager(
-            File snapshotDirectory) {
-
+    public FileSystemSnapshotManager(TopicRegistry topicRegistry, SnapshotSerializer serializer, File snapshotDirectory) {
+        this.topicRegistry = topicRegistry;
+        this.serializer = serializer;
         this.snapshotDirectory = snapshotDirectory;
+
+        validate();
     }
 
     /**
@@ -123,7 +125,7 @@ public class FileSystemSnapshotManager implements SnapshotManager {
 
             } catch (Exception e){
 
-                logger.error("A problem was encountered attempting to retrieve the latest snapshot.", e);
+                //logger.error("A problem was encountered attempting to retrieve the latest snapshot.", e);
             }
         }
 
@@ -155,10 +157,13 @@ public class FileSystemSnapshotManager implements SnapshotManager {
 
         File snapshotFile = locateInstanceFile(snapshotId);
 
+        if (snapshotFile == null)
+            throw new SnapshotDoesNotExistException(snapshotId);
+
         Snapshot snapshot = dehydrateSnapshot(snapshotFile);
 
         if (snapshot == null)
-            throw  new SnapshotDoesNotExistException(snapshotId);
+            throw new SnapshotDoesNotExistException(snapshotId);
 
         return snapshot;
     }
@@ -169,7 +174,7 @@ public class FileSystemSnapshotManager implements SnapshotManager {
      * @param snapshotId Id of the snapshot to locate.
      * @return File (if found) or null.
      */
-    private @Nullable File locateInstanceFile(String snapshotId) {
+    @Nullable File locateInstanceFile(String snapshotId) {
 
         Iterator<File> fileIterator =
                 FileUtils.iterateFiles(
@@ -286,10 +291,10 @@ public class FileSystemSnapshotManager implements SnapshotManager {
      * of the Topology while the synchronization is in progress.
      *
      * @param snapshot Snapshot to synchronize
-     * @param removeNonspecifiedEntries If TRUE, entries not in the Snapshot will be removed from the TopicRegistry.
+     * @param removeUnspecifiedEntries If TRUE, entries not in the Snapshot will be removed from the TopicRegistry.
      * @throws amp.topology.snapshot.exceptions.TopicConfigurationChangeExceptionRollup
      */
-    void synchronizeTopology(Snapshot snapshot, boolean removeNonspecifiedEntries) throws TopicConfigurationChangeExceptionRollup {
+    void synchronizeTopology(Snapshot snapshot, boolean removeUnspecifiedEntries) throws TopicConfigurationChangeExceptionRollup {
 
         synchronized (topicRegistry) {
 
@@ -303,7 +308,7 @@ public class FileSystemSnapshotManager implements SnapshotManager {
 
                         TopicConfiguration mutation = locateById(snapshot, currentState.getId());
 
-                        synchronizeTopicConfiguration(currentState, mutation, removeNonspecifiedEntries);
+                        synchronizeTopicConfiguration(currentState, mutation, removeUnspecifiedEntries);
 
                     } catch (Exception topicException){
 
@@ -417,7 +422,7 @@ public class FileSystemSnapshotManager implements SnapshotManager {
      * @return Latest Snapshot.
      * @throws Exception Encountered if there was an issue reading or deserializing the snapshot.
      */
-    private Snapshot dehydrateLatestSnapshot() throws Exception {
+    Snapshot dehydrateLatestSnapshot() throws Exception {
 
         return dehydrateSnapshot(getLatestFile());
     }
@@ -429,12 +434,14 @@ public class FileSystemSnapshotManager implements SnapshotManager {
      * @throws Exception thrown if an error occurs attempting to read or deserialize
      * the snapshot.
      */
-    private Snapshot dehydrateSnapshot(File snapshotFile) throws Exception {
+    Snapshot dehydrateSnapshot(File snapshotFile) throws Exception {
 
         String serializedSnapshot = null;
 
         if (snapshotFile.exists())
             serializedSnapshot = FileUtils.readFileToString(snapshotFile, "UTF-8");
+        else
+            throw new SnapshotFileNotExistException(snapshotFile);
 
         return serializer.deserialize(serializedSnapshot);
     }

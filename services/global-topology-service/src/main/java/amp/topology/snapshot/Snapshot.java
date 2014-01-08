@@ -20,6 +20,11 @@ public class Snapshot {
 
     protected Collection<TopicConfiguration> topics;
 
+    /**
+     * Please do not use.  This is for serialization purposes only.
+     */
+    public Snapshot(){}
+
     public Snapshot(String id, @Nullable String description, long timestamp, Collection<TopicConfiguration> topics) {
         this.id = id;
         this.description = description;

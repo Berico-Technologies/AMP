@@ -20,7 +20,7 @@
 	       <security:user-service>
 		   		<security:user name="app01" password="password" authorities="ROLE_USER" />
 		   		<security:user name="app02" password="password" authorities="ROLE_USER" />
-		   		<security:user name="admin" password="admin" authorities="ROLE_USER, ROLE_ADMIN" />
+		   		<security:user name="admin" password="admin" authorities="ROLE_USER, ROLE_ADMIN, gts-snapshot-info" />
 	       </security:user-service>
 	   </security:authentication-provider>
 	</security:authentication-manager>

@@ -2,9 +2,10 @@ package amp.topology.snapshot.impl;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
+import com.google.common.collect.Iterables;
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
-import org.joda.time.format.ISODateTimeFormat;
 
 import java.io.File;
 
@@ -20,7 +21,7 @@ import java.io.File;
  */
 public class FilenameSnapshotDescriptor implements amp.topology.snapshot.SnapshotDescriptor {
 
-    private static final DateTimeFormatter ISO_DATE_TIME = ISODateTimeFormat.dateTime();
+    public static final DateTimeFormatter DATETIME_FORMATTER = DateTimeFormat.forPattern("yyyymmddHHmmssSSS");
 
     private final String id;
 
@@ -42,7 +43,7 @@ public class FilenameSnapshotDescriptor implements amp.topology.snapshot.Snapsho
     public FilenameSnapshotDescriptor(String id, long timestamp) {
         this.id = id;
         this.timestamp = timestamp;
-        this.friendlyTimestamp = new DateTime(timestamp).toString(ISO_DATE_TIME);
+        this.friendlyTimestamp = new DateTime(timestamp).toString(DATETIME_FORMATTER);
     }
 
     /**
@@ -87,7 +88,7 @@ public class FilenameSnapshotDescriptor implements amp.topology.snapshot.Snapsho
 
     /**
      * Convert a filename to a Snapshot descriptor.
-     * @param snapshotFile File descripter to interpret into a Snapshot Descriptor.
+     * @param snapshotFile File descriptor to interpret into a Snapshot Descriptor.
      * @return Snapshot Descriptor.
      */
     public static FilenameSnapshotDescriptor fromFile(File snapshotFile) {
@@ -95,6 +96,8 @@ public class FilenameSnapshotDescriptor implements amp.topology.snapshot.Snapsho
         String filename = snapshotFile.getName();
 
         Iterable<String> nameParts = Splitter.on('.').split(filename);
+
+        Preconditions.checkState(Iterables.size(nameParts) == 4);
 
         int position = 0;
 
@@ -114,6 +117,8 @@ public class FilenameSnapshotDescriptor implements amp.topology.snapshot.Snapsho
         Preconditions.checkNotNull(id);
         Preconditions.checkNotNull(friendlyTimestamp);
 
-        return new FilenameSnapshotDescriptor(id, new DateTime(friendlyTimestamp).getMillis(), friendlyTimestamp);
+        long timestamp = DateTime.parse(friendlyTimestamp, DATETIME_FORMATTER).getMillis();
+
+        return new FilenameSnapshotDescriptor(id, timestamp, friendlyTimestamp);
     }
 }

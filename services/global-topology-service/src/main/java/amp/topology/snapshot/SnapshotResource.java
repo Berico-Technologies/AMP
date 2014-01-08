@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.xml.bind.annotation.XmlRootElement;
 import java.util.Collection;
 
 /**
@@ -29,7 +30,7 @@ import java.util.Collection;
     value = "service/topology/snapshots",
     description = "Operations to perform Snapshoting of the Global Topology."
 )
-@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+@Produces({ "application/json;qs=1", "application/xml;qs=.5" })
 public class SnapshotResource {
 
     private static final Logger logger = LoggerFactory.getLogger(SnapshotResource.class);
@@ -51,13 +52,13 @@ public class SnapshotResource {
         authorizations = "gts-snapshot-export"
     )
     @Timed
-    public Response export(Optional<String> description){
+    public Response export(String description){
 
         Snapshot snapshot;
 
         try {
 
-             snapshot = snapshotManager.export(description.orNull());
+             snapshot = snapshotManager.export(description);
 
         } catch (Exception e){
 
@@ -111,9 +112,11 @@ public class SnapshotResource {
             response = Snapshot.class,
             authorizations = "gts-snapshot-info"
     )
-    public Response lastTimePersisted(){
+    public LastPersisted lastTimePersisted(){
 
-        return Response.ok(new LastPersisted(snapshotManager.lastPersisted())).build();
+        LastPersisted lastPersisted = new LastPersisted(snapshotManager.lastPersisted());
+
+        return lastPersisted;
     }
 
     @GET
@@ -293,17 +296,29 @@ public class SnapshotResource {
     /**
      * Last Persisted Wrapper.
      */
+    @XmlRootElement
     public static class LastPersisted {
 
         private static final DateTimeFormatter ISO_TIME = ISODateTimeFormat.dateTime();
 
-        private final long millis;
+        private long millis;
 
-        private final String isoTime;
+        private String isoTime;
+
+        private boolean hasSnapshot = true;
 
         public LastPersisted(long millis) {
             this.millis = millis;
-            this.isoTime = new DateTime(millis).toString(ISO_TIME);
+
+            if (millis < 0){
+
+                this.isoTime = null;
+                this.hasSnapshot = false;
+            }
+            else {
+
+                this.isoTime = new DateTime(millis).toString(ISO_TIME);
+            }
         }
 
         public long getMillis() {
@@ -313,11 +328,16 @@ public class SnapshotResource {
         public String getIsoTime() {
             return isoTime;
         }
+
+        public boolean getHasSnapshot() {
+            return hasSnapshot;
+        }
     }
 
     /**
      * A Wrapper for Snapshots
      */
+    @XmlRootElement
     public static class SnapshotCollection {
 
         private final Collection<SnapshotDescriptor> snapshots;
