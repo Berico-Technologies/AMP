@@ -1,15 +1,20 @@
 package amp.topology.global;
 
-import amp.topology.global.filtering.RouteRequirements;
+import amp.topology.anubis.AccessControlled;
 
 /**
  * Represents a connection between a ProducerGroup and a ConsumerGroup.  This maybe a logical connection,
  * configuration (say a routing key for an Exchange + Queue binging in AMQP), or a complex bridge
- * (protocol transition),
+ * (protocol transition).
+ *
+ * Note: this construct is meant to be transparent to clients consuming Routes.  It serves more as a management
+ * feature to configure pairs of Producer and Consumer Groups to carry the correct information about how to
+ * connect (like RoutingKeys in AMQP), or to setup infrastructure to perform the bridging.
  *
  * @author Richard Clayton (Berico Technologies)
  */
-public interface Connector<PRODUCING_PARTITION extends Partition, CONSUMING_PARTITION extends Partition> {
+public interface Connector<PRODUCING_PARTITION extends Partition, CONSUMING_PARTITION extends Partition>
+        extends AccessControlled {
 
     /**
      * A unique identifier for the Connector.  Generally, this only needs to be unique to the TopicSpace, but
@@ -23,13 +28,6 @@ public interface Connector<PRODUCING_PARTITION extends Partition, CONSUMING_PART
      * @return Description
      */
     String getDescription();
-
-    /**
-     * Does this connector apply to the Route Requirements?
-     * @param requirements Requirements of the client for a particular route.
-     * @return TRUE if this Connector applies to the requirements.  FALSE if this route does not apply.
-     */
-    boolean filter(RouteRequirements requirements);
 
     /**
      * The ProducerGroup that represents the Inflow of messages.

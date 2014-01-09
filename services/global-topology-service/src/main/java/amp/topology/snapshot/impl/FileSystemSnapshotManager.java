@@ -125,7 +125,7 @@ public class FileSystemSnapshotManager implements SnapshotManager {
 
             } catch (Exception e){
 
-                //logger.error("A problem was encountered attempting to retrieve the latest snapshot.", e);
+                logger.warn("A problem was encountered attempting to retrieve the latest snapshot.", e);
             }
         }
 

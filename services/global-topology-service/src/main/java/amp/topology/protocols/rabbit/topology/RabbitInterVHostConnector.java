@@ -9,11 +9,6 @@ import amp.topology.global.impl.BaseConnector;
 public class RabbitInterVHostConnector extends BaseConnector<BaseRabbitPartition, RabbitConsumerPartition> {
 
     @Override
-    public boolean filter(RouteRequirements requirements) {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
     public boolean verify() throws Exception {
         return false;  //To change body of implemented methods use File | Settings | File Templates.
     }

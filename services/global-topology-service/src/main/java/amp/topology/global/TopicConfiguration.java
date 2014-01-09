@@ -1,6 +1,7 @@
 package amp.topology.global;
 
 import amp.topology.anubis.AccessControlList;
+import amp.topology.anubis.AccessControlled;
 import amp.topology.global.exceptions.ConnectorNotExistException;
 import amp.topology.global.exceptions.TopologyGroupNotExistException;
 import amp.topology.global.filtering.RouteFilterResults;
@@ -16,7 +17,7 @@ import java.util.Collection;
  *
  * @author Richard Clayton (Berico Technologies)
  */
-public interface TopicConfiguration {
+public interface TopicConfiguration extends AccessControlled {
 
     /**
      * A globally unique id amongst the set of topics.  This is the reference key used to look up
@@ -35,12 +36,6 @@ public interface TopicConfiguration {
      * @return a friendly description.
      */
     String getDescription();
-
-    /**
-     * Get the Access Controls for this Topic Configuration class.
-     * @return AccessControlList.
-     */
-    AccessControlList getACL();
 
     ///// Query+Filtering /////////////////////////////////////////////////////////////////////////////////////////////
 

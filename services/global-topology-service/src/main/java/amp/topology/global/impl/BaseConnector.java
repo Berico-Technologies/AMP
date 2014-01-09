@@ -1,5 +1,6 @@
 package amp.topology.global.impl;
 
+import amp.topology.anubis.AccessControlList;
 import amp.topology.global.Connector;
 import amp.topology.global.ConsumerGroup;
 import amp.topology.global.Partition;
@@ -28,6 +29,8 @@ public abstract class BaseConnector<PPART extends Partition, CPART extends Parti
     private ProducerGroup<PPART> producerGroup;
 
     private ConsumerGroup<CPART> consumerGroup;
+
+    private AccessControlList acl = new AccessControlList();
 
     private Set<Listener> listeners = Sets.newCopyOnWriteArraySet();
 
@@ -67,6 +70,16 @@ public abstract class BaseConnector<PPART extends Partition, CPART extends Parti
     public String getDescription() {
 
         return this.description;
+    }
+
+    /**
+     * Get the Access Control List associated with this connector.
+     * @return ACL.
+     */
+    @Override
+    public AccessControlList getACL() {
+
+        return acl;
     }
 
     /**

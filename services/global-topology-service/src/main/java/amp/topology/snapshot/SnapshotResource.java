@@ -2,11 +2,11 @@ package amp.topology.snapshot;
 
 import amp.topology.snapshot.exceptions.SnapshotDoesNotExistException;
 import amp.topology.snapshot.exceptions.TopicConfigurationChangeExceptionRollup;
-import com.google.common.base.Optional;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiResponse;
 import com.wordnik.swagger.annotations.ApiResponses;
+import com.yammer.metrics.annotation.Metered;
 import com.yammer.metrics.annotation.Timed;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
@@ -28,7 +28,7 @@ import java.util.Collection;
 @Path("topology/snapshots")
 @Api(
     value = "service/topology/snapshots",
-    description = "Operations to perform Snapshoting of the Global Topology."
+    description = "Operations to manage snapshots of the Global Topology."
 )
 @Produces({ "application/json;qs=1", "application/xml;qs=.5" })
 public class SnapshotResource {
@@ -37,8 +37,11 @@ public class SnapshotResource {
 
     SnapshotManager snapshotManager;
 
-    public SnapshotResource(SnapshotManager snapshotManager){
-
+    /**
+     * Set the SnapshotManager.
+     * @param snapshotManager SnapshotManager
+     */
+    public void setSnapshotManager(SnapshotManager snapshotManager) {
         this.snapshotManager = snapshotManager;
     }
 
@@ -52,27 +55,20 @@ public class SnapshotResource {
         authorizations = "gts-snapshot-export"
     )
     @Timed
-    public Response export(String description){
+    @Metered(name="export-metered")
+    public Snapshot export(String description) throws Exception {
 
         Snapshot snapshot;
 
-        try {
+        snapshot = snapshotManager.export(description);
 
-             snapshot = snapshotManager.export(description);
-
-        } catch (Exception e){
-
-            logger.error("Failed to export snapshot.", e);
-
-            return Response.serverError().build();
-        }
-
-        return Response.ok(snapshot).build();
+        return snapshot;
     }
 
     @GET
     @Path("/latest")
     @Timed
+    //@Metered
     @ApiOperation(
         value = "Retrieve the Latest Snapshot.",
         notes = "Retrieves the latest snapshot or No Content if there is none.",
@@ -82,20 +78,11 @@ public class SnapshotResource {
     @ApiResponses({
             @ApiResponse(code = 404, message = "No 'latest' Snapshot.")
     })
-    public Response latest(){
+    public Response latest() throws Exception {
 
         Snapshot latest;
 
-        try {
-
-            latest = snapshotManager.latest();
-
-        } catch (Exception e){
-
-            logger.error("Failed to retrieve latest snapshot.", e);
-
-            return Response.serverError().build();
-        }
+        latest = snapshotManager.latest();
 
         if (latest == null)
             Response.status(Response.Status.NOT_FOUND).build();
@@ -106,6 +93,7 @@ public class SnapshotResource {
     @GET
     @Path("/last-persisted")
     @Timed
+    //@Metered
     @ApiOperation(
             value = "Get the last time a Snapshot was made.",
             notes = "Retrieves the last time a snapshot was persisted.",
@@ -114,14 +102,13 @@ public class SnapshotResource {
     )
     public LastPersisted lastTimePersisted(){
 
-        LastPersisted lastPersisted = new LastPersisted(snapshotManager.lastPersisted());
-
-        return lastPersisted;
+        return new LastPersisted(snapshotManager.lastPersisted());
     }
 
     @GET
     @Path("/snapshot/{id}")
     @Timed
+    //@Metered
     @ApiOperation(
             value = "Get a Snapshot by id.",
             notes = "Retrieves by it's id, or errors if the snapshot does not exist.",
@@ -131,7 +118,7 @@ public class SnapshotResource {
     @ApiResponses({
             @ApiResponse(code = 404, message = "No Snapshot with specified id.")
     })
-    public Response get(@PathParam("id") String id){
+    public Response get(@PathParam("id") String id) throws Exception {
 
         Snapshot target;
 
@@ -143,11 +130,6 @@ public class SnapshotResource {
 
             return Response.status(Response.Status.NOT_FOUND).build();
 
-        } catch (Exception e){
-
-            logger.error("Error attempting to retrieve snapshot.", e);
-
-            return Response.serverError().build();
         }
 
         return Response.ok(target).build();
@@ -156,30 +138,24 @@ public class SnapshotResource {
     @GET
     @Path("/list")
     @Timed
+    //@Metered
     @ApiOperation(
             value = "Retrieve the set of known Snapshots.",
             notes = "This does not provide the actual snapshots, but rather descriptors with information about the snapshot.",
             response = SnapshotCollection.class,
             authorizations = "gts-snapshot-list"
     )
-    public Response list(){
-        try {
+    public Response list() throws Exception {
 
-            Collection<SnapshotDescriptor> snapshots = snapshotManager.list();
+        Collection<SnapshotDescriptor> snapshots = snapshotManager.list();
 
-            return Response.ok(new SnapshotCollection(snapshots)).build();
-
-        }   catch (Exception e){
-
-            logger.error("An error occurred trying to list the snapshots.", e);
-
-            return Response.serverError().build();
-        }
+        return Response.ok(new SnapshotCollection(snapshots)).build();
     }
 
     @POST
     @Path("/overwrite/{id}")
     @Timed
+    //@Metered
     @ApiOperation(
             value = "Overwrite the existing Topology with the specified Snapshot.",
             notes = "Overwrite the existing Topology state with the Snapshot specified by the supplied id.",
@@ -188,7 +164,7 @@ public class SnapshotResource {
     @ApiResponses({
             @ApiResponse(code = 404, message = "No Snapshot with specified id.")
     })
-    public Response overwrite(@PathParam("id") String id){
+    public Response overwriteWithId(@PathParam("id") String id) throws Exception {
 
         Snapshot target;
 
@@ -200,11 +176,6 @@ public class SnapshotResource {
 
             return Response.status(Response.Status.NOT_FOUND).build();
 
-        } catch (Exception e){
-
-            logger.error("Error attempting to retrieve snapshot.", e);
-
-            return Response.serverError().build();
         }
 
         return overwrite(target);
@@ -213,6 +184,7 @@ public class SnapshotResource {
     @POST
     @Path("/overwrite")
     @Timed
+    //@Metered
     @ApiOperation(
             value = "Overwrite the existing Topology with the supplied Snapshot.",
             notes = "Overwrite the existing Topology state with the Snapshot submitted with the request.",
@@ -238,6 +210,7 @@ public class SnapshotResource {
     @POST
     @Path("/merge/{id}")
     @Timed
+    //@Metered
     @ApiOperation(
             value = "Merge the Snapshot with the existing topology.",
             notes = "Merges the Snapshot with the supplied id with the current topology configuration.",
@@ -246,7 +219,7 @@ public class SnapshotResource {
     @ApiResponses({
             @ApiResponse(code = 404, message = "No Snapshot with specified id.")
     })
-    public Response merge(@PathParam("id") String id){
+    public Response mergeWithId(@PathParam("id") String id) throws Exception {
 
         Snapshot target;
 
@@ -258,11 +231,6 @@ public class SnapshotResource {
 
             return Response.status(Response.Status.NOT_FOUND).build();
 
-        } catch (Exception e){
-
-            logger.error("Error attempting to retrieve snapshot.", e);
-
-            return Response.serverError().build();
         }
 
         return merge(target);
@@ -271,6 +239,7 @@ public class SnapshotResource {
     @POST
     @Path("/merge")
     @Timed
+    //@Metered
     @ApiOperation(
             value = "Merge the Snapshot with the existing topology.",
             notes = "Merges the supplied Snapshot with the current topology configuration.",

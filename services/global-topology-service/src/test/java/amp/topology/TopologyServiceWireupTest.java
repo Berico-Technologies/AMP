@@ -1,7 +1,9 @@
 package amp.topology;
 
+import amp.topology.protocols.rabbit.RabbitRouteProviderResource;
 import amp.topology.snapshot.SnapshotHealthCheck;
 import amp.topology.snapshot.SnapshotResource;
+import amp.topology.support.AccessDeniedMapper;
 import com.yammer.dropwizard.config.Environment;
 import com.yammer.dropwizard.config.FilterBuilder;
 import org.junit.Before;
@@ -12,6 +14,9 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 /**
+ * Verify that Resources are being loaded.  This is especially helpful when using Fallwizard+Spring to
+ * manage the injection of the components into the environment.
+ *
  * @author Richard Clayton (Berico Technologies)
  */
 public class TopologyServiceWireupTest {
@@ -38,7 +43,12 @@ public class TopologyServiceWireupTest {
 
         topologyService.run(topologyConfiguration, mockEnvironment);
 
-        verify(mockEnvironment).addResource(any(SnapshotResource.class));
+        verify(mockEnvironment).addProvider(isA(AccessDeniedMapper.class));
+
+        verify(mockEnvironment).addResource(isA(SnapshotResource.class));
+
+        verify(mockEnvironment).addResource(isA(RabbitRouteProviderResource.class));
+
         verify(mockEnvironment).addHealthCheck(any(SnapshotHealthCheck.class));
     }
 

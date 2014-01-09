@@ -18,7 +18,7 @@
     <bean class="amp.topology.global.impl.InMemoryTopicRegistry" />
 
     <!-- All other features of the Snapshot subsystem are wired-up using JavaConfig
-        (amp.topology.snapshot.SpringSnapshotConfig) -->
+        (amp.topology.snapshot.SnapshotConfig) -->
     <bean class="amp.topology.snapshot.impl.FileSystemSnapshotManager" autowire="constructor">
         <constructor-arg name="snapshotDirectory" value="./snapshots" />
     </bean>

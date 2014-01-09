@@ -1,5 +1,6 @@
 package amp.topology.global.impl;
 
+import amp.topology.anubis.AccessControl;
 import amp.topology.anubis.AccessControlList;
 import amp.topology.global.Partition;
 import amp.topology.global.TopologyGroup;

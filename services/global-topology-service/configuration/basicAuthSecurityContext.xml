@@ -6,6 +6,8 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd">
 
+    <security:global-method-security pre-post-annotations="enabled" />
+
 	<security:http>
 		<security:intercept-url pattern="/*" access="ROLE_ADMIN" />
 		<security:intercept-url pattern="/service/route/*" access="ROLE_ADMIN" />
@@ -20,7 +22,7 @@
 	       <security:user-service>
 		   		<security:user name="app01" password="password" authorities="ROLE_USER" />
 		   		<security:user name="app02" password="password" authorities="ROLE_USER" />
-		   		<security:user name="admin" password="admin" authorities="ROLE_USER, ROLE_ADMIN, gts-snapshot-info" />
+		   		<security:user name="admin" password="admin" authorities="ROLE_USER, ROLE_ADMIN, gts-snapshot-info, gts-snapshot-list, gts-snapshot-get" />
 	       </security:user-service>
 	   </security:authentication-provider>
 	</security:authentication-manager>

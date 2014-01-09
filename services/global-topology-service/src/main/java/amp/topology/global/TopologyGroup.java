@@ -1,9 +1,9 @@
 package amp.topology.global;
 
 import amp.topology.anubis.AccessControlList;
+import amp.topology.anubis.AccessControlled;
 import amp.topology.global.exceptions.PartitionNotExistException;
 import amp.topology.global.filtering.RouteRequirements;
-import com.google.common.reflect.TypeToken;
 
 import java.util.Collection;
 
@@ -21,7 +21,7 @@ import java.util.Collection;
  *
  * @author Richard Clayton (Berico Technologies)
  */
-public interface TopologyGroup<PARTITION extends Partition> {
+public interface TopologyGroup<PARTITION extends Partition> extends AccessControlled {
 
     /**
      * The id of this group (must at least be unique to the TopicSpace),
@@ -35,12 +35,6 @@ public interface TopologyGroup<PARTITION extends Partition> {
      * @return Description
      */
     String getDescription();
-
-    /**
-     * Permissions related to this Group.
-     * @return Access Control List.
-     */
-    AccessControlList getACL();
 
     /**
      * Retrieve a partition by id.

@@ -1,6 +1,6 @@
 package amp.topology.global.filtering;
 
-import amp.topology.global.*;
+import amp.topology.global.Partition;
 import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
@@ -18,23 +18,18 @@ public class RouteFilterResults {
 
     private final Collection<Partition> producerPartitions;
 
-    private final Collection<Connector<? extends Partition, ? extends Partition>> connectors;
-
     private final Collection<Partition> consumerPartitions;
 
     /**
      * Instantiate the object with applicable Topology constructs.
      * @param producerPartitions Applicable partitions to produce to.
-     * @param connectors Applicable Connectors.
      * @param consumerPartitions Applicable partitions to consume from.
      */
     public RouteFilterResults(
             Collection<Partition> producerPartitions,
-            Collection<Connector<? extends Partition, ? extends Partition>> connectors,
             Collection<Partition> consumerPartitions) {
 
         this.producerPartitions = producerPartitions;
-        this.connectors = connectors;
         this.consumerPartitions = consumerPartitions;
     }
 
@@ -56,14 +51,6 @@ public class RouteFilterResults {
     }
 
     /**
-     * Applicable Connectors.
-     * @return Collection of Connectors.
-     */
-    public Collection<Connector<? extends Partition, ? extends Partition>> getConnectors() {
-        return connectors;
-    }
-
-    /**
      * EMPTY instance, for which you can perform comparisons.
      */
     public static final EmptyRouteFilterResults EMPTY = new EmptyRouteFilterResults();
@@ -80,7 +67,6 @@ public class RouteFilterResults {
         public EmptyRouteFilterResults() {
             super(
                     new ArrayList<Partition>(),
-                    new ArrayList<Connector<? extends Partition, ? extends Partition>>(),
                     new ArrayList<Partition>());
         }
     }
@@ -105,8 +91,6 @@ public class RouteFilterResults {
 
         ArrayList<Partition> consumerPartitions = Lists.newArrayList();
 
-        ArrayList<Connector<? extends Partition, ? extends Partition>> connectors = Lists.newArrayList();
-
         public Builder(RouteRequirements requirements){
             this.requirements = requirements;
         }
@@ -125,16 +109,9 @@ public class RouteFilterResults {
             return this;
         }
 
-        public Builder connectBy(Connector<? extends Partition, ? extends Partition>... connectors){
-
-            this.connectors.addAll(Arrays.asList(connectors));
-
-            return this;
-        }
-
         public RouteFilterResults build(){
 
-            return new RouteFilterResults(producerPartitions, connectors, consumerPartitions);
+            return new RouteFilterResults(producerPartitions, consumerPartitions);
         }
     }
 }

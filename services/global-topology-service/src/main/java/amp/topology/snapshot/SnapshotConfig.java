@@ -17,7 +17,7 @@ import org.springframework.context.annotation.Primary;
  * @author Richard Clayton (Berico Technologies)
  */
 @Configuration
-public class SpringSnapshotConfig {
+public class SnapshotConfig {
 
     /**
      * This should be defined somewhere in a Spring Context file.
@@ -32,7 +32,11 @@ public class SpringSnapshotConfig {
     @Bean(name = "snapshotResource")
     public SnapshotResource getSnapshotResource(){
 
-        return new SnapshotResource(snapshotManager);
+        SnapshotResource resource = new SnapshotResource();
+
+        resource.setSnapshotManager(snapshotManager);
+
+        return resource;
     }
 
     @Bean(name = "xmlSnapshotSerializer")

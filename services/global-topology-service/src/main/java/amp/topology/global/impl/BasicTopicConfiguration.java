@@ -122,11 +122,6 @@ public class BasicTopicConfiguration implements TopicConfiguration {
             resultsBuilder.consumeOn(applicablePartitions.toArray(new Partition[]{}));
         }
 
-        for (Connector<?, ?> connector : connectors){
-
-            if (connector.filter(requirements)) resultsBuilder.connectBy(connector);
-        }
-
         return resultsBuilder.build();
     }
 
