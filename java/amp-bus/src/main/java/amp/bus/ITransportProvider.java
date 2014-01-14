@@ -5,7 +5,6 @@ import cmf.bus.Envelope;
 import cmf.bus.IDisposable;
 import cmf.bus.IRegistration;
 
-
 public interface ITransportProvider extends IDisposable {
 
     void onEnvelopeReceived(IEnvelopeReceivedCallback callback);

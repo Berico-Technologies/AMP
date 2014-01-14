@@ -13,8 +13,11 @@ public class App {
         ClassPathXmlApplicationContext applicationContext = null;
     	
         try {
-        		
-            applicationContext = new ClassPathXmlApplicationContext("ampContext.xml");
+
+            applicationContext = new ClassPathXmlApplicationContext(
+                    "ampContext.xml", "AllBussesConfig.xml",
+                    "GtsConfigSSL.xml", "AnubisAndTwoWaySSLRabbitConfig.xml");
+
 
             // pull AmpService from the container
             AmpService ampService = applicationContext.getBean(AmpService.class);

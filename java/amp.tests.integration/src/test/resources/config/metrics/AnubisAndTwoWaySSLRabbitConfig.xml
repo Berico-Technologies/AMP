@@ -8,8 +8,8 @@
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
     <!-- The follow components are for our Envelope Bus -->
-    <bean id="envelopeBus" class="amp.bus.DefaultEnvelopeBus" destroy-method="dispose"
-          c:transportProvider-ref="transportProvider" />
+    <bean id="envelopeBus" class="amp.metrics.MetricsCapturingEnvelopeBus" destroy-method="dispose"
+          c:transportProvider-ref="transportProvider" autowire="constructor" />
 
     <bean id="transportProvider" class="amp.rabbit.transport.RabbitTransportProvider"
           c:topologyService-ref="topologyService"

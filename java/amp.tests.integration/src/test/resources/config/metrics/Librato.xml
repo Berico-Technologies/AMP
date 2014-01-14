@@ -13,6 +13,8 @@
 
     <context:component-scan base-package="amp.metrics" />
 
-    <bean class="amp.metrics.reporters.GraphiteConfig" autowire="constructor" c:graphiteHost="192.168.19.119" />
+    <bean class="amp.metrics.reporters.LibratoConfig" autowire="constructor"
+          c:clientName="reston-a01" c:username="rclayton@bericotechnologies.com"
+          c:apikey="19936ce2f0930128456f82dd42bb20e2e5ad22ee738fdea404d2050f1206e382" />
 
 </beans>

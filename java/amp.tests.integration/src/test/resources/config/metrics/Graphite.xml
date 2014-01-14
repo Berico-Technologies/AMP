@@ -2,48 +2,18 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:context="http://www.springframework.org/schema/context"
        xmlns:c="http://www.springframework.org/schema/c"
        xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:aop="http://www.springframework.org/schema/aop"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
-		
-    <bean id="topologyService" class="amp.topology.client.GlobalTopologyService"
-          c:routingInfoRetriever-ref="routingInfoRetriever"
-          c:fallbackProvider-ref="fallbackProvider" />
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
 
-    <bean id="routingInfoRetriever" class="amp.topology.client.HttpRoutingInfoRetriever"
-          c:httpClientProvider-ref="topoHttpClientProvider" 
-          c:serializer-ref="routingSerializer"
-          c:urlExpression="https://gts.openampere.com:15677/service/topology/get-routing-info/%s" />
+    <context:component-scan base-package="amp.metrics" />
 
-     <bean id="topoHttpClientProvider" class="amp.utility.http.SslHttpClientProvider"
-          c:keystore="/test-certs/amp-test-at-openampere.com.jks"
-          c:keystorePassword="1qaz@WSX3edc$RFV" 
-          c:truststore="/test-certs/truststore.jks" />
-
-    <bean id="routingSerializer" class="amp.utility.serialization.GsonSerializer" />
-
-    <bean id="fallbackProvider" class="amp.topology.client.DefaultApplicationExchangeProvider"
-          c:hostname="rabbit.openampere.com"
-	      c:port="5672" />
-    
-    <bean id="routingInfoCache" class="amp.rabbit.transport.CommandableCache"
-          c:commandReceiver-ref="commandReceiver"
-          c:cacheExpiryInSeconds="600" />
- 
-    <bean id="commandReceiver" class="amp.commanding.DefaultCommandReceiver" >
-        <constructor-arg ref="envelopeReceiver" />
-        <constructor-arg >
-		    <util:list value-type="amp.messaging.IMessageProcessor">
-		        <ref bean="Cmd-JsonSerializationProcessor" />
-		    </util:list>
-        </constructor-arg>
-    </bean>
-
-    <bean id="envelopeReceiver" class="amp.rabbit.transport.RabbitEnvelopeReceiver"
-          c:topologyService-ref="topologyService"
-          c:connectionFactory-ref="connectionFactory" />
-
-    <bean id="Cmd-JsonSerializationProcessor" class="amp.messaging.JsonSerializationProcessor" />
+    <bean class="amp.metrics.reporters.GraphiteConfig" autowire="constructor"
+          c:clientName="reston-a01" c:graphiteHost="192.168.19.119" />
 
 </beans>

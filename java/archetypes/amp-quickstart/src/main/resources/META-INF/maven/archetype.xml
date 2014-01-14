@@ -19,6 +19,9 @@
     <resources>
         <resource>src/main/resources/logback.xml</resource>
         <resource>config/ampContext.xml</resource>
+        <resource>config/AllBussesConfig.xml</resource>
+        <resource>config/AnubisAndTwoWaySSLRabbitConfig.xml</resource>
+        <resource>config/GtsConfigSSL.xml</resource>
         <resource>config/keys/amp-test-at-openampere.com.jks</resource>
         <resource>config/keys/truststore.jks</resource>
         <resource>bin/amp-start</resource>        

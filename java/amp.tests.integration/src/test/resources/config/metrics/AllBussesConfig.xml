@@ -73,11 +73,19 @@
 		    </util:list>
           </constructor-arg>
     </bean>
-  
-    <bean id="Msg-JsonSerializationProcessor" class="amp.messaging.JsonSerializationProcessor" />
-    
-    <bean id="Msg-OutboundHeadersProcessor" class="amp.messaging.OutboundHeadersProcessor">
-    	<property name="userInfoRepo" ref="userInfoRepository"/>
+
+    <bean id="Msg-JsonSerializationProcessor" class="amp.metrics.MessageProcessorMetricCaptor" autowire="constructor">
+        <constructor-arg>
+            <bean class="amp.messaging.JsonSerializationProcessor" />
+        </constructor-arg>
+    </bean>
+
+    <bean id="Msg-OutboundHeadersProcessor" class="amp.metrics.MessageProcessorMetricCaptor" autowire="constructor">
+        <constructor-arg>
+            <bean class="amp.messaging.OutboundHeadersProcessor">
+                <property name="userInfoRepo" ref="userInfoRepository"/>
+            </bean>
+        </constructor-arg>
     </bean>
 
     <bean id="userInfoRepository" class="amp.bus.security.InMemoryUserInfoRepository"
@@ -87,6 +95,12 @@
 
     <bean id="rpcFilter" class="amp.eventing.RpcFilter" />
 
-    <bean id="streamingHeadersProcessor" class="amp.eventing.streaming.StreamingHeadersProcessor" />
+    <bean id="streamingHeadersProcessor" class="amp.metrics.MessageProcessorMetricCaptor" autowire="constructor">
+        <constructor-arg>
+            <bean class="amp.eventing.streaming.StreamingHeadersProcessor" />
+        </constructor-arg>
+    </bean>
+
+
 
 </beans>
