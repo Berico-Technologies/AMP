@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:c="http://www.springframework.org/schema/c"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <!-- The following components are for our Event Bus, which uses our Envelope Bus -->
+    <bean id="eventBus" class="amp.eventing.DefaultEventBus"
+          destroy-method="dispose">
+          <constructor-arg ref="envelopeBus" />
+          <constructor-arg >
+		    <util:list value-type="amp.messaging.IMessageProcessor">
+		        <ref bean="Msg-JsonSerializationProcessor" />
+		    </util:list>
+          </constructor-arg>
+          <constructor-arg >
+		    <util:list value-type="amp.messaging.IMessageProcessor">
+		        <ref bean="Msg-JsonSerializationProcessor" />
+		        <ref bean="Msg-OutboundHeadersProcessor" />
+		    </util:list>
+          </constructor-arg>
+    </bean>
+
+    <bean id="rpcEventBus" class="amp.eventing.DefaultRpcBus"
+          destroy-method="dispose">
+          <constructor-arg ref="envelopeBus" />
+          <constructor-arg >
+		    <util:list value-type="amp.eventing.IEventProcessor">
+		        <ref bean="rpcFilter" />
+		        <ref bean="Msg-JsonSerializationProcessor" />
+		    </util:list>
+          </constructor-arg>
+          <constructor-arg >
+		    <util:list value-type="amp.eventing.IEventProcessor">
+		        <ref bean="Msg-JsonSerializationProcessor" />
+		        <ref bean="Msg-OutboundHeadersProcessor" />
+		        <ref bean="rpcFilter"/>
+		    </util:list>
+          </constructor-arg>
+    </bean>
+
+    <bean id="streamingEventBus" class="amp.eventing.streaming.DefaultStreamingBus"
+          destroy-method="dispose">
+          <constructor-arg ref="envelopeBus" />
+          <constructor-arg >
+		    <util:list value-type="amp.eventing.IEventProcessor">
+		        <ref bean="Msg-JsonSerializationProcessor" />
+		    </util:list>
+          </constructor-arg>
+          <constructor-arg >
+		    <util:list value-type="amp.eventing.IEventProcessor">
+		        <ref bean="Msg-JsonSerializationProcessor" />
+		        <ref bean="Msg-OutboundHeadersProcessor" />
+		        <ref bean="streamingHeadersProcessor"/>
+		    </util:list>
+          </constructor-arg>
+    </bean>
+ 
+    <bean id="commandBus" class="amp.commanding.DefaultCommandBus">
+          <constructor-arg ref="envelopeBus" />
+          <constructor-arg >
+		    <util:list value-type="amp.messaging.IMessageProcessor">
+		        <ref bean="Msg-JsonSerializationProcessor" />
+		    </util:list>
+          </constructor-arg>
+          <constructor-arg >
+		    <util:list value-type="amp.messaging.IMessageProcessor">
+		        <ref bean="Msg-JsonSerializationProcessor" />
+		        <ref bean="Msg-OutboundHeadersProcessor" />
+		    </util:list>
+          </constructor-arg>
+    </bean>
+  
+    <bean id="Msg-JsonSerializationProcessor" class="amp.messaging.JsonSerializationProcessor" />
+    
+    <bean id="Msg-OutboundHeadersProcessor" class="amp.messaging.OutboundHeadersProcessor">
+    	<property name="userInfoRepo" ref="userInfoRepository"/>
+    </bean>
+
+    <bean id="userInfoRepository" class="amp.bus.security.InMemoryUserInfoRepository"
+          c:mapping-ref="userMapping" />
+
+    <util:map id="userMapping" key-type="java.lang.String" value-type="java.lang.String" />
+
+    <bean id="rpcFilter" class="amp.eventing.RpcFilter" />
+
+    <bean id="streamingHeadersProcessor" class="amp.eventing.streaming.StreamingHeadersProcessor" />
+
+</beans>
