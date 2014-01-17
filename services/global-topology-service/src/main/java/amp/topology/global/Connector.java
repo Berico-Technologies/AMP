@@ -1,7 +1,5 @@
 package amp.topology.global;
 
-import amp.topology.anubis.AccessControlled;
-
 /**
  * Represents a connection between a ProducerGroup and a ConsumerGroup.  This maybe a logical connection,
  * configuration (say a routing key for an Exchange + Queue binging in AMQP), or a complex bridge
@@ -13,8 +11,7 @@ import amp.topology.anubis.AccessControlled;
  *
  * @author Richard Clayton (Berico Technologies)
  */
-public interface Connector<PRODUCING_PARTITION extends Partition, CONSUMING_PARTITION extends Partition>
-        extends AccessControlled {
+public interface Connector<PRODUCING_PARTITION extends Partition, CONSUMING_PARTITION extends Partition> {
 
     /**
      * A unique identifier for the Connector.  Generally, this only needs to be unique to the TopicSpace, but
@@ -28,6 +25,13 @@ public interface Connector<PRODUCING_PARTITION extends Partition, CONSUMING_PART
      * @return Description
      */
     String getDescription();
+
+    /**
+     * Set the description of the Connector.
+     *
+     * @param description Description of the connector.
+     */
+    void setDescription(String description);
 
     /**
      * The ProducerGroup that represents the Inflow of messages.
@@ -48,19 +52,14 @@ public interface Connector<PRODUCING_PARTITION extends Partition, CONSUMING_PART
     ConnectorStates getState();
 
     /**
-     * Verify the connection between the ProducerGroup and ConsumerGroup is identical to the
-     * connector state.
+     * Verify the connector state.  If the state is invalid, throw an exception.
      *
-     * This method will be called on a schedule to ensure the route is in sync.  The method does not
-     * have to be idempotent.  If the state is invalid, it may update the state and fire handlers, but
-     * it must return FALSE if the state was incorrect at the beginning of the call.
+     * It's expected that the state of the connector be updated during the verification.
      *
-     * @return TRUE if the active connector state matches that actual infrastructure state. Like the
-     * Partition interface, verify does not mean everything is "hunky-dory".
      * @throws Exception An exception that may have arisen while verifying the infrastructure is
      * in the correct state.
      */
-    boolean verify() throws Exception;
+    void verify() throws Exception;
 
     /**
      * Activate the Connector.  An implementation may provision resources, configure a broker, etc. (whatever

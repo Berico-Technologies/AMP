@@ -22,4 +22,13 @@ public interface TopicFactory {
      * @throws Exception an error occurring during the construction or registration process.
      */
     TopicConfiguration create(TopicSpecification specification) throws Exception;
+
+    /**
+     * Modify the provided Topic with the state specified by the Configuration.
+     *
+     * @param specification Specification of the Topic (representing the mutations).
+     * @return a collection of modification entries describing the results of the operation.
+     * @throws Exception Any error that occurred.
+     */
+    Modifications modify(TopicSpecification specification) throws Exception;
 }

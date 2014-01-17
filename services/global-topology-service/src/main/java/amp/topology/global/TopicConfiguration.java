@@ -1,7 +1,5 @@
 package amp.topology.global;
 
-import amp.topology.anubis.AccessControlList;
-import amp.topology.anubis.AccessControlled;
 import amp.topology.global.exceptions.ConnectorNotExistException;
 import amp.topology.global.exceptions.TopologyGroupNotExistException;
 import amp.topology.global.filtering.RouteFilterResults;
@@ -17,7 +15,7 @@ import java.util.Collection;
  *
  * @author Richard Clayton (Berico Technologies)
  */
-public interface TopicConfiguration extends AccessControlled {
+public interface TopicConfiguration {
 
     /**
      * A globally unique id amongst the set of topics.  This is the reference key used to look up
@@ -36,6 +34,13 @@ public interface TopicConfiguration extends AccessControlled {
      * @return a friendly description.
      */
     String getDescription();
+
+    /**
+     * Set the description of the Topic.
+     *
+     * @param description Description of the topic.
+     */
+    void setDescription(String description);
 
     ///// Query+Filtering /////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -64,6 +69,30 @@ public interface TopicConfiguration extends AccessControlled {
      */
     void cleanup() throws Exception;
 
+    ///// Common CRUD Operations for Groups ///////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Get a TopologyGroup by it's id; it doesn't matter whether that is a producer or consumer group.
+     * @param id ID of the Group to retrieve.
+     * @return TopologyGroup
+     * @throws Exception Thrown if the group does not exist.
+     */
+    TopologyGroup<? extends Partition> getGroup(String id) throws Exception;
+
+    /**
+     * Remove a Group by it's id; it doesn't matter whether the group is a producer or consumer group.
+     * @param id ID of the Group to remove.
+     * @throws Exception Thrown if the group doesn't exist, or an error is encountered cleanup resources of that group.
+     */
+    void removeGroup(String id) throws Exception;
+
+    /**
+     * Does the group with the specified id exist?
+     * @param id ID of the group to check existence for.
+     * @return TRUE if it does exist, FALSE if it does not.
+     */
+    boolean groupExists(String id);
+
     ///// CRUD for Producer Groups ////////////////////////////////////////////////////////////////////////////////////
 
     /**
@@ -73,13 +102,6 @@ public interface TopicConfiguration extends AccessControlled {
      * @throws Exception Thrown if there is a problem setting up the Group.
      */
     void addProducerGroup(ProducerGroup<? extends  Partition> producerGroup) throws Exception;
-
-    /**
-     * Remove a Producer Group by Id
-     * @param id
-     * @throws Exception
-     */
-    void removeProducerGroup(String id) throws Exception;
 
     /**
      * Get a Producer Group by Id
@@ -105,13 +127,6 @@ public interface TopicConfiguration extends AccessControlled {
      * @throws Exception Thrown if there is a problem setting up the Group.
      */
     void addConsumerGroup(ConsumerGroup<? extends Partition> consumerGroup) throws Exception;
-
-    /**
-     * Remove a Consumer Group by Id
-     * @param id
-     * @throws Exception
-     */
-    void removeConsumerGroup(String id) throws Exception;
 
     /**
      * Get a Consumer Group by Id

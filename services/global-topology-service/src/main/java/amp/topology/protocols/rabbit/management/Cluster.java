@@ -1,6 +1,7 @@
 package amp.topology.protocols.rabbit.management;
 
 import amp.rabbit.topology.Broker;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import rabbitmq.mgmt.RabbitMgmtService;
@@ -26,6 +27,8 @@ public class Cluster extends CopyOnWriteArraySet<Broker> {
     private Object managementEndpointsLock = new Object();
 
     Set<ManagementEndpoint> managementEndpoints = Sets.newCopyOnWriteArraySet();
+
+    Set<Listener> listeners = Sets.newCopyOnWriteArraySet();
 
     /**
      * Provide the Name of the Cluster, using the default virtual host ("/").
@@ -55,8 +58,14 @@ public class Cluster extends CopyOnWriteArraySet<Broker> {
     @Override
     public boolean add(Broker broker){
 
-        if (validate(broker))
-            return super.add(broker);
+        if (validate(broker)){
+
+            boolean wasAdded = super.add(broker);
+
+            for (Listener listener : listeners) listener.onBrokerAdded(this, broker);
+
+            return wasAdded;
+        }
 
         return false;
     }
@@ -111,6 +120,22 @@ public class Cluster extends CopyOnWriteArraySet<Broker> {
         return this.add(broker);
     }
 
+    @Override
+    public boolean remove(Object o) {
+
+        Preconditions.checkState(Broker.class.isAssignableFrom(o.getClass()));
+
+        Broker target = (Broker)o;
+
+        boolean wasRemoved = super.remove(target);
+
+        if (wasRemoved)
+
+            for (Listener listener : listeners) listener.onBrokerRemoved(this, target);
+
+        return wasRemoved;
+    }
+
     /**
      * Get the ID of the cluster.
      * @return ID of the Cluster
@@ -157,10 +182,14 @@ public class Cluster extends CopyOnWriteArraySet<Broker> {
         synchronized (managementEndpointsLock){
 
             for(ManagementEndpoint mgmtEndpoint : managementEndpoints)
+
                 if (endpoint.getId().equals(mgmtEndpoint.getId()))
+
                     throw new ManagementEndpointAlreadyExistsException(this.getClusterId(), endpoint.getId());
 
             managementEndpoints.add(endpoint);
+
+            for (Listener listener : listeners) listener.onManagementEndpointAdded(this, endpoint);
         }
     }
 
@@ -174,9 +203,12 @@ public class Cluster extends CopyOnWriteArraySet<Broker> {
         synchronized (managementEndpointsLock){
 
             for (ManagementEndpoint mgmtEndpoint : managementEndpoints)
+
                 if (mgmtEndpoint.getId().equals(id)){
 
                     managementEndpoints.remove(mgmtEndpoint);
+
+                    for (Listener listener : listeners) listener.onManagementEndpointRemoved(this, mgmtEndpoint);
 
                     return;
                 }
@@ -236,6 +268,58 @@ public class Cluster extends CopyOnWriteArraySet<Broker> {
         }
 
         throw new ManagementTaskFailedOnAllEndpointsException(exceptionMap);
+    }
+
+    /**
+     * Defines hooks into the Cluster lifecycle.
+     */
+    public interface Listener {
+
+        /**
+         * Called after a Broker has been added to a Cluster.
+         * @param self Cluster receiving the broker.
+         * @param broker Broker being added.
+         */
+        void onBrokerAdded(Cluster self, Broker broker);
+
+        /**
+         * Called after a Broker is removed from a Cluster.
+         * @param self Cluster losing a broker.
+         * @param broker Broker being removed.
+         */
+        void onBrokerRemoved(Cluster self, Broker broker);
+
+        /**
+         * Called after a ManagementEndpoint is added to a Cluster.
+         * @param self Cluster gaining a ManagementEndpoint
+         * @param managementEndpoint ManagementEndpoint being added.
+         */
+        void onManagementEndpointAdded(Cluster self, ManagementEndpoint managementEndpoint);
+
+        /**
+         * Called after a ManagementEndpoint is removed from a Cluster.
+         * @param self Cluster losing a ManagementEndpoint
+         * @param managementEndpoint ManagementEndpoint being removed.
+         */
+        void onManagementEndpointRemoved(Cluster self, ManagementEndpoint managementEndpoint);
+    }
+
+    /**
+     * Add a listener to the Cluster.
+     * @param listener Listener to add.
+     */
+    public void addListener(Listener listener){
+
+        this.listeners.add(listener);
+    }
+
+    /**
+     * Remove a listener from the Cluster.
+     * @param listener Listener to remove.
+     */
+    public void removeListener(Listener listener){
+
+        this.listeners.remove(listener);
     }
 
 

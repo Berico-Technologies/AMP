@@ -59,4 +59,34 @@ public interface TopicRegistry {
      */
     @PreAuthorize("hasRole('gts-snapshot-info')")
     long lastModified();
+
+    /**
+     * Add a listener to this registry.
+     * @param listener Listener to add.
+     */
+    void addListener(Listener listener);
+
+    /**
+     * Remove a Listener
+     * @param listener Listener to registry.
+     */
+    void removeListener(Listener listener);
+
+    /**
+     * Called when a Topic Configurations are registered or unregistered with the registry.
+     */
+    public interface Listener {
+
+        /**
+         * Fired when a Topic is registered.
+         * @param topicConfiguration Topic that was registered.
+         */
+        void onTopicRegistered(TopicConfiguration topicConfiguration);
+
+        /**
+         * Fired when a Topic is unregistered.
+         * @param topicConfiguration Topic that was unregistered.
+         */
+        void onTopicUnregistered(TopicConfiguration topicConfiguration);
+    }
 }

@@ -1,6 +1,6 @@
 package amp.topology.protocols.rabbit.requirements;
 
-import amp.topology.global.Constants;
+import amp.topology.Constants;
 import amp.topology.global.filtering.RouteRequirements;
 import org.junit.Test;
 

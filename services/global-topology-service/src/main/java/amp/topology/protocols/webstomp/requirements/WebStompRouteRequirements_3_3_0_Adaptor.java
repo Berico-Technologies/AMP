@@ -1,8 +1,8 @@
 package amp.topology.protocols.webstomp.requirements;
 
-import amp.topology.global.Constants;
-import amp.topology.protocols.common.Versioned;
-import amp.topology.protocols.common.VersionedMessageBodyReader;
+import amp.topology.Constants;
+import amp.topology.resources.common.Versioned;
+import amp.topology.resources.common.VersionedMessageBodyReader;
 import com.google.common.collect.Maps;
 
 import javax.ws.rs.core.MultivaluedMap;

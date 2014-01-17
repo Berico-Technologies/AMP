@@ -41,8 +41,6 @@ public abstract class BaseTopologyGroup<PARTITION extends Partition> implements 
 
     private String description = "";
 
-    private AccessControlList acl = new AccessControlList();
-
     private Set<Listener> listeners = Sets.newCopyOnWriteArraySet();
 
     private Object partitionsLock = new Object();
@@ -72,6 +70,7 @@ public abstract class BaseTopologyGroup<PARTITION extends Partition> implements 
      * Set the description of the Group.
      * @param description Friendly description.
      */
+    @Override
     public void setDescription(String description) {
 
         this.description = description;
@@ -85,16 +84,6 @@ public abstract class BaseTopologyGroup<PARTITION extends Partition> implements 
     public String getDescription() {
 
         return this.description;
-    }
-
-    /**
-     * Get the AccessControlList for the Group.
-     * @return Access Control List.
-     */
-    @Override
-    public AccessControlList getACL() {
-
-        return this.acl;
     }
 
     /**

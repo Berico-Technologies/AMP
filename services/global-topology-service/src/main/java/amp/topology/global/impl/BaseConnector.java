@@ -1,6 +1,5 @@
 package amp.topology.global.impl;
 
-import amp.topology.anubis.AccessControlList;
 import amp.topology.global.Connector;
 import amp.topology.global.ConsumerGroup;
 import amp.topology.global.Partition;
@@ -16,11 +15,7 @@ import java.util.UUID;
  */
 public abstract class BaseConnector<PPART extends Partition, CPART extends Partition> implements Connector {
 
-    /**
-     * Provide a default, unique identifier for the Connector that can
-     * be overridden by inheriting implementations.
-     */
-    private String id = UUID.randomUUID().toString();
+    private String id;
 
     private String description = "";
 
@@ -30,9 +25,19 @@ public abstract class BaseConnector<PPART extends Partition, CPART extends Parti
 
     private ConsumerGroup<CPART> consumerGroup;
 
-    private AccessControlList acl = new AccessControlList();
-
     private Set<Listener> listeners = Sets.newCopyOnWriteArraySet();
+
+    public BaseConnector(String description, ProducerGroup<PPART> producerGroup, ConsumerGroup<CPART> consumerGroup) {
+
+        this(UUID.randomUUID().toString(), description, producerGroup, consumerGroup);
+    }
+
+    public BaseConnector(String id, String description, ProducerGroup<PPART> producerGroup, ConsumerGroup<CPART> consumerGroup) {
+        this.id = id;
+        this.description = description;
+        this.producerGroup = producerGroup;
+        this.consumerGroup = consumerGroup;
+    }
 
     /**
      * Set the Id of the Connector.
@@ -57,6 +62,7 @@ public abstract class BaseConnector<PPART extends Partition, CPART extends Parti
      * Set a friendly description of this Connector.
      * @param description Friendly description.
      */
+    @Override
     public void setDescription(String description) {
 
         this.description = description;
@@ -70,16 +76,6 @@ public abstract class BaseConnector<PPART extends Partition, CPART extends Parti
     public String getDescription() {
 
         return this.description;
-    }
-
-    /**
-     * Get the Access Control List associated with this connector.
-     * @return ACL.
-     */
-    @Override
-    public AccessControlList getACL() {
-
-        return acl;
     }
 
     /**
@@ -154,7 +150,7 @@ public abstract class BaseConnector<PPART extends Partition, CPART extends Parti
     @Override
     public void addListener(Listener listener) {
 
-        if (listener != null && !listeners.contains(listener)) listeners.add(listener);
+        if (listener != null) listeners.add(listener);
     }
 
     /**
@@ -165,6 +161,6 @@ public abstract class BaseConnector<PPART extends Partition, CPART extends Parti
     @Override
     public void removeListener(Listener listener) {
 
-        if (listener != null && listeners.contains(listener)) listeners.remove(listener);
+        if (listener != null) listeners.remove(listener);
     }
 }

@@ -1,6 +1,6 @@
 package amp.topology.global.filtering.impl;
 
-import amp.topology.global.Constants;
+import amp.topology.Constants;
 import amp.topology.anubis.Actor;
 import amp.topology.global.filtering.RouteRequirements;
 

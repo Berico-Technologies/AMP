@@ -208,6 +208,78 @@ public class ClusterTest {
         fail("An exception should have occurred in the previous statement.");
     }
 
+    @Test
+    public void listener_is_called_when_broker_is_added() throws Exception {
+
+        Cluster cluster = new Cluster("cluster1", "/");
+
+        Cluster.Listener listener = mock(Cluster.Listener.class);
+
+        cluster.addListener(listener);
+
+        Broker broker = mock(Broker.class);
+
+        doReturn("/").when(broker).getVirtualHost();
+
+        cluster.add(broker);
+
+        verify(listener).onBrokerAdded(cluster, broker);
+    }
+
+    @Test
+    public void listener_is_called_when_broker_is_removed() throws Exception {
+
+        Cluster cluster = new Cluster("cluster1", "/");
+
+        Broker broker = mock(Broker.class);
+
+        doReturn("/").when(broker).getVirtualHost();
+
+        cluster.add(broker);
+
+        Cluster.Listener listener = mock(Cluster.Listener.class);
+
+        cluster.addListener(listener);
+
+        cluster.remove(broker);
+
+        verify(listener).onBrokerRemoved(cluster, broker);
+    }
+
+    @Test
+    public void listener_is_called_when_management_endpoint_is_added() throws Exception {
+
+        Cluster cluster = new Cluster("cluster1", "/");
+
+        Cluster.Listener listener = mock(Cluster.Listener.class);
+
+        cluster.addListener(listener);
+
+        ManagementEndpoint managementEndpoint = createMockManagementEndpoint("localhost", 15672, true);
+
+        cluster.addManagementEndpoint(managementEndpoint);
+
+        verify(listener).onManagementEndpointAdded(cluster, managementEndpoint);
+    }
+
+    @Test
+    public void listener_is_called_when_management_endpoint_is_removed() throws Exception {
+
+        Cluster cluster = new Cluster("cluster1", "/");
+
+        ManagementEndpoint managementEndpoint = createMockManagementEndpoint("localhost", 15672, true);
+
+        cluster.addManagementEndpoint(managementEndpoint);
+
+        Cluster.Listener listener = mock(Cluster.Listener.class);
+
+        cluster.addListener(listener);
+
+        cluster.removeManagementEndpoint(managementEndpoint.getId());
+
+        verify(listener).onManagementEndpointRemoved(cluster, managementEndpoint);
+    }
+
     static ManagementEndpoint createMockManagementEndpoint(String hostname, int port, boolean useSsl){
 
         ManagementEndpoint managementEndpoint = mock(ManagementEndpoint.class);

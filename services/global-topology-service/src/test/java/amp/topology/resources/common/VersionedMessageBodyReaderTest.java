@@ -1,4 +1,4 @@
-package amp.topology.protocols.common;
+package amp.topology.resources.common;
 
 import com.google.common.base.Optional;
 import com.google.common.reflect.TypeToken;

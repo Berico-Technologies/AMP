@@ -29,6 +29,10 @@ public class InMemoryTopicRegistry implements TopicRegistry {
 
     Set<TopicConfiguration> registry = Sets.newCopyOnWriteArraySet();
 
+    Object listenersLock = new Object();
+
+    Set<Listener> listeners = Sets.newCopyOnWriteArraySet();
+
     @Override
     public TopicConfiguration get(String id) throws TopologyConfigurationNotExistException {
 
@@ -57,9 +61,16 @@ public class InMemoryTopicRegistry implements TopicRegistry {
                 // If an exception doesn't occur.
                 registry.add(topicConfiguration);
 
+                fireOnTopicRegistered(topicConfiguration);
+
                 this.lastModified = System.currentTimeMillis();
             }
         }
+    }
+
+    void fireOnTopicRegistered(TopicConfiguration topicConfiguration) {
+
+        for (Listener listener : listeners) listener.onTopicRegistered(topicConfiguration);
     }
 
     @Override
@@ -76,6 +87,8 @@ public class InMemoryTopicRegistry implements TopicRegistry {
                 // If an exception doesn't occur.
                 registry.remove(topic);
 
+                fireOnTopicUnRegistered(topic.get());
+
                 this.lastModified = System.currentTimeMillis();
             }
             else {
@@ -83,6 +96,11 @@ public class InMemoryTopicRegistry implements TopicRegistry {
                 throw new TopologyConfigurationNotExistException();
             }
         }
+    }
+
+    void fireOnTopicUnRegistered(TopicConfiguration topicConfiguration) {
+
+        for (Listener listener : listeners) listener.onTopicUnregistered(topicConfiguration);
     }
 
     @Override
@@ -95,6 +113,24 @@ public class InMemoryTopicRegistry implements TopicRegistry {
     public long lastModified() {
 
         return lastModified;
+    }
+
+    @Override
+    public void addListener(Listener listener) {
+
+        synchronized (listenersLock) {
+
+            listeners.add(listener);
+        }
+    }
+
+    @Override
+    public void removeListener(Listener listener) {
+
+        synchronized (listenersLock) {
+
+            listeners.remove(listener);
+        }
     }
 
     /**

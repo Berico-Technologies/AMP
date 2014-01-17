@@ -24,8 +24,6 @@ public class BasicTopicConfiguration implements TopicConfiguration {
 
     private String description;
 
-    private AccessControlList acl;
-
     private Object producerGroupsLock = new Object();
 
     private Set<ProducerGroup<?>> producerGroups = Sets.newCopyOnWriteArraySet();
@@ -51,6 +49,18 @@ public class BasicTopicConfiguration implements TopicConfiguration {
     }
 
     /**
+     * Instantiate the Topic with it's id.
+     * @param id A globally unique id in the topic space.  Typically this is the name of an event (canonical class name)
+     *           or some easily identified but more generic category (e.g. "user-queues").
+     * @param description A friendly description of this topic.
+     */
+    public BasicTopicConfiguration(String id, String description) {
+
+        this.id = id;
+        this.description = description;
+    }
+
+    /**
      * Set the Id of the Topic in a manner consistent with your storage implementation.
      * @param id Id of the Topic
      */
@@ -73,6 +83,7 @@ public class BasicTopicConfiguration implements TopicConfiguration {
      * Set a friendly description of this Topic.
      * @param description Friendly description.
      */
+    @Override
     public void setDescription(String description) {
 
         this.description = description;
@@ -86,16 +97,6 @@ public class BasicTopicConfiguration implements TopicConfiguration {
     public String getDescription() {
 
         return this.description;
-    }
-
-    /**
-     * Get the Access Control List for this Topic.
-     * @return Access Control List.
-     */
-    @Override
-    public AccessControlList getACL() {
-
-        return this.acl;
     }
 
     /**
@@ -159,6 +160,83 @@ public class BasicTopicConfiguration implements TopicConfiguration {
     }
 
     /**
+     * Get a TopologyGroup by it's id; it doesn't matter whether that is a producer or consumer group.
+     * @param id ID of the Group to retrieve.
+     * @return TopologyGroup
+     * @throws Exception Thrown if the group does not exist.
+     */
+    @Override
+    public TopologyGroup<? extends Partition> getGroup(String id) throws Exception {
+
+        GroupExists groupExists = getGroupExists(id);
+
+        if (groupExists == GroupExists.AsProducer)
+            return getProducerGroup(id);
+
+        else if (groupExists == GroupExists.AsConsumer)
+            return getConsumerGroup(id);
+
+        else
+            throw new TopologyGroupNotExistException(this.getId(), id, false);
+    }
+
+    /**
+     * Remove a Group by it's id; it doesn't matter whether the group is a producer or consumer group.
+     * @param id ID of the Group to remove.
+     * @throws Exception Thrown if the group doesn't exist, or an error is encountered cleanup resources of that group.
+     */
+    @Override
+    public void removeGroup(String id) throws Exception {
+
+        GroupExists groupExists = getGroupExists(id);
+
+        if (groupExists == GroupExists.AsProducer)
+            removeProducerGroup(id);
+
+        else if (groupExists == GroupExists.AsConsumer)
+            removeConsumerGroup(id);
+
+        else
+            throw new TopologyGroupNotExistException(this.getId(), id, false);
+    }
+
+    /**
+     * Does the group with the specified id exist?
+     * @param id ID of the group to check existence for.
+     * @return TRUE if it does exist, FALSE if it does not.
+     */
+    @Override
+    public boolean groupExists(String id) {
+
+        GroupExists groupExists = getGroupExists(id);
+
+        return groupExists != GroupExists.False;
+    }
+
+    /**
+     * Specifies the state of a group's existence.
+     */
+    public enum GroupExists {
+        AsProducer,
+        AsConsumer,
+        False
+    }
+
+    /**
+     * A more complex form of groupExists(id), letting you know whether it's a Producer, Consumer, or Nonexistent.
+     * @param id Id of the Group
+     * @return Status of Existence.
+     */
+    public GroupExists getGroupExists(String id){
+
+        if (pgroupContains(producerGroups, id)) return GroupExists.AsProducer;
+
+        if (cgroupContains(consumerGroups, id)) return GroupExists.AsConsumer;
+
+        return GroupExists.False;
+    }
+
+    /**
      * Add a ProducerGroup to the TopicConfiguration.  The "setup" method will be called on the group,
      * and if an exception is raised, the group will fail to be added to the Topic.  All listeners will
      * also be fired for onProducerGroupAdded.
@@ -194,8 +272,7 @@ public class BasicTopicConfiguration implements TopicConfiguration {
      * @throws Exception raised during "cleanup"
      * @throws TopologyGroupNotExistException if the group doesn't exist
      */
-    @Override
-    public void removeProducerGroup(String id) throws Exception {
+     void removeProducerGroup(String id) throws Exception {
 
         synchronized (producerGroupsLock) {
 
@@ -278,8 +355,7 @@ public class BasicTopicConfiguration implements TopicConfiguration {
      * @throws Exception raised during "cleanup"
      * @throws TopologyGroupNotExistException if the group doesn't exist
      */
-    @Override
-    public void removeConsumerGroup(String id) throws Exception {
+    void removeConsumerGroup(String id) throws Exception {
 
         synchronized (consumerGroupsLock) {
 

@@ -1,4 +1,4 @@
-package amp.topology.global;
+package amp.topology;
 
 import amp.messaging.EnvelopeHeaderConstants;
 

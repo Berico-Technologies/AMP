@@ -2,15 +2,13 @@ package amp.topology.protocols.rabbit.topology;
 
 import amp.rabbit.topology.Broker;
 import amp.rabbit.topology.Exchange;
-import amp.rabbit.topology.ProducingRoute;
 import amp.topology.global.impl.BasePartition;
 import amp.topology.protocols.rabbit.management.Cluster;
 import amp.topology.protocols.rabbit.management.RmqModelAdaptors;
-import com.google.common.collect.Lists;
+import amp.topology.protocols.rabbit.topology.exceptions.ExchangeDoesNotExistException;
 import com.google.common.collect.Sets;
 import rabbitmq.mgmt.RabbitMgmtService;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
@@ -145,7 +143,7 @@ public abstract class BaseRabbitPartition extends BasePartition {
             @Override
             public Void execute(RabbitMgmtService rmq) {
 
-                rmq.exchanges().delete(exchangeName, cluster.getVirtualHost());
+                rmq.exchanges().delete(cluster.getVirtualHost(), exchangeName);
 
                 return null;
             }
@@ -156,11 +154,10 @@ public abstract class BaseRabbitPartition extends BasePartition {
 
     /**
      * Verify the state of the exchange.
-     * @return TRUE if the state is valid, FALSE if it changed during the verification.
      * @throws Exception Occurs if the validation check fails.
      */
     @Override
-    public boolean verify() throws Exception {
+    public void verify() throws Exception {
 
         final String exchangeName = exchange.getName();
 
@@ -175,15 +172,15 @@ public abstract class BaseRabbitPartition extends BasePartition {
             }
         });
 
-        if (hasExchange && !getState().equals(PartitionStates.ACTIVE)){
-            setState(PartitionStates.ACTIVE, "Exchange exists, but partition was not Active.");
-            return false;
-        }
+        if (!hasExchange){
 
-        if (!hasExchange && getState().equals(PartitionStates.ACTIVE)){
-            setState(PartitionStates.IN_ERROR, "Exchange does not exist, but partition was set to active.");
-        }
+            setState(PartitionStates.IN_ERROR, "Exchange does not exist.");
 
-        return true;
+            throw new ExchangeDoesNotExistException(exchange);
+        }
+        else {
+
+            setState(PartitionStates.ACTIVE, "Exchange available.");
+        }
     }
 }

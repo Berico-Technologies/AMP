@@ -1,6 +1,6 @@
 package amp.topology.protocols.webstomp.requirements;
 
-import amp.topology.global.Constants;
+import amp.topology.Constants;
 import amp.topology.global.filtering.impl.DecoratedMapRouteRequirements;
 
 import java.util.Map;

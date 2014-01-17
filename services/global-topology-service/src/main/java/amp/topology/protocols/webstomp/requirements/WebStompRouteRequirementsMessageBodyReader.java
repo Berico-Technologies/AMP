@@ -1,6 +1,6 @@
 package amp.topology.protocols.webstomp.requirements;
 
-import amp.topology.protocols.common.VersionedMessageBodyReader;
+import amp.topology.resources.common.VersionedMessageBodyReader;
 import com.google.common.collect.Sets;
 
 import javax.ws.rs.ext.Provider;

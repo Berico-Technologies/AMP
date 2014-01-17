@@ -19,8 +19,17 @@ public interface GroupFactory {
      * will automatically be registered with the TopicConfiguration (you don't need to do anything else).
      *
      * @param specification Specification of the Group.
-     * @return GroupSpecification
+     * @return GroupSpecification_3_3_0
      * @throws Exception an error occurring during the construction or registration process.
      */
     TopologyGroup<? extends Partition> create(GroupSpecification specification) throws Exception;
+
+    /**
+     * Modify the provided group with the state represented by the specification.
+     *
+     * @param specification Specification of the Group (representing the mutations).
+     * @return a collection of modification entries describing the results of the operation.
+     * @throws Exception Any error that occurred.
+     */
+    Modifications modify(GroupSpecification specification) throws Exception;
 }

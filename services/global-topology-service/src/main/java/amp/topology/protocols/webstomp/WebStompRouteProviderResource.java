@@ -5,7 +5,7 @@ import amp.topology.global.TopicConfiguration;
 import amp.topology.global.TopicRegistry;
 import amp.topology.anubis.Actor;
 import amp.topology.global.filtering.RouteFilterResults;
-import amp.topology.protocols.common.Versioned;
+import amp.topology.resources.common.Versioned;
 import amp.topology.protocols.webstomp.requirements.WebStompRouteRequirements;
 import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.yammer.dropwizard.auth.Auth;

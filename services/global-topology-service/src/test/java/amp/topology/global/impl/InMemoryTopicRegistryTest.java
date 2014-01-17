@@ -5,10 +5,12 @@ import amp.topology.global.TopicRegistry;
 import amp.topology.global.TopicRegistryComplianceTest;
 import com.google.common.collect.Iterables;
 import org.junit.Test;
+import org.mockito.InOrder;
+
+import java.util.Set;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Richard Clayton (Berico Technologies)
@@ -106,6 +108,42 @@ public class InMemoryTopicRegistryTest extends TopicRegistryComplianceTest {
         assertNotEquals(LAST_MODIFIED, topicRegistry.lastModified());
 
         assertTrue(LAST_MODIFIED < topicRegistry.lastModified());
+    }
+
+    @Test
+    public void test_listeners() throws Exception {
+
+        InMemoryTopicRegistry topicRegistry = new InMemoryTopicRegistry();
+
+        topicRegistry.listeners = spy(topicRegistry.listeners);
+
+        TopicRegistry.Listener listener = mock(TopicRegistry.Listener.class);
+
+        topicRegistry.addListener(listener);
+
+        verify(topicRegistry.listeners).add(listener);
+
+        TopicConfiguration topic1 = createMockTopic("abc123");
+
+        TopicConfiguration topic2 = createMockTopic("abc345");
+
+        topicRegistry.register(topic1);
+
+        topicRegistry.register(topic2);
+
+        verify(listener).onTopicRegistered(topic1);
+
+        verify(listener).onTopicRegistered(topic2);
+
+        topicRegistry.unregister(topic1.getId());
+
+        verify(listener).onTopicUnregistered(topic1);
+
+        topicRegistry.removeListener(listener);
+
+        topicRegistry.unregister(topic2.getId());
+
+        verifyNoMoreInteractions(listener);
     }
 
     public static TopicConfiguration createMockTopic(String id){

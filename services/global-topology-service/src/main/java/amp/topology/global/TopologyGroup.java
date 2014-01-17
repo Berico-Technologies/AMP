@@ -1,7 +1,5 @@
 package amp.topology.global;
 
-import amp.topology.anubis.AccessControlList;
-import amp.topology.anubis.AccessControlled;
 import amp.topology.global.exceptions.PartitionNotExistException;
 import amp.topology.global.filtering.RouteRequirements;
 
@@ -21,7 +19,7 @@ import java.util.Collection;
  *
  * @author Richard Clayton (Berico Technologies)
  */
-public interface TopologyGroup<PARTITION extends Partition> extends AccessControlled {
+public interface TopologyGroup<PARTITION extends Partition> {
 
     /**
      * The id of this group (must at least be unique to the TopicSpace),
@@ -35,6 +33,13 @@ public interface TopologyGroup<PARTITION extends Partition> extends AccessContro
      * @return Description
      */
     String getDescription();
+
+    /**
+     * Set the description of the Group.
+     *
+     * @param description Description of the group.
+     */
+    void setDescription(String description);
 
     /**
      * Retrieve a partition by id.
@@ -63,7 +68,9 @@ public interface TopologyGroup<PARTITION extends Partition> extends AccessContro
 
     /**
      * Called when the Group is instantiated.  This is an opportunity for the Group to do whatever it needs to do
-     * (like create an initial partition) in order to become ready.
+     * (like create an initial partition) in order to become ready.  This method should be Idempotent.  If called
+     * more than once, it should not setup up double the infrastructure, nor should it throw an exception if
+     * that infrastructure/configuration is already intact and valid.
      * @throws Exception An error encountered during the setup process.
      */
     void setup() throws Exception;

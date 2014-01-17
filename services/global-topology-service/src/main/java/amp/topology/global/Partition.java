@@ -82,22 +82,14 @@ public interface Partition {
     }
 
     /**
-     * Verify the state of the partition.  This is called to explicitly verify the state of the
-     * partition.
+     * Verify the state of the partition.  If the state of the partition is invalid, throw an exception.
      *
-     * This method will generally be called by the GTS infrastructure on some schedule to ensure the
-     * state of partitions are valid.  The verify check is not idempotent.  If the Partition State is
-     * out of sync with the underlying infrastructure, it is expected that the verify method will
-     * correct the valid state and fire event handlers (while indicating that the state was invalid = FALSE).
+     * It's expected that the state of the partition be updated during the verification.
      *
-     * @return If the latest state is correct, the method will return TRUE.  This means that if the
-     * Partition State is in error, and verify() determines that it is in error, this method will return
-     * TRUE.  If the latest state does not match the actual state of the partition, the method should
-     * return FALSE.  If any bad occurs during verification, the method may throw an exception.
      * @throws Exception Could be caused by bad configuration, an nested exception propagated during
      * the verification check, etc.
      */
-    boolean verify() throws Exception;
+    void verify() throws Exception;
 
     /**
      * Add a listener to the Partition
