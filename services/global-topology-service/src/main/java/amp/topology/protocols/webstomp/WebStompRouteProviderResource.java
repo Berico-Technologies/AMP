@@ -1,12 +1,12 @@
 package amp.topology.protocols.webstomp;
 
 import amp.rabbit.topology.RoutingInfo;
-import amp.topology.global.TopicConfiguration;
-import amp.topology.global.TopicRegistry;
 import amp.topology.anubis.Actor;
+import amp.topology.global.Topic;
+import amp.topology.global.TopicRegistry;
 import amp.topology.global.filtering.RouteFilterResults;
-import amp.topology.resources.common.Versioned;
 import amp.topology.protocols.webstomp.requirements.WebStompRouteRequirements;
+import amp.topology.resources.common.Versioned;
 import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.yammer.dropwizard.auth.Auth;
 import com.yammer.metrics.annotation.Timed;
@@ -49,7 +49,7 @@ public class WebStompRouteProviderResource {
         routeRequirements.setActor(client);
 
         // Retrieve the target route.
-        TopicConfiguration topicConf = topicRegistry.get(routeRequirements.getTopic());
+        Topic topicConf = topicRegistry.get(routeRequirements.getTopic());
 
         // Get the applicable topology constructs (PGroups, CGroups, Connectors)
         RouteFilterResults routeResults = topicConf.filter(routeRequirements);

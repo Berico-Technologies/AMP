@@ -2,6 +2,7 @@ package amp.topology.protocols.rabbit;
 
 import amp.rabbit.topology.ConsumingRoute;
 import amp.rabbit.topology.ProducingRoute;
+import amp.topology.global.Partition;
 import amp.topology.global.filtering.RouteFilterResults;
 import amp.topology.protocols.rabbit.requirements.RabbitRouteRequirements;
 import amp.topology.protocols.rabbit.topology.ConsumingRouteProvider;
@@ -25,7 +26,7 @@ public class RouteFilterResultsAdaptorTest {
 
         ProducingRoute mockProducingRoute1 = mock(ProducingRoute.class);
 
-        ProducingRouteProvider mockProducingRouteProvider1 = mock(ProducingRouteProvider.class);
+        ProducingRouteProvider mockProducingRouteProvider1 = mock(ProducerRouteProviderPartition.class);
 
         doReturn(mockProducingRoute1)
                 .when(mockProducingRouteProvider1)
@@ -33,7 +34,7 @@ public class RouteFilterResultsAdaptorTest {
 
         ProducingRoute mockProducingRoute2 = mock(ProducingRoute.class);
 
-        ProducingRouteProvider mockProducingRouteProvider2 = mock(ProducingRouteProvider.class);
+        ProducingRouteProvider mockProducingRouteProvider2 = mock(ProducerRouteProviderPartition.class);
 
         doReturn(mockProducingRoute2)
                 .when(mockProducingRouteProvider2)
@@ -76,7 +77,7 @@ public class RouteFilterResultsAdaptorTest {
 
         ConsumingRoute mockConsumingRoute1 = mock(ConsumingRoute.class);
 
-        ConsumingRouteProvider mockConsumingRouteProvider1 = mock(ConsumingRouteProvider.class);
+        ConsumingRouteProvider mockConsumingRouteProvider1 = mock(ConsumerRouteProviderPartition.class);
 
         doReturn(mockConsumingRoute1)
                 .when(mockConsumingRouteProvider1)
@@ -84,7 +85,7 @@ public class RouteFilterResultsAdaptorTest {
 
         ConsumingRoute mockConsumingRoute2 = mock(ConsumingRoute.class);
 
-        ConsumingRouteProvider mockConsumingRouteProvider2 = mock(ConsumingRouteProvider.class);
+        ConsumingRouteProvider mockConsumingRouteProvider2 = mock(ConsumerRouteProviderPartition.class);
 
         doReturn(mockConsumingRoute2)
                 .when(mockConsumingRouteProvider2)
@@ -121,4 +122,10 @@ public class RouteFilterResultsAdaptorTest {
 
         assertTrue(consumingRoutes.contains(mockConsumingRoute2));
     }
+
+    // Necessary to test the implementation.
+    public static abstract class ProducerRouteProviderPartition extends Partition implements ProducingRouteProvider {}
+
+    // Necessary to test the implementation.
+    public static abstract class ConsumerRouteProviderPartition extends Partition implements ConsumingRouteProvider {}
 }

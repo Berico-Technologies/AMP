@@ -11,9 +11,9 @@ import java.util.Collections;
  *
  * @author Richard Clayton (Berico Technologies)
  */
-public class TopicConfigurationChangeExceptionRollup extends Exception {
+public class TopicChangeExceptionRollup extends Exception {
 
-    private final ArrayList<TopicConfigurationChangeException> rollup = Lists.newArrayList();
+    private final ArrayList<TopicChangeException> rollup = Lists.newArrayList();
 
     /**
      * Register a failure that occurred for a topic.  You may register multiple failures
@@ -23,14 +23,14 @@ public class TopicConfigurationChangeExceptionRollup extends Exception {
      */
     public void registerFailure(String topicId, Throwable cause){
 
-        this.rollup.add(new TopicConfigurationChangeException(topicId, cause));
+        this.rollup.add(new TopicChangeException(topicId, cause));
     }
 
     /**
      * Get the rollup (as unmodifiable collection).
      * @return rollup of errors encountered.
      */
-    public Collection<TopicConfigurationChangeException> getRollup(){
+    public Collection<TopicChangeException> getRollup(){
 
         return Collections.unmodifiableCollection(rollup);
     }
@@ -47,9 +47,9 @@ public class TopicConfigurationChangeExceptionRollup extends Exception {
     /**
      * Represents an exception wrapped with the TopicConfiguration context.
      */
-    public static class TopicConfigurationChangeException extends Exception {
+    public static class TopicChangeException extends Exception {
 
-        public TopicConfigurationChangeException(String topicConfigurationId, Throwable cause) {
+        public TopicChangeException(String topicConfigurationId, Throwable cause) {
 
             super(
                     String.format(

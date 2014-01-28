@@ -41,7 +41,7 @@ public class DelegatingGroupFactory implements GroupFactory {
     @Override
     public TopologyGroup<? extends Partition> create(GroupSpecification specification) throws Exception {
 
-        TopicConfiguration topic = topicRegistry.get(specification.getTopicId());
+        Topic topic = topicRegistry.get(specification.getTopicId());
 
         GroupFactoryDelegate delegate = selectDelegate(specification);
 

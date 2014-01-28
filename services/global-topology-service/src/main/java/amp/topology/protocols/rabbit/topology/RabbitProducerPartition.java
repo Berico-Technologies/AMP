@@ -6,6 +6,7 @@ import amp.topology.protocols.rabbit.management.Cluster;
 import amp.topology.protocols.rabbit.requirements.RabbitRouteRequirements;
 
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * Basic Producing Partition representing a RabbitMQ Exchange.
@@ -41,5 +42,11 @@ public class RabbitProducerPartition extends BaseRabbitPartition implements Prod
                 .routingKeys(getRoutingKeys())
                 .brokers(getBrokers())
                 .build();
+    }
+
+    @Override
+    public String getDescription() {
+        //TODO: Better description
+        return "Rabbit Producing Partition mapped to exchange: ";
     }
 }

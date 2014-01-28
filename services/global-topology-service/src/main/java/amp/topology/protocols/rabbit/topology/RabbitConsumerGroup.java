@@ -2,7 +2,7 @@ package amp.topology.protocols.rabbit.topology;
 
 import amp.topology.global.ConsumerGroup;
 import amp.topology.global.filtering.RouteRequirements;
-import amp.topology.global.impl.BaseTopologyGroup;
+import amp.topology.global.TopologyGroup;
 import amp.topology.protocols.rabbit.management.Cluster;
 import com.google.common.collect.Lists;
 
@@ -13,8 +13,7 @@ import java.util.Collection;
  * @author Richard Clayton (Berico Technologies)
  */
 public class RabbitConsumerGroup
-        extends BaseTopologyGroup<RabbitConsumerPartition>
-        implements ConsumerGroup<RabbitConsumerPartition> {
+        extends ConsumerGroup<RabbitConsumerPartition> {
 
     Cluster cluster;
 

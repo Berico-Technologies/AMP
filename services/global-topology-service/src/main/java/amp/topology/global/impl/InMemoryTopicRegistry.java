@@ -1,8 +1,9 @@
 package amp.topology.global.impl;
 
-import amp.topology.global.TopicConfiguration;
+import amp.topology.global.Topic;
 import amp.topology.global.TopicRegistry;
-import amp.topology.global.exceptions.TopologyConfigurationNotExistException;
+import amp.topology.global.exceptions.TopicNotExistException;
+import amp.topology.global.lifecycle.LifeCycleObservationManager;
 import com.google.common.base.Optional;
 import com.google.common.collect.Sets;
 
@@ -27,18 +28,14 @@ public class InMemoryTopicRegistry implements TopicRegistry {
 
     Object registryLock = new Object();
 
-    Set<TopicConfiguration> registry = Sets.newCopyOnWriteArraySet();
-
-    Object listenersLock = new Object();
-
-    Set<Listener> listeners = Sets.newCopyOnWriteArraySet();
+    Set<Topic> registry = Sets.newCopyOnWriteArraySet();
 
     @Override
-    public TopicConfiguration get(String id) throws TopologyConfigurationNotExistException {
+    public Topic get(String id) throws TopicNotExistException {
 
-        Optional<TopicConfiguration> topicConfiguration = locate(id);
+        Optional<Topic> topicConfiguration = locate(id);
 
-        if (!topicConfiguration.isPresent()) throw new TopologyConfigurationNotExistException();
+        if (!topicConfiguration.isPresent()) throw new TopicNotExistException();
 
         return topicConfiguration.get();
     }
@@ -50,7 +47,7 @@ public class InMemoryTopicRegistry implements TopicRegistry {
     }
 
     @Override
-    public void register(TopicConfiguration topicConfiguration) throws Exception {
+    public void register(Topic topicConfiguration) throws Exception {
 
         synchronized (registryLock) {
 
@@ -61,16 +58,11 @@ public class InMemoryTopicRegistry implements TopicRegistry {
                 // If an exception doesn't occur.
                 registry.add(topicConfiguration);
 
-                fireOnTopicRegistered(topicConfiguration);
+                LifeCycleObservationManager.fireOnAdded(topicConfiguration);
 
                 this.lastModified = System.currentTimeMillis();
             }
         }
-    }
-
-    void fireOnTopicRegistered(TopicConfiguration topicConfiguration) {
-
-        for (Listener listener : listeners) listener.onTopicRegistered(topicConfiguration);
     }
 
     @Override
@@ -78,7 +70,7 @@ public class InMemoryTopicRegistry implements TopicRegistry {
 
         synchronized (registryLock) {
 
-            Optional<TopicConfiguration> topic = locate(id);
+            Optional<Topic> topic = locate(id);
 
             if (topic.isPresent()){
 
@@ -87,24 +79,19 @@ public class InMemoryTopicRegistry implements TopicRegistry {
                 // If an exception doesn't occur.
                 registry.remove(topic);
 
-                fireOnTopicUnRegistered(topic.get());
+                LifeCycleObservationManager.fireOnRemoved(topic.get());
 
                 this.lastModified = System.currentTimeMillis();
             }
             else {
 
-                throw new TopologyConfigurationNotExistException();
+                throw new TopicNotExistException();
             }
         }
     }
 
-    void fireOnTopicUnRegistered(TopicConfiguration topicConfiguration) {
-
-        for (Listener listener : listeners) listener.onTopicUnregistered(topicConfiguration);
-    }
-
     @Override
-    public Iterable<TopicConfiguration> entries() throws Exception {
+    public Iterable<Topic> entries() throws Exception {
 
         return Collections.unmodifiableCollection(registry);
     }
@@ -115,34 +102,16 @@ public class InMemoryTopicRegistry implements TopicRegistry {
         return lastModified;
     }
 
-    @Override
-    public void addListener(Listener listener) {
-
-        synchronized (listenersLock) {
-
-            listeners.add(listener);
-        }
-    }
-
-    @Override
-    public void removeListener(Listener listener) {
-
-        synchronized (listenersLock) {
-
-            listeners.remove(listener);
-        }
-    }
-
     /**
      * Get a TopicConfiguration by ID.
      * @param topicId ID of the Topic to retrieve.
      * @return TopicConfiguration of Null.
      */
-    private Optional<TopicConfiguration> locate(String topicId){
+    private Optional<Topic> locate(String topicId){
 
-        for (TopicConfiguration topicConfiguration : registry){
+        for (Topic topic : registry){
 
-            if (topicConfiguration.getId().equals(topicId)) return Optional.of(topicConfiguration);
+            if (topic.getId().equals(topicId)) return Optional.of(topic);
         }
 
         return Optional.absent();

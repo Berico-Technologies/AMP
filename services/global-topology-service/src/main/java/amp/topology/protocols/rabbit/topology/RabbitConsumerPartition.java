@@ -96,6 +96,12 @@ public abstract class RabbitConsumerPartition extends BaseRabbitPartition implem
         this.queuePrototype = queuePrototype;
     }
 
+    @Override
+    public String getDescription() {
+        //TODO: Better description
+        return "Rabbit Consumer Partition mapped to exchange... ";
+    }
+
     /**
      * Create a Queue on the Cluster.
      * @param queue Queue to create.

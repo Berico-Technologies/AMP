@@ -1,10 +1,9 @@
 package amp.topology.resources;
 
-import amp.topology.anubis.AccessControl;
 import amp.topology.factory.Modifications;
 import amp.topology.factory.TopicFactory;
 import amp.topology.factory.TopicSpecification;
-import amp.topology.global.TopicConfiguration;
+import amp.topology.global.Topic;
 import amp.topology.global.TopicRegistry;
 import amp.topology.resources.common.Versioned;
 import com.google.common.collect.Iterables;
@@ -59,11 +58,11 @@ public class TopicResource {
     @ApiOperation(
         value = "Add a Topic to the Global Topology",
         notes = "Adds a Topic with the supplied specification to the Global Topology, provisioning resources as needed.",
-        response = TopicConfiguration.class,
+        response = Topic.class,
         authorizations = "gts-topic-add"
     )
     @Timed
-    public TopicConfiguration add(@Versioned TopicSpecification specification) throws Exception {
+    public Topic add(@Versioned TopicSpecification specification) throws Exception {
 
         return this.topicFactory.create(specification);
     }
@@ -95,9 +94,9 @@ public class TopicResource {
     @Metered(name="list-meter")
     public TopicConfigurationCollection list() throws Exception {
 
-        Collection<TopicConfiguration> topics =
+        Collection<Topic> topics =
                 Arrays.asList(
-                        Iterables.toArray( this.topicRegistry.entries(), TopicConfiguration.class ));
+                        Iterables.toArray( this.topicRegistry.entries(), Topic.class ));
 
         return new TopicConfigurationCollection(topics);
     }
@@ -107,14 +106,14 @@ public class TopicResource {
     @ApiOperation(
         value = "Get a Topic in the Global Topology.",
         notes = "Retrieves a topic registered in the Global Topology.",
-        response = TopicConfiguration.class,
+        response = Topic.class,
         authorizations = "gts-topic-get"
     )
     @ApiResponses({
             @ApiResponse(code=404, message="No topic with specified id.")
     })
     @Metered
-    public TopicConfiguration get(@PathParam("id") String topicId) throws Exception {
+    public Topic get(@PathParam("id") String topicId) throws Exception {
 
         return topicRegistry.get(topicId);
     }
@@ -141,14 +140,14 @@ public class TopicResource {
     @XmlRootElement
     public static class TopicConfigurationCollection {
 
-        private final Collection<TopicConfiguration> topics;
+        private final Collection<Topic> topics;
 
-        public TopicConfigurationCollection(Collection<TopicConfiguration> topics) {
+        public TopicConfigurationCollection(Collection<Topic> topics) {
 
             this.topics = topics;
         }
 
-        public Collection<TopicConfiguration> getTopics() {
+        public Collection<Topic> getTopics() {
 
             return topics;
         }

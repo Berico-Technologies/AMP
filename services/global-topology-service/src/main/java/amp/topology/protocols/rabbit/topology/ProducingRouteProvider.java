@@ -9,7 +9,7 @@ import amp.topology.protocols.rabbit.requirements.RabbitRouteRequirements;
  *
  * @author Richard Clayton (Berico Technologies)
  */
-public interface ProducingRouteProvider extends Partition {
+public interface ProducingRouteProvider {
 
     ProducingRoute getProducingRoute(RabbitRouteRequirements requirements) throws Exception;
 }

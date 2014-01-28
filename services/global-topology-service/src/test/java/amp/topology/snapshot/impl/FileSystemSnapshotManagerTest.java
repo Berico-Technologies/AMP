@@ -1,11 +1,11 @@
 package amp.topology.snapshot.impl;
 
-import amp.topology.global.TopicConfiguration;
+import amp.topology.global.Topic;
 import amp.topology.global.TopicRegistry;
 import amp.topology.snapshot.Snapshot;
 import amp.topology.snapshot.SnapshotDescriptor;
 import amp.topology.snapshot.exceptions.SnapshotDoesNotExistException;
-import amp.topology.snapshot.exceptions.TopicConfigurationChangeExceptionRollup;
+import amp.topology.snapshot.exceptions.TopicChangeExceptionRollup;
 import org.joda.time.DateTime;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
@@ -114,15 +114,15 @@ public class FileSystemSnapshotManagerTest {
     @Test
     public void test_locateById(){
 
-        TopicConfiguration topicConfiguration1 = mock(TopicConfiguration.class);
+        Topic topicConfiguration1 = mock(Topic.class);
 
         when(topicConfiguration1.getId()).thenReturn("amp.test.Event1");
 
-        TopicConfiguration topicConfiguration2 = mock(TopicConfiguration.class);
+        Topic topicConfiguration2 = mock(Topic.class);
 
         when(topicConfiguration2.getId()).thenReturn("amp.test.Event2");
 
-        TopicConfiguration topicConfiguration3 = mock(TopicConfiguration.class);
+        Topic topicConfiguration3 = mock(Topic.class);
 
         when(topicConfiguration3.getId()).thenReturn("amp.test.Event3");
 
@@ -338,13 +338,13 @@ public class FileSystemSnapshotManagerTest {
     @Test
     public void test_synchronizeConfiguration__does_not_update_if_state_is_equivalent() throws Exception {
 
-        TopicConfiguration TOPIC = mock(TopicConfiguration.class);
+        Topic TOPIC = mock(Topic.class);
 
         FileSystemSnapshotManager manager = createInstanceWithMocks();
 
         // Gross, but easiest way to ensure a mock is equal since we can't
         // stub Object.equals()
-        manager.synchronizeTopicConfiguration(TOPIC, TOPIC, false);
+        manager.synchronizeTopic(TOPIC, TOPIC, false);
 
         verifyZeroInteractions(manager.topicRegistry);
     }
@@ -352,15 +352,15 @@ public class FileSystemSnapshotManagerTest {
     @Test
     public void test_synchronizeConfiguration__replaces_existing_state_if_not_equivalent() throws Exception {
 
-        TopicConfiguration TOPICA_CURRENT = mock(TopicConfiguration.class);
+        Topic TOPICA_CURRENT = mock(Topic.class);
 
         when(TOPICA_CURRENT.getId()).thenReturn("abc123");
 
-        TopicConfiguration TOPICA_MUTATION = mock(TopicConfiguration.class);
+        Topic TOPICA_MUTATION = mock(Topic.class);
 
         FileSystemSnapshotManager manager = createInstanceWithMocks();
 
-        manager.synchronizeTopicConfiguration(TOPICA_CURRENT, TOPICA_MUTATION, false);
+        manager.synchronizeTopic(TOPICA_CURRENT, TOPICA_MUTATION, false);
 
         verify(manager.topicRegistry).unregister("abc123");
 
@@ -370,15 +370,15 @@ public class FileSystemSnapshotManagerTest {
     @Test
     public void test_synchronizeConfiguration__remove_if_no_mutation_and_dont_keep_entries() throws Exception {
 
-        TopicConfiguration TOPICA_CURRENT = mock(TopicConfiguration.class);
+        Topic TOPICA_CURRENT = mock(Topic.class);
 
         when(TOPICA_CURRENT.getId()).thenReturn("abc123");
 
-        TopicConfiguration TOPICA_MUTATION = null;
+        Topic TOPICA_MUTATION = null;
 
         FileSystemSnapshotManager manager = createInstanceWithMocks();
 
-        manager.synchronizeTopicConfiguration(TOPICA_CURRENT, TOPICA_MUTATION, true);
+        manager.synchronizeTopic(TOPICA_CURRENT, TOPICA_MUTATION, true);
 
         verify(manager.topicRegistry).unregister("abc123");
     }
@@ -386,13 +386,13 @@ public class FileSystemSnapshotManagerTest {
     @Test
     public void test_synchronizeConfiguration__do_not_remove_if_no_mutation_and_keep_entries() throws Exception {
 
-        TopicConfiguration TOPICA_CURRENT = mock(TopicConfiguration.class);
+        Topic TOPICA_CURRENT = mock(Topic.class);
 
-        TopicConfiguration TOPICA_MUTATION = null;
+        Topic TOPICA_MUTATION = null;
 
         FileSystemSnapshotManager manager = createInstanceWithMocks();
 
-        manager.synchronizeTopicConfiguration(TOPICA_CURRENT, TOPICA_MUTATION, false);
+        manager.synchronizeTopic(TOPICA_CURRENT, TOPICA_MUTATION, false);
 
         verifyZeroInteractions(manager.topicRegistry);
     }
@@ -402,19 +402,19 @@ public class FileSystemSnapshotManagerTest {
 
         FileSystemSnapshotManager manager = createInstanceWithMocks();
 
-        TopicConfiguration TC1 = mock(TopicConfiguration.class);
+        Topic TC1 = mock(Topic.class);
 
         when(TC1.getId()).thenReturn("amp.test.Event1");
 
-        TopicConfiguration TC2 = mock(TopicConfiguration.class);
+        Topic TC2 = mock(Topic.class);
 
         when(TC2.getId()).thenReturn("amp.test.Event2");
 
-        TopicConfiguration TC3 = mock(TopicConfiguration.class);
+        Topic TC3 = mock(Topic.class);
 
         when(TC3.getId()).thenReturn("amp.test.Event3");
 
-        Collection<TopicConfiguration> TOPICS = Arrays.asList(TC1, TC2, TC3);
+        Collection<Topic> TOPICS = Arrays.asList(TC1, TC2, TC3);
 
         when(manager.topicRegistry.entries()).thenReturn(TOPICS);
 
@@ -430,19 +430,19 @@ public class FileSystemSnapshotManagerTest {
 
         FileSystemSnapshotManager manager = createInstanceWithMocks();
 
-        TopicConfiguration TC1 = mock(TopicConfiguration.class);
+        Topic TC1 = mock(Topic.class);
 
         when(TC1.getId()).thenReturn("amp.test.Event1");
 
-        TopicConfiguration TC2_I1 = mock(TopicConfiguration.class);
+        Topic TC2_I1 = mock(Topic.class);
 
         when(TC2_I1.getId()).thenReturn("amp.test.Event2");
 
-        TopicConfiguration TC2_I2 = mock(TopicConfiguration.class);
+        Topic TC2_I2 = mock(Topic.class);
 
         when(TC2_I2.getId()).thenReturn("amp.test.Event2");
 
-        TopicConfiguration TC3 = mock(TopicConfiguration.class);
+        Topic TC3 = mock(Topic.class);
 
         when(TC3.getId()).thenReturn("amp.test.Event3");
 
@@ -466,7 +466,7 @@ public class FileSystemSnapshotManagerTest {
 
             fail("A Rollup Exception should have been thrown.");
 
-        } catch (TopicConfigurationChangeExceptionRollup rollup){
+        } catch (TopicChangeExceptionRollup rollup){
 
             assertTrue(rollup.hasErrors());
             assertEquals(2, rollup.getRollup().size());
@@ -484,19 +484,19 @@ public class FileSystemSnapshotManagerTest {
 
         when(manager.serializer.serialize(any(Snapshot.class))).thenAnswer(new SerializeSnapshotAnswer());
 
-        TopicConfiguration TC1 = mock(TopicConfiguration.class);
+        Topic TC1 = mock(Topic.class);
 
         when(TC1.getId()).thenReturn("amp.test.Event1");
 
-        TopicConfiguration TC2_I1 = mock(TopicConfiguration.class);
+        Topic TC2_I1 = mock(Topic.class);
 
         when(TC2_I1.getId()).thenReturn("amp.test.Event2");
 
-        TopicConfiguration TC2_I2 = mock(TopicConfiguration.class);
+        Topic TC2_I2 = mock(Topic.class);
 
         when(TC2_I2.getId()).thenReturn("amp.test.Event2");
 
-        TopicConfiguration TC3 = mock(TopicConfiguration.class);
+        Topic TC3 = mock(Topic.class);
 
         when(TC3.getId()).thenReturn("amp.test.Event3");
 
@@ -513,9 +513,9 @@ public class FileSystemSnapshotManagerTest {
         assertTrue(instance.exists());
     }
 
-    private void assertRollupContainsException(TopicConfigurationChangeExceptionRollup rollup, Exception target){
+    private void assertRollupContainsException(TopicChangeExceptionRollup rollup, Exception target){
 
-        for (TopicConfigurationChangeExceptionRollup.TopicConfigurationChangeException exception : rollup.getRollup()){
+        for (TopicChangeExceptionRollup.TopicChangeException exception : rollup.getRollup()){
 
             if (exception.getCause().equals(target)) return;
         }
@@ -604,7 +604,7 @@ public class FileSystemSnapshotManagerTest {
 
             sb.append("\t<topics>\n");
 
-            for(TopicConfiguration topicConfiguration : snapshot.getTopics()){
+            for(Topic topicConfiguration : snapshot.getTopics()){
 
                 sb.append("\t\t<topic id='").append(topicConfiguration.getId()).append("'>\n");
                 sb.append("\t\t\t").append(topicConfiguration.toString()).append("\n");

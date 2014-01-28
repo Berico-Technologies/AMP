@@ -1,13 +1,11 @@
 package amp.topology.global;
 
-import amp.topology.global.exceptions.TopologyConfigurationNotExistException;
+import amp.topology.global.exceptions.TopicNotExistException;
 import org.junit.Test;
-import org.mockito.InOrder;
 
 import java.util.UUID;
 
 import static org.mockito.Mockito.*;
-import static org.junit.Assert.*;
 
 /**
  * Extend this class to test a TopicRegistry's compliance to the Topic's life cycle.
@@ -23,11 +21,11 @@ public abstract class TopicRegistryComplianceTest {
 
         TopicRegistry topicRegistry = getRegistry();
 
-        TopicConfiguration mockTopicConfiguration = mock(TopicConfiguration.class);
+        Topic mockTopic = mock(Topic.class);
 
-        topicRegistry.register(mockTopicConfiguration);
+        topicRegistry.register(mockTopic);
 
-        verify(mockTopicConfiguration).setup();
+        verify(mockTopic).setup();
     }
 
     @Test
@@ -35,18 +33,18 @@ public abstract class TopicRegistryComplianceTest {
 
         TopicRegistry topicRegistry = getRegistry();
 
-        TopicConfiguration mockTopicConfiguration = mock(TopicConfiguration.class);
+        Topic mockTopic = mock(Topic.class);
 
-        when(mockTopicConfiguration.getId()).thenReturn("abc123");
+        when(mockTopic.getId()).thenReturn("abc123");
 
-        topicRegistry.register(mockTopicConfiguration);
+        topicRegistry.register(mockTopic);
 
         topicRegistry.unregister("abc123");
 
-        verify(mockTopicConfiguration).cleanup();
+        verify(mockTopic).cleanup();
     }
 
-    @Test(expected = TopologyConfigurationNotExistException.class)
+    @Test(expected = TopicNotExistException.class)
     public void test_compliance__unregister__throw_if_topic_not_exist() throws Exception {
 
         TopicRegistry topicRegistry = getRegistry();

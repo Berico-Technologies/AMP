@@ -92,7 +92,7 @@ public class GroupResource {
     @Metered(name="group-list")
     public TopologyGroupCollection list(@PathParam("topicId") String topicId) throws Exception {
 
-        TopicConfiguration topic = topicRegistry.get(topicId);
+        Topic topic = topicRegistry.get(topicId);
 
         return new TopologyGroupCollection(topic);
     }
@@ -145,7 +145,7 @@ public class GroupResource {
         private final Collection<ConsumerGroup<?>> consumerGroups;
 
         public TopologyGroupCollection(
-                TopicConfiguration topicConfiguration) {
+                Topic topicConfiguration) {
 
             this.producerGroups = topicConfiguration.getProducerGroups();
             this.consumerGroups = topicConfiguration.getConsumerGroups();

@@ -1,6 +1,6 @@
 package amp.topology.global.impl;
 
-import amp.topology.global.TopicConfiguration;
+import amp.topology.global.Topic;
 import amp.topology.global.TopicRegistry;
 import amp.topology.global.TopicRegistryComplianceTest;
 import com.google.common.collect.Iterables;
@@ -30,7 +30,7 @@ public class InMemoryTopicRegistryTest extends TopicRegistryComplianceTest {
 
         InMemoryTopicRegistry topicRegistry = new InMemoryTopicRegistry();
 
-        TopicConfiguration topic = createMockTopic(SHOULD_EXIST);
+        Topic topic = createMockTopic(SHOULD_EXIST);
 
         topicRegistry.register(topic);
 
@@ -46,11 +46,11 @@ public class InMemoryTopicRegistryTest extends TopicRegistryComplianceTest {
 
         InMemoryTopicRegistry topicRegistry = new InMemoryTopicRegistry();
 
-        TopicConfiguration EXPECTED_TOPIC = createMockTopic(TOPIC_ID);
+        Topic EXPECTED_TOPIC = createMockTopic(TOPIC_ID);
 
         topicRegistry.register(EXPECTED_TOPIC);
 
-        TopicConfiguration ACTUAL_TOPIC = topicRegistry.get(TOPIC_ID);
+        Topic ACTUAL_TOPIC = topicRegistry.get(TOPIC_ID);
 
         assertEquals(EXPECTED_TOPIC, ACTUAL_TOPIC);
     }
@@ -60,11 +60,11 @@ public class InMemoryTopicRegistryTest extends TopicRegistryComplianceTest {
 
         InMemoryTopicRegistry topicRegistry = new InMemoryTopicRegistry();
 
-        TopicConfiguration TOPIC1 = createMockTopic("TOPIC_1");
+        Topic TOPIC1 = createMockTopic("TOPIC_1");
 
-        TopicConfiguration TOPIC2 = createMockTopic("TOPIC_2");
+        Topic TOPIC2 = createMockTopic("TOPIC_2");
 
-        TopicConfiguration TOPIC3 = createMockTopic("TOPIC_3");
+        Topic TOPIC3 = createMockTopic("TOPIC_3");
 
         topicRegistry.register(TOPIC1);
 
@@ -72,7 +72,7 @@ public class InMemoryTopicRegistryTest extends TopicRegistryComplianceTest {
 
         topicRegistry.register(TOPIC3);
 
-        Iterable<TopicConfiguration> ACTUAL_TOPICS = topicRegistry.entries();
+        Iterable<Topic> ACTUAL_TOPICS = topicRegistry.entries();
 
         assertEquals(3, Iterables.size(ACTUAL_TOPICS));
 
@@ -92,7 +92,7 @@ public class InMemoryTopicRegistryTest extends TopicRegistryComplianceTest {
 
         assertTrue(LAST_MODIFIED < 0);
 
-        TopicConfiguration TOPIC = createMockTopic("amp.test.LastModified");
+        Topic TOPIC = createMockTopic("amp.test.LastModified");
 
         topicRegistry.register(TOPIC);
 
@@ -110,45 +110,9 @@ public class InMemoryTopicRegistryTest extends TopicRegistryComplianceTest {
         assertTrue(LAST_MODIFIED < topicRegistry.lastModified());
     }
 
-    @Test
-    public void test_listeners() throws Exception {
+    public static Topic createMockTopic(String id){
 
-        InMemoryTopicRegistry topicRegistry = new InMemoryTopicRegistry();
-
-        topicRegistry.listeners = spy(topicRegistry.listeners);
-
-        TopicRegistry.Listener listener = mock(TopicRegistry.Listener.class);
-
-        topicRegistry.addListener(listener);
-
-        verify(topicRegistry.listeners).add(listener);
-
-        TopicConfiguration topic1 = createMockTopic("abc123");
-
-        TopicConfiguration topic2 = createMockTopic("abc345");
-
-        topicRegistry.register(topic1);
-
-        topicRegistry.register(topic2);
-
-        verify(listener).onTopicRegistered(topic1);
-
-        verify(listener).onTopicRegistered(topic2);
-
-        topicRegistry.unregister(topic1.getId());
-
-        verify(listener).onTopicUnregistered(topic1);
-
-        topicRegistry.removeListener(listener);
-
-        topicRegistry.unregister(topic2.getId());
-
-        verifyNoMoreInteractions(listener);
-    }
-
-    public static TopicConfiguration createMockTopic(String id){
-
-        TopicConfiguration topic = mock(TopicConfiguration.class);
+        Topic topic = mock(Topic.class);
 
         when(topic.getId()).thenReturn(id);
 

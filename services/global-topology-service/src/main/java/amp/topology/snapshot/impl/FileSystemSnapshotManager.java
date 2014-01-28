@@ -1,18 +1,17 @@
 package amp.topology.snapshot.impl;
 
-import amp.topology.global.TopicConfiguration;
+import amp.topology.global.Topic;
 import amp.topology.global.TopicRegistry;
 import amp.topology.snapshot.Snapshot;
 import amp.topology.snapshot.SnapshotDescriptor;
 import amp.topology.snapshot.SnapshotManager;
 import amp.topology.snapshot.exceptions.SnapshotDoesNotExistException;
-import amp.topology.snapshot.exceptions.TopicConfigurationChangeExceptionRollup;
+import amp.topology.snapshot.exceptions.TopicChangeExceptionRollup;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Nullable;
 import java.io.File;
@@ -87,9 +86,9 @@ public class FileSystemSnapshotManager implements SnapshotManager {
     @Override
     public Snapshot export(@Nullable String description) throws Exception {
 
-        ArrayList<TopicConfiguration> topics = Lists.newArrayList();
+        ArrayList<Topic> topics = Lists.newArrayList();
 
-        for(TopicConfiguration topic : topicRegistry.entries()){
+        for(Topic topic : topicRegistry.entries()){
 
             topics.add(topic);
         }
@@ -257,10 +256,10 @@ public class FileSystemSnapshotManager implements SnapshotManager {
      * an error modifying a leaf in the topic tree.
      *
      * @param snapshot Snapshot to use as configuration.
-     * @throws amp.topology.snapshot.exceptions.TopicConfigurationChangeExceptionRollup a composite of errors that occurred during the operation.
+     * @throws amp.topology.snapshot.exceptions.TopicChangeExceptionRollup a composite of errors that occurred during the operation.
      */
     @Override
-    public void overwrite(Snapshot snapshot) throws TopicConfigurationChangeExceptionRollup {
+    public void overwrite(Snapshot snapshot) throws TopicChangeExceptionRollup {
 
         synchronizeTopology(snapshot, true);
     }
@@ -279,7 +278,7 @@ public class FileSystemSnapshotManager implements SnapshotManager {
      * @throws Exception a composite of errors that occurred during the operation..
      */
     @Override
-    public void merge(Snapshot snapshot) throws TopicConfigurationChangeExceptionRollup {
+    public void merge(Snapshot snapshot) throws TopicChangeExceptionRollup {
 
         synchronizeTopology(snapshot, false);
     }
@@ -292,23 +291,23 @@ public class FileSystemSnapshotManager implements SnapshotManager {
      *
      * @param snapshot Snapshot to synchronize
      * @param removeUnspecifiedEntries If TRUE, entries not in the Snapshot will be removed from the TopicRegistry.
-     * @throws amp.topology.snapshot.exceptions.TopicConfigurationChangeExceptionRollup
+     * @throws amp.topology.snapshot.exceptions.TopicChangeExceptionRollup
      */
-    void synchronizeTopology(Snapshot snapshot, boolean removeUnspecifiedEntries) throws TopicConfigurationChangeExceptionRollup {
+    void synchronizeTopology(Snapshot snapshot, boolean removeUnspecifiedEntries) throws TopicChangeExceptionRollup {
 
         synchronized (topicRegistry) {
 
-            TopicConfigurationChangeExceptionRollup rollup = new TopicConfigurationChangeExceptionRollup();
+            TopicChangeExceptionRollup rollup = new TopicChangeExceptionRollup();
 
             try {
 
-                for(TopicConfiguration currentState : topicRegistry.entries()){
+                for(Topic currentState : topicRegistry.entries()){
 
                     try {
 
-                        TopicConfiguration mutation = locateById(snapshot, currentState.getId());
+                        Topic mutation = locateById(snapshot, currentState.getId());
 
-                        synchronizeTopicConfiguration(currentState, mutation, removeUnspecifiedEntries);
+                        synchronizeTopic(currentState, mutation, removeUnspecifiedEntries);
 
                     } catch (Exception topicException){
 
@@ -341,9 +340,9 @@ public class FileSystemSnapshotManager implements SnapshotManager {
      * @param removeNonspecifiedEntries
      * @throws Exception
      */
-    void synchronizeTopicConfiguration(
-            TopicConfiguration currentState,
-            TopicConfiguration mutation,
+    void synchronizeTopic(
+            Topic currentState,
+            Topic mutation,
             boolean removeNonspecifiedEntries)
             throws Exception {
 
@@ -373,9 +372,9 @@ public class FileSystemSnapshotManager implements SnapshotManager {
      * @param id ID of the Topic.
      * @return TopicConfiguration or Null.
      */
-    static @Nullable TopicConfiguration locateById(Snapshot snapshot, String id){
+    static @Nullable Topic locateById(Snapshot snapshot, String id){
 
-        for (TopicConfiguration topicConfiguration : snapshot.getTopics())
+        for (Topic topicConfiguration : snapshot.getTopics())
             if (topicConfiguration.getId().equals(id)) return topicConfiguration;
 
         return null;

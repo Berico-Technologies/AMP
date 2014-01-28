@@ -3,7 +3,7 @@ package amp.topology.protocols.rabbit;
 import amp.rabbit.topology.RoutingInfo;
 import amp.topology.anubis.Actor;
 import amp.topology.anubis.SpringActor;
-import amp.topology.global.TopicConfiguration;
+import amp.topology.global.Topic;
 import amp.topology.global.TopicRegistry;
 import amp.topology.global.filtering.RouteFilterResults;
 import amp.topology.resources.common.Versioned;
@@ -58,7 +58,7 @@ public class RabbitRouteProviderResource {
         routeRequirements.setActor(client);
 
         // Retrieve the target route.
-        TopicConfiguration topicConf = topicRegistry.get(routeRequirements.getTopic());
+        Topic topicConf = topicRegistry.get(routeRequirements.getTopic());
 
         // Get the applicable topology constructs (PGroups, CGroups, Connectors)
         RouteFilterResults routeResults = topicConf.filter(routeRequirements);

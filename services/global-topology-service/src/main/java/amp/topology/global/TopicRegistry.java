@@ -1,6 +1,6 @@
 package amp.topology.global;
 
-import amp.topology.global.exceptions.TopologyConfigurationNotExistException;
+import amp.topology.global.exceptions.TopicNotExistException;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 /**
@@ -14,10 +14,10 @@ public interface TopicRegistry {
      * Get a TopicConfiguration by Id.
      * @param id Id of the TopicConfiguration (though your implementation could support aliases...).
      * @return TopicConfiguration
-     * @throws TopologyConfigurationNotExistException Thrown if there is no such topic.
+     * @throws amp.topology.global.exceptions.TopicNotExistException Thrown if there is no such topic.
      */
     @PreAuthorize("hasRole('gts-snapshot-describe')")
-    TopicConfiguration get(String id) throws TopologyConfigurationNotExistException;
+    Topic get(String id) throws TopicNotExistException;
 
     /**
      * Does a particular topic exist?
@@ -33,12 +33,12 @@ public interface TopicRegistry {
      * @throws Exception Thrown if an error occurs during the setup of the TopicConfiguration.
      */
     @PreAuthorize("hasRole('gts-snapshot-add')")
-    void register(TopicConfiguration topicConfiguration) throws Exception;
+    void register(Topic topicConfiguration) throws Exception;
 
     /**
      * Unregister a TopicConfiguration with the register.
      * @param id Id of the TopicConfiguration.
-     * @throws TopologyConfigurationNotExistException Thrown if there is no such topic.
+     * @throws amp.topology.global.exceptions.TopicNotExistException Thrown if there is no such topic.
      * @throws Exception If an exception is encountered cleaning up the TopicConfiguration.
      */
     @PreAuthorize("hasRole('gts-snapshot-remove')")
@@ -51,7 +51,7 @@ public interface TopicRegistry {
      * if you are holding onto the iterator for too long.
      */
     @PreAuthorize("hasRole('gts-snapshot-list')")
-    Iterable<TopicConfiguration> entries() throws Exception;
+    Iterable<Topic> entries() throws Exception;
 
     /**
      * Get the time the Topology was last modified.
@@ -59,34 +59,4 @@ public interface TopicRegistry {
      */
     @PreAuthorize("hasRole('gts-snapshot-info')")
     long lastModified();
-
-    /**
-     * Add a listener to this registry.
-     * @param listener Listener to add.
-     */
-    void addListener(Listener listener);
-
-    /**
-     * Remove a Listener
-     * @param listener Listener to registry.
-     */
-    void removeListener(Listener listener);
-
-    /**
-     * Called when a Topic Configurations are registered or unregistered with the registry.
-     */
-    public interface Listener {
-
-        /**
-         * Fired when a Topic is registered.
-         * @param topicConfiguration Topic that was registered.
-         */
-        void onTopicRegistered(TopicConfiguration topicConfiguration);
-
-        /**
-         * Fired when a Topic is unregistered.
-         * @param topicConfiguration Topic that was unregistered.
-         */
-        void onTopicUnregistered(TopicConfiguration topicConfiguration);
-    }
 }

@@ -90,6 +90,11 @@ public class RabbitTopologyTestBase {
         public TBaseRabbitPartition(Cluster cluster, Exchange exchange, Collection<String> routingKeys) {
             super(cluster, exchange, routingKeys);
         }
+
+        @Override
+        public String getDescription() {
+            return "DESCRIPTION!";
+        }
     }
 
 }

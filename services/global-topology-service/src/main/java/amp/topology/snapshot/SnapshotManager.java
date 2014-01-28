@@ -1,6 +1,6 @@
 package amp.topology.snapshot;
 
-import amp.topology.snapshot.exceptions.TopicConfigurationChangeExceptionRollup;
+import amp.topology.snapshot.exceptions.TopicChangeExceptionRollup;
 import amp.topology.snapshot.exceptions.SnapshotDoesNotExistException;
 import org.springframework.security.access.prepost.PreAuthorize;
 
@@ -78,10 +78,10 @@ public interface SnapshotManager {
      *
      *
      * @param snapshot Snapshot to use as configuration.
-     * @throws TopicConfigurationChangeExceptionRollup a composite of errors that occurred during the operation.
+     * @throws amp.topology.snapshot.exceptions.TopicChangeExceptionRollup a composite of errors that occurred during the operation.
      */
     @PreAuthorize("hasRole('gts-snapshot-overwrite')")
-    void overwrite(Snapshot snapshot) throws TopicConfigurationChangeExceptionRollup;
+    void overwrite(Snapshot snapshot) throws TopicChangeExceptionRollup;
 
     /**
      * Overwrite the existing topology with the provided Snapshot.
@@ -97,5 +97,5 @@ public interface SnapshotManager {
      * @throws Exception a composite of errors that occurred during the operation..
      */
     @PreAuthorize("hasRole('gts-snapshot-merge')")
-    void merge(Snapshot snapshot) throws TopicConfigurationChangeExceptionRollup;
+    void merge(Snapshot snapshot) throws TopicChangeExceptionRollup;
 }

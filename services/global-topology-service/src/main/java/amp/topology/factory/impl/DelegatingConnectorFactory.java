@@ -39,7 +39,7 @@ public class DelegatingConnectorFactory implements ConnectorFactory {
     public Connector<? extends Partition, ? extends Partition>
                 create(ConnectorSpecification specification) throws Exception {
 
-        TopicConfiguration topicConfiguration = this.topicRegistry.get(specification.getTopicId());
+        Topic topicConfiguration = this.topicRegistry.get(specification.getTopicId());
 
         ProducerGroup<?> producerGroup = topicConfiguration
                 .getProducerGroup(specification.getProducerGroupId());

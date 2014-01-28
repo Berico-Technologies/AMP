@@ -2,7 +2,7 @@ package amp.topology.protocols.rabbit;
 
 import amp.rabbit.topology.RoutingInfo;
 import amp.topology.global.Partition;
-import amp.topology.global.TopicConfiguration;
+import amp.topology.global.Topic;
 import amp.topology.global.TopicRegistry;
 import amp.topology.global.filtering.RouteFilterResults;
 import amp.topology.global.filtering.RouteRequirements;
@@ -36,15 +36,15 @@ public class RabbitRouteProviderResourceTest {
 
         RouteFilterResults mockResults = createMockRouteFilterResults();
 
-        TopicConfiguration mockTopicConfiguration = createMockTopicConfiguration(mockResults);
+        Topic mockTopic = createMockTopic(mockResults);
 
-        doReturn(mockTopicConfiguration).when(mockTopicRegistry).get(anyString());
+        doReturn(mockTopic).when(mockTopicRegistry).get(anyString());
 
         InOrder inOrder = inOrder(
                 mockUserDetails,
                 mockRouteRequirements,
                 mockTopicRegistry,
-                mockTopicConfiguration,
+                mockTopic,
                 mockResults);
 
         RabbitRouteProviderResource resource = new RabbitRouteProviderResource();
@@ -55,7 +55,7 @@ public class RabbitRouteProviderResourceTest {
 
         inOrder.verify(mockTopicRegistry).get("abc123");
 
-        inOrder.verify(mockTopicConfiguration).filter(mockRouteRequirements);
+        inOrder.verify(mockTopic).filter(mockRouteRequirements);
 
         inOrder.verify(mockResults).getProducerPartitions();
 
@@ -75,13 +75,13 @@ public class RabbitRouteProviderResourceTest {
         return mockResults;
     }
 
-    public TopicConfiguration createMockTopicConfiguration(RouteFilterResults mockResults){
+    public Topic createMockTopic(RouteFilterResults mockResults){
 
-        TopicConfiguration mockTopicConfiguration = mock(TopicConfiguration.class);
+        Topic mockTopic = mock(Topic.class);
 
-        doReturn(mockResults).when(mockTopicConfiguration).filter(any(RouteRequirements.class));
+        doReturn(mockResults).when(mockTopic).filter(any(RouteRequirements.class));
 
-        return mockTopicConfiguration;
+        return mockTopic;
     }
 
 }

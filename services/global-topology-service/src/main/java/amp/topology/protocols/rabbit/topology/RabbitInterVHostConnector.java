@@ -1,15 +1,14 @@
 package amp.topology.protocols.rabbit.topology;
 
-import amp.topology.global.Connector;
 import amp.topology.global.ConsumerGroup;
 import amp.topology.global.ProducerGroup;
-import amp.topology.global.impl.BaseConnector;
+import amp.topology.global.Connector;
 import amp.topology.protocols.rabbit.management.Cluster;
 import amp.topology.protocols.rabbit.topology.exceptions.GroupHasNoPartitionsException;import amp.topology.protocols.rabbit.topology.exceptions.PartitionOnForeignClusterException;import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
 
 import java.util.Collection;
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -18,7 +17,7 @@ import java.util.Set;
  *
  * @author Richard Clayton (Berico Technologies)
  */
-public class RabbitInterVHostConnector extends BaseConnector<RabbitProducerPartition, RabbitConsumerPartition> {
+public class RabbitInterVHostConnector extends Connector<RabbitProducerPartition, RabbitConsumerPartition> {
 
     final Cluster cluster;
 
@@ -119,13 +118,25 @@ public class RabbitInterVHostConnector extends BaseConnector<RabbitProducerParti
 
         for (BaseRabbitPartition partition : partitions){
 
-            if (Collections.disjoint(partition.getRoutingKeys(), routingKeys)){
+            checkHasRoutingKeys(partition, routingKeys);
+        }
+    }
 
-                partition.getRoutingKeys().clear();
+    void checkHasRoutingKeys(BaseRabbitPartition partition, Collection<String> routingKeys){
 
-                // Fix the inconsistent synchronization if there is one
-                partition.getRoutingKeys().addAll(routingKeys);
-            }
+        if (!  (partition.getRoutingKeys().containsAll(routingKeys)
+                && routingKeys.containsAll(partition.getRoutingKeys()) )){
+
+            Set<String> difference = new HashSet<String>(partition.getRoutingKeys());
+
+            difference.removeAll(routingKeys);
+
+            for (String unknownAlias : difference)
+                partition.removeRoutingKey(unknownAlias);
+
+            // Fix the inconsistent synchronization if there is one
+            for (String alias : routingKeys)
+                partition.addRoutingKey(alias);
         }
     }
 

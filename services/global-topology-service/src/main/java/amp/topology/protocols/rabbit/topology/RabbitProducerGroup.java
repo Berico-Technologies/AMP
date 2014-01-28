@@ -1,9 +1,8 @@
 package amp.topology.protocols.rabbit.topology;
 
-import amp.topology.global.ConsumerGroup;
 import amp.topology.global.ProducerGroup;
+import amp.topology.global.TopologyGroup;
 import amp.topology.global.filtering.RouteRequirements;
-import amp.topology.global.impl.BaseTopologyGroup;
 
 import java.util.Collection;
 
@@ -11,8 +10,7 @@ import java.util.Collection;
  * @author Richard Clayton (Berico Technologies)
  */
 public class RabbitProducerGroup
-        extends BaseTopologyGroup<RabbitProducerPartition>
-        implements ProducerGroup<RabbitProducerPartition> {
+        extends ProducerGroup<RabbitProducerPartition> {
 
 
     @Override

@@ -1,55 +1,133 @@
 package amp.topology.global;
 
+import amp.topology.global.lifecycle.LifeCycleObservationManager;
+import com.yammer.metrics.annotation.Timed;
+
+import java.util.Map;
+import java.util.UUID;
+
 /**
- * Represents a connection between a ProducerGroup and a ConsumerGroup.  This maybe a logical connection,
- * configuration (say a routing key for an Exchange + Queue binging in AMQP), or a complex bridge
- * (protocol transition).
- *
- * Note: this construct is meant to be transparent to clients consuming Routes.  It serves more as a management
- * feature to configure pairs of Producer and Consumer Groups to carry the correct information about how to
- * connect (like RoutingKeys in AMQP), or to setup infrastructure to perform the bridging.
- *
  * @author Richard Clayton (Berico Technologies)
  */
-public interface Connector<PRODUCING_PARTITION extends Partition, CONSUMING_PARTITION extends Partition> {
+public abstract class Connector<PPART extends Partition, CPART extends Partition> {
+
+    private String id;
+
+    private String description = "";
+
+    private ConnectorStates connectorState = ConnectorStates.NONEXISTENT;
+
+    private ProducerGroup<PPART> producerGroup;
+
+    private ConsumerGroup<CPART> consumerGroup;
+
+    public Connector(String description, ProducerGroup<PPART> producerGroup, ConsumerGroup<CPART> consumerGroup) {
+
+        this(UUID.randomUUID().toString(), description, producerGroup, consumerGroup);
+    }
+
+    public Connector(String id, String description, ProducerGroup<PPART> producerGroup, ConsumerGroup<CPART> consumerGroup) {
+        this.id = id;
+        this.description = description;
+        this.producerGroup = producerGroup;
+        this.consumerGroup = consumerGroup;
+    }
 
     /**
-     * A unique identifier for the Connector.  Generally, this only needs to be unique to the TopicSpace, but
-     * it can be globally unique to suit your data storage strategy.
-     * @return Id
+     * Set the Id of the Connector.
+     * @param id Id of the Connector.
      */
-    String getId();
+    protected void setId(String id) {
+
+        this.id = id;
+    }
 
     /**
-     * Some friendly description about this connector.
-     * @return Description
-     */
-    String getDescription();
-
-    /**
-     * Set the description of the Connector.
-     *
-     * @param description Description of the connector.
-     */
-    void setDescription(String description);
-
-    /**
-     * The ProducerGroup that represents the Inflow of messages.
+     * Get the Id of the Connector.
      * @return
      */
-    ProducerGroup<PRODUCING_PARTITION> getProducerGroup();
+    public String getId() {
+
+        return this.id;
+    }
 
     /**
-     * The ConsumerGroup that represents the Outflow of messages.
-     * @return
+     * Set a friendly description of this Connector.
+     * @param description Friendly description.
      */
-    ConsumerGroup<CONSUMING_PARTITION> getConsumerGroup();
+    public void setDescription(String description) {
+
+        this.description = description;
+    }
 
     /**
-     * The latest state of the connector.
-     * @return Connector State.
+     * Get a friendly description of this connector.
+     * @return Friendly description.
      */
-    ConnectorStates getState();
+    public String getDescription() {
+
+        return this.description;
+    }
+
+    /**
+     * Set the ProducerGroup.
+     * @param producerGroup ProducerGroup.
+     */
+    public void setProducerGroup(ProducerGroup<PPART> producerGroup) {
+
+        this.producerGroup = producerGroup;
+    }
+
+    /**
+     * Get the ProducerGroup for this Connector
+     * @return ProducerGroup
+     */
+    public ProducerGroup getProducerGroup() {
+
+        return this.producerGroup;
+    }
+
+    /**
+     * Set the ConsumerGroup.
+     * @param consumerGroup ConsumerGroup.
+     */
+    public void setConsumerGroup(ConsumerGroup<CPART> consumerGroup) {
+
+        this.consumerGroup = consumerGroup;
+    }
+
+    /**
+     * Get the ConsumerGroup for this Connector
+     * @return ConsumerGroup
+     */
+    public ConsumerGroup getConsumerGroup() {
+
+        return this.consumerGroup;
+    }
+
+    /**
+     * Set the state of the Connector.  This is how derived classes set the Connector state
+     * and notified listeners.
+     * @param newState New Connector State
+     */
+    @Timed
+    protected void setState(ConnectorStates newState, String reasonForChange) {
+
+        ConnectorStates oldState = this.connectorState;
+
+        this.connectorState = newState;
+
+        LifeCycleObservationManager.fireOnStateChanged(this, oldState, newState, reasonForChange);
+    }
+
+    /**
+     * Get the latest state of the Connector.
+     * @return State of the Connector.
+     */
+    public ConnectorStates getState() {
+
+        return this.connectorState;
+    }
 
     /**
      * Verify the connector state.  If the state is invalid, throw an exception.
@@ -59,35 +137,35 @@ public interface Connector<PRODUCING_PARTITION extends Partition, CONSUMING_PART
      * @throws Exception An exception that may have arisen while verifying the infrastructure is
      * in the correct state.
      */
-    void verify() throws Exception;
+    public abstract void verify() throws Exception;
 
     /**
      * Activate the Connector.  An implementation may provision resources, configure a broker, etc. (whatever
      * it needs to do to ensure the connection is in a valid state).
      * @throws Exception An exception propagated from the underlying implementation.
      */
-    void activate() throws Exception;
+    public abstract void activate() throws Exception;
 
     /**
      * Deactive the Connector.  Ensure that messages are not being transmitted between the ProducerGroup and
      * the ConsumerGroup.
      * @throws Exception An error encountered in the process of trying to stop the stream of messages.
      */
-    void deactivate() throws Exception;
+    public abstract void deactivate() throws Exception;
 
     /**
      * Called when the Connector is instantiated.  This is an opportunity for the connector to provision any resources
      * it may need to function before becoming active.
      * @throws Exception An error encountered during the setup process.
      */
-    void setup() throws Exception;
+    public abstract void setup() throws Exception;
 
     /**
      * Called when the Connector is being removed.  The Connector is given a chance to cleanup any configuration
      * it has left on the system.
      * @throws Exception An error encountered during the cleanup process.
      */
-    void cleanup() throws Exception;
+    public abstract void cleanup() throws Exception;
 
     /**
      * Describes the potential states a connector can exist in.
@@ -130,33 +208,42 @@ public interface Connector<PRODUCING_PARTITION extends Partition, CONSUMING_PART
     }
 
     /**
-     * Add a listener to the Connector
-     * @param listener
+     * Mandatory state properties for a Connector.
      */
-    void addListener(Listener listener);
+    public static class HydratedState extends TopologyState {
 
-    /**
-     * Remove a listener from the Connector
-     * @param listener
-     */
-    void removeListener(Listener listener);
+        private String connectorId;
 
-    /**
-     * Listener for life cycle events on the Connector.
-     */
-    public interface Listener {
+        private String producerGroupId;
 
-        /**
-         * Called when the Connector changes state.
-         * @param thisConnector The Connector changing (usually this).
-         * @param oldState The state the Connector is moving away from.
-         * @param newState The state the Connector is moving to.
-         * @param reasonForChange The reason why the Connector has changed state.
-         */
-        void onConnectorStateChange(
-                Connector<? extends Partition, ? extends Partition> thisConnector,
-                ConnectorStates oldState,
-                ConnectorStates newState,
-                String reasonForChange);
+        private String consumerGroupId;
+
+        public HydratedState(
+                Class<? extends Connector> connectorType,
+                String topicId,
+                String connectorId,
+                String description,
+                String producerGroupId,
+                String consumerGroupId,
+                Map<String, String> extensionProperties) {
+
+            super(connectorType, topicId, description);
+
+            this.connectorId = connectorId;
+            this.producerGroupId = producerGroupId;
+            this.consumerGroupId = consumerGroupId;
+        }
+
+        public String getConnectorId() {
+            return connectorId;
+        }
+
+        public String getProducerGroupId() {
+            return producerGroupId;
+        }
+
+        public String getConsumerGroupId() {
+            return consumerGroupId;
+        }
     }
 }

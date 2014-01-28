@@ -4,12 +4,11 @@ import amp.topology.Constants;
 import amp.topology.factory.*;
 import amp.topology.factory.specifications.ConnectorSpecification_3_3_0;
 import amp.topology.factory.specifications.GroupSpecification_3_3_0;
-import amp.topology.global.TopicConfiguration;
+import amp.topology.global.Topic;
 import amp.topology.global.TopicRegistry;
-import amp.topology.global.impl.BasicTopicConfiguration;
 
 /**
- * Creates BasicTopicConfiguration from TopicSpecification
+ * Creates Topic from TopicSpecification
  *
  * @author Richard Clayton (Berico Technologies)
  */
@@ -36,10 +35,10 @@ public class BasicTopicFactory implements TopicFactory {
     }
 
     @Override
-    public TopicConfiguration create(TopicSpecification specification) throws Exception {
+    public Topic create(TopicSpecification specification) throws Exception {
 
-        BasicTopicConfiguration topic =
-                new BasicTopicConfiguration(specification.getTopicId(), specification.getDescription());
+        Topic topic =
+                new Topic(specification.getTopicId(), specification.getDescription());
 
         topicRegistry.register(topic);
 
@@ -66,7 +65,7 @@ public class BasicTopicFactory implements TopicFactory {
     @Override
     public Modifications modify(TopicSpecification specification) throws Exception {
 
-        TopicConfiguration topicConfiguration = topicRegistry.get(specification.getTopicId());
+        Topic topicConfiguration = topicRegistry.get(specification.getTopicId());
 
         Modifications modifications = new Modifications();
 

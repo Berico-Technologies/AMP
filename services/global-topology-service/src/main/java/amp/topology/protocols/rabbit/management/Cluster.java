@@ -306,7 +306,7 @@ public class Cluster extends CopyOnWriteArraySet<Broker> {
 
     /**
      * Add a listener to the Cluster.
-     * @param listener Listener to add.
+     * @param listener LifeCycleListener to add.
      */
     public void addListener(Listener listener){
 
@@ -315,7 +315,7 @@ public class Cluster extends CopyOnWriteArraySet<Broker> {
 
     /**
      * Remove a listener from the Cluster.
-     * @param listener Listener to remove.
+     * @param listener LifeCycleListener to remove.
      */
     public void removeListener(Listener listener){
 

@@ -5,7 +5,4 @@ package amp.topology.global;
  *
  * @author Richard Clayton (Berico Technologies)
  */
-public interface ProducerGroup<PARTITION extends Partition> extends TopologyGroup<PARTITION> {
-
-
-}
+public abstract class ProducerGroup<PARTITION extends Partition> extends TopologyGroup<PARTITION> {}

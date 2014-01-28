@@ -1,7 +1,7 @@
 package amp.topology.snapshot;
 
 import amp.topology.snapshot.exceptions.SnapshotDoesNotExistException;
-import amp.topology.snapshot.exceptions.TopicConfigurationChangeExceptionRollup;
+import amp.topology.snapshot.exceptions.TopicChangeExceptionRollup;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiResponse;
@@ -196,7 +196,7 @@ public class SnapshotResource {
 
             snapshotManager.overwrite(snapshot);
 
-        } catch (TopicConfigurationChangeExceptionRollup e) {
+        } catch (TopicChangeExceptionRollup e) {
 
             logger.error("Some errors occurred during the overwrite.", e);
 
@@ -251,7 +251,7 @@ public class SnapshotResource {
 
             snapshotManager.merge(snapshot);
 
-        } catch (TopicConfigurationChangeExceptionRollup e) {
+        } catch (TopicChangeExceptionRollup e) {
 
             logger.error("Some errors occurred during the merge.", e);
 

@@ -1,6 +1,6 @@
 package amp.topology.factory;
 
-import amp.topology.global.TopicConfiguration;
+import amp.topology.global.Topic;
 
 /**
  * Encapsulates the construction of topics, hiding as much detail as possible from the requester.
@@ -21,7 +21,7 @@ public interface TopicFactory {
      * @return TopicConfiguration.
      * @throws Exception an error occurring during the construction or registration process.
      */
-    TopicConfiguration create(TopicSpecification specification) throws Exception;
+    Topic create(TopicSpecification specification) throws Exception;
 
     /**
      * Modify the provided Topic with the state specified by the Configuration.

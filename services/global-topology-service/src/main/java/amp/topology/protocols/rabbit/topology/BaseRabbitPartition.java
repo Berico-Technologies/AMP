@@ -2,7 +2,7 @@ package amp.topology.protocols.rabbit.topology;
 
 import amp.rabbit.topology.Broker;
 import amp.rabbit.topology.Exchange;
-import amp.topology.global.impl.BasePartition;
+import amp.topology.global.Partition;
 import amp.topology.protocols.rabbit.management.Cluster;
 import amp.topology.protocols.rabbit.management.RmqModelAdaptors;
 import amp.topology.protocols.rabbit.topology.exceptions.ExchangeDoesNotExistException;
@@ -11,6 +11,7 @@ import rabbitmq.mgmt.RabbitMgmtService;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -18,7 +19,7 @@ import java.util.Set;
  *
  * @author Richard Clayton (Berico Technologies)
  */
-public abstract class BaseRabbitPartition extends BasePartition {
+public abstract class BaseRabbitPartition extends Partition {
 
     private Cluster cluster;
 
@@ -100,6 +101,11 @@ public abstract class BaseRabbitPartition extends BasePartition {
     @Override
     public void deactive() throws Exception {
         // Operation not supported by this implementation.
+    }
+
+    @Override
+    public void restoreFromProperties(Map<String, String> properties) {
+        // TODO hydrate custom properties
     }
 
     /**

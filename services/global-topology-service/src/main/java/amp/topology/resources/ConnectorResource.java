@@ -3,10 +3,7 @@ package amp.topology.resources;
 import amp.topology.factory.ConnectorFactory;
 import amp.topology.factory.ConnectorSpecification;
 import amp.topology.factory.Modifications;
-import amp.topology.global.Connector;
-import amp.topology.global.TopicConfiguration;
-import amp.topology.global.TopicRegistry;
-import amp.topology.global.TopologyGroup;
+import amp.topology.global.*;
 import amp.topology.resources.common.Versioned;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
@@ -94,7 +91,7 @@ public class ConnectorResource {
     @Metered(name="connectors-list")
     public ConnectorsCollection list(@PathParam("topicId") String topicId) throws Exception {
 
-        TopicConfiguration topic = this.topicRegistry.get(topicId);
+        Topic topic = this.topicRegistry.get(topicId);
 
         return new ConnectorsCollection(topic);
     }
@@ -143,7 +140,7 @@ public class ConnectorResource {
 
         private final Collection<Connector<?,?>> connectors;
 
-        public ConnectorsCollection(TopicConfiguration topicConfiguration) {
+        public ConnectorsCollection(Topic topicConfiguration) {
 
             this.connectors = topicConfiguration.getConnectors();
         }
