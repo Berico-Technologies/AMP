@@ -3,7 +3,7 @@ package amp.topology.global.impl;
 import amp.topology.global.Topic;
 import amp.topology.global.TopicRegistry;
 import amp.topology.global.exceptions.TopicNotExistException;
-import amp.topology.global.lifecycle.LifeCycleObservationManager;
+import amp.topology.global.lifecycle.LifeCycleObserver;
 import com.google.common.base.Optional;
 import com.google.common.collect.Sets;
 
@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.Set;
 
 /**
- * Keeps to Topic graph in memory.
+ * Keeps to BaseTopic graph in memory.
  *
  * Synchronization Policy: Writes are synchronized, reads are protected by an immutable list.
  *
@@ -26,14 +26,14 @@ public class InMemoryTopicRegistry implements TopicRegistry {
 
     long lastModified = -1;
 
-    Object registryLock = new Object();
+    final Object registryLock = new Object();
 
-    Set<Topic> registry = Sets.newCopyOnWriteArraySet();
+    Set<amp.topology.global.Topic> registry = Sets.newCopyOnWriteArraySet();
 
     @Override
     public Topic get(String id) throws TopicNotExistException {
 
-        Optional<Topic> topicConfiguration = locate(id);
+        Optional<amp.topology.global.Topic> topicConfiguration = locate(id);
 
         if (!topicConfiguration.isPresent()) throw new TopicNotExistException();
 
@@ -51,14 +51,15 @@ public class InMemoryTopicRegistry implements TopicRegistry {
 
         synchronized (registryLock) {
 
-            if (!locate(topicConfiguration.getId()).isPresent()){
+            if (!locate(topicConfiguration.getTopicId()).isPresent()){
 
-                topicConfiguration.setup();
+                if (BaseTopologyItem.class.isAssignableFrom(topicConfiguration.getClass()))
+                    ((BaseTopologyItem)topicConfiguration).setup();
 
                 // If an exception doesn't occur.
                 registry.add(topicConfiguration);
 
-                LifeCycleObservationManager.fireOnAdded(topicConfiguration);
+                LifeCycleObserver.fireOnAdded(topicConfiguration);
 
                 this.lastModified = System.currentTimeMillis();
             }
@@ -74,12 +75,13 @@ public class InMemoryTopicRegistry implements TopicRegistry {
 
             if (topic.isPresent()){
 
-                topic.get().cleanup();
+                if (BaseTopologyItem.class.isAssignableFrom(topic.get().getClass()))
+                    ((BaseTopologyItem)topic.get()).cleanup();
 
                 // If an exception doesn't occur.
-                registry.remove(topic);
+                registry.remove(topic.get());
 
-                LifeCycleObservationManager.fireOnRemoved(topic.get());
+                LifeCycleObserver.fireOnRemoved(topic.get());
 
                 this.lastModified = System.currentTimeMillis();
             }
@@ -91,7 +93,7 @@ public class InMemoryTopicRegistry implements TopicRegistry {
     }
 
     @Override
-    public Iterable<Topic> entries() throws Exception {
+    public Iterable<amp.topology.global.Topic> entries() throws Exception {
 
         return Collections.unmodifiableCollection(registry);
     }
@@ -104,14 +106,14 @@ public class InMemoryTopicRegistry implements TopicRegistry {
 
     /**
      * Get a TopicConfiguration by ID.
-     * @param topicId ID of the Topic to retrieve.
+     * @param topicId ID of the BaseTopic to retrieve.
      * @return TopicConfiguration of Null.
      */
-    private Optional<Topic> locate(String topicId){
+    private Optional<amp.topology.global.Topic> locate(String topicId){
 
         for (Topic topic : registry){
 
-            if (topic.getId().equals(topicId)) return Optional.of(topic);
+            if (topic.getTopicId().equals(topicId)) return Optional.of(topic);
         }
 
         return Optional.absent();

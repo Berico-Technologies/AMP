@@ -2,7 +2,7 @@ package amp.topology.protocols.rabbit.topology;
 
 import amp.rabbit.topology.Broker;
 import amp.rabbit.topology.Exchange;
-import amp.topology.global.Partition;
+import amp.topology.global.impl.BasePartition;
 import amp.topology.protocols.rabbit.management.Cluster;
 import amp.topology.protocols.rabbit.management.RmqModelAdaptors;
 import amp.topology.protocols.rabbit.topology.exceptions.ExchangeDoesNotExistException;
@@ -11,15 +11,14 @@ import rabbitmq.mgmt.RabbitMgmtService;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Map;
 import java.util.Set;
 
 /**
- * Represents the basic configuration for a Partition in RabbitMQ.
+ * Represents the basic configuration for a BasePartition in RabbitMQ.
  *
  * @author Richard Clayton (Berico Technologies)
  */
-public abstract class BaseRabbitPartition extends Partition {
+public abstract class BaseRabbitPartition extends BasePartition {
 
     private Cluster cluster;
 
@@ -58,7 +57,7 @@ public abstract class BaseRabbitPartition extends Partition {
     }
 
     /**
-     * Get the Exchange represented by this Partition
+     * Get the Exchange represented by this BasePartition
      * @return Exchange
      */
     public Exchange getExchange() {
@@ -84,28 +83,13 @@ public abstract class BaseRabbitPartition extends Partition {
     }
 
     /**
-     * Remove a routing key from the Partition.
+     * Remove a routing key from the BasePartition.
      * @param routingKey Routing Key to remove
      * @return TRUE if a key was removed (if it actually existed).
      */
     public boolean removeRoutingKey(String routingKey){
 
         return this.routingKeys.remove(routingKey);
-    }
-
-    @Override
-    public void activate() throws Exception {
-        // Operation not supported by this implementation.
-    }
-
-    @Override
-    public void deactive() throws Exception {
-        // Operation not supported by this implementation.
-    }
-
-    @Override
-    public void restoreFromProperties(Map<String, String> properties) {
-        // TODO hydrate custom properties
     }
 
     /**

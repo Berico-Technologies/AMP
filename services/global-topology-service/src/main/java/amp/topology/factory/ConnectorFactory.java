@@ -6,19 +6,19 @@ import amp.topology.global.Partition;
 /**
  * Encapsulates the construction of connectors, hiding as much detail as possible from the requester.
  *
- * The ConnectorFactory not only creates the connector, but also registers the connector with the correct Topic.
+ * The ConnectorFactory not only creates the connector, but also registers the connector with the correct BaseTopic.
  *
  * @author Richard Clayton (Berico Technologies)
  */
 public interface ConnectorFactory {
 
     /**
-     * Create a Connector with the provided specification.
+     * Create a BaseConnector with the provided specification.
      *
-     * You are returned a copy of the Connector so you can readily interact with it.  The Connector
+     * You are returned a copy of the BaseConnector so you can readily interact with it.  The BaseConnector
      * will automatically be registered with the TopicConfiguration (you don't need to do anything else).
      *
-     * @param specification Specification of the Connector.
+     * @param specification Specification of the BaseConnector.
      * @return ConnectorSpecification_3_3_0
      * @throws Exception an error occurring during the construction or registration process.
      */
@@ -27,7 +27,7 @@ public interface ConnectorFactory {
     /**
      * Modify the provided connector with the state represented by the specification.
      *
-     * @param specification Specification of the Connector (representing the mutations).
+     * @param specification Specification of the BaseConnector (representing the mutations).
      * @return a collection of modification entries describing the results of the operation.
      * @throws Exception Any error that occurred.
      */

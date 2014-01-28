@@ -2,7 +2,7 @@ package amp.topology.protocols.rabbit;
 
 import amp.rabbit.topology.ConsumingRoute;
 import amp.rabbit.topology.ProducingRoute;
-import amp.topology.global.Partition;
+import amp.topology.global.impl.BasePartition;
 import amp.topology.global.filtering.RouteFilterResults;
 import amp.topology.protocols.rabbit.requirements.RabbitRouteRequirements;
 import amp.topology.protocols.rabbit.topology.ConsumingRouteProvider;
@@ -124,8 +124,8 @@ public class RouteFilterResultsAdaptorTest {
     }
 
     // Necessary to test the implementation.
-    public static abstract class ProducerRouteProviderPartition extends Partition implements ProducingRouteProvider {}
+    public static abstract class ProducerRouteProviderPartition extends BasePartition implements ProducingRouteProvider {}
 
     // Necessary to test the implementation.
-    public static abstract class ConsumerRouteProviderPartition extends Partition implements ConsumingRouteProvider {}
+    public static abstract class ConsumerRouteProviderPartition extends BasePartition implements ConsumingRouteProvider {}
 }

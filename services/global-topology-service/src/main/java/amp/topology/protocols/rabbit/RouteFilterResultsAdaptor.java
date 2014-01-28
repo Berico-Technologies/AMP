@@ -3,7 +3,6 @@ package amp.topology.protocols.rabbit;
 import amp.rabbit.topology.ConsumingRoute;
 import amp.rabbit.topology.ProducingRoute;
 import amp.rabbit.topology.RoutingInfo;
-import amp.topology.global.Partition;
 import amp.topology.global.filtering.RouteFilterResults;
 import amp.topology.protocols.rabbit.requirements.RabbitRouteRequirements;
 import amp.topology.protocols.rabbit.topology.ConsumingRouteProvider;
@@ -53,7 +52,7 @@ public class RouteFilterResultsAdaptor {
 
         ArrayList<ProducingRoute> producingRoutes = Lists.newArrayList();
 
-        for (Partition p : routeResults.getProducerPartitions()){
+        for (amp.topology.global.Partition p : routeResults.getProducerPartitions()){
 
             if (ProducingRouteProvider.class.isAssignableFrom(p.getClass())){
 
@@ -80,7 +79,7 @@ public class RouteFilterResultsAdaptor {
 
         ArrayList<ConsumingRoute> consumingRoutes = Lists.newArrayList();
 
-        for (Partition p : routeResults.getConsumerPartitions()){
+        for (amp.topology.global.Partition p : routeResults.getConsumerPartitions()){
 
             if (ConsumingRouteProvider.class.isAssignableFrom(p.getClass())){
 

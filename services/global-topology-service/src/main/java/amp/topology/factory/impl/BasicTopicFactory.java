@@ -4,11 +4,11 @@ import amp.topology.Constants;
 import amp.topology.factory.*;
 import amp.topology.factory.specifications.ConnectorSpecification_3_3_0;
 import amp.topology.factory.specifications.GroupSpecification_3_3_0;
-import amp.topology.global.Topic;
+import amp.topology.global.impl.BaseTopic;
 import amp.topology.global.TopicRegistry;
 
 /**
- * Creates Topic from TopicSpecification
+ * Creates BaseTopic from TopicSpecification
  *
  * @author Richard Clayton (Berico Technologies)
  */
@@ -22,9 +22,9 @@ public class BasicTopicFactory implements TopicFactory {
 
     /**
      * Instantiate the BasicTopicFactory with it's dependent services.
-     * @param topicRegistry Topic Registry
-     * @param groupFactory Group Factory
-     * @param connectorFactory Connector Factory
+     * @param topicRegistry BaseTopic Registry
+     * @param groupFactory BaseGroup Factory
+     * @param connectorFactory BaseConnector Factory
      */
     public BasicTopicFactory(
             TopicRegistry topicRegistry, GroupFactory groupFactory, ConnectorFactory connectorFactory) {
@@ -35,10 +35,10 @@ public class BasicTopicFactory implements TopicFactory {
     }
 
     @Override
-    public Topic create(TopicSpecification specification) throws Exception {
+    public amp.topology.global.Topic create(TopicSpecification specification) throws Exception {
 
-        Topic topic =
-                new Topic(specification.getTopicId(), specification.getDescription());
+        BaseTopic topic =
+                new BaseTopic(specification.getTopicId(), specification.getDescription());
 
         topicRegistry.register(topic);
 
@@ -65,7 +65,7 @@ public class BasicTopicFactory implements TopicFactory {
     @Override
     public Modifications modify(TopicSpecification specification) throws Exception {
 
-        Topic topicConfiguration = topicRegistry.get(specification.getTopicId());
+        amp.topology.global.Topic topicConfiguration = topicRegistry.get(specification.getTopicId());
 
         Modifications modifications = new Modifications();
 
@@ -85,7 +85,7 @@ public class BasicTopicFactory implements TopicFactory {
 
         return new GroupSpecification_3_3_0(
                 specification.getTopicId(),
-                "Default Producer Group",
+                "Default Producer BaseGroup",
                 null,
                 null,
                 "default-producer",
@@ -97,7 +97,7 @@ public class BasicTopicFactory implements TopicFactory {
 
         return new GroupSpecification_3_3_0(
                 specification.getTopicId(),
-                "Default Consumer Group",
+                "Default Consumer BaseGroup",
                 null,
                 null,
                 "default-consumer",
@@ -110,7 +110,7 @@ public class BasicTopicFactory implements TopicFactory {
 
         return new ConnectorSpecification_3_3_0(
                 specification.getTopicId(),
-                "Default Connector",
+                "Default BaseConnector",
                 null,
                 null,
                 "default-connector",

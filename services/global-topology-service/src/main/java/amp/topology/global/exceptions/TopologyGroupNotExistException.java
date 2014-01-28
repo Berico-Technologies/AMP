@@ -9,9 +9,9 @@ public class TopologyGroupNotExistException extends Exception {
 
         super(
             String.format(
-                "Topic '%s' does not contain a %s with an id of '%s'.",
+                "BaseTopic '%s' does not contain a %s with an id of '%s'.",
                 topicConfigurationId,
-                (isProducerGroup)? "ProducerGroup" : "ConsumerGroup",
+                (isProducerGroup)? "BaseProducerGroup" : "BaseConsumerGroup",
                 groupId));
     }
 }

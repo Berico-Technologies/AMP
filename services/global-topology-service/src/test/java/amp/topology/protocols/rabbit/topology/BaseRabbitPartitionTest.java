@@ -1,7 +1,6 @@
 package amp.topology.protocols.rabbit.topology;
 
 import amp.rabbit.topology.Exchange;
-import amp.topology.global.Partition;
 import amp.topology.protocols.rabbit.management.Cluster;
 import amp.topology.protocols.rabbit.management.ManagementEndpoint;
 import amp.topology.protocols.rabbit.topology.exceptions.ExchangeDoesNotExistException;
@@ -33,13 +32,13 @@ public class BaseRabbitPartitionTest extends RabbitTopologyTestBase {
 
         TBaseRabbitPartition partition = new TBaseRabbitPartition(cluster, exchange, routingKeys);
 
-        assertEquals(Partition.PartitionStates.NONEXISTENT, partition.getState());
+        assertEquals(amp.topology.global.Partition.PartitionStates.NONEXISTENT, partition.getState());
 
         partition.setup();
 
         verify(rmq.exchanges()).create(any(rabbitmq.mgmt.model.Exchange.class));
 
-        assertEquals(Partition.PartitionStates.ACTIVE, partition.getState());
+        assertEquals(amp.topology.global.Partition.PartitionStates.ACTIVE, partition.getState());
     }
 
     @Test
@@ -59,7 +58,7 @@ public class BaseRabbitPartitionTest extends RabbitTopologyTestBase {
 
         partition.setup();
 
-        assertEquals(Partition.PartitionStates.ACTIVE, partition.getState());
+        assertEquals(amp.topology.global.Partition.PartitionStates.ACTIVE, partition.getState());
 
         rabbitmq.mgmt.model.Exchange rmqExchange = mock(rabbitmq.mgmt.model.Exchange.class);
 
@@ -87,7 +86,7 @@ public class BaseRabbitPartitionTest extends RabbitTopologyTestBase {
 
         partition.setup();
 
-        assertEquals(Partition.PartitionStates.ACTIVE, partition.getState());
+        assertEquals(amp.topology.global.Partition.PartitionStates.ACTIVE, partition.getState());
 
         when(rmq.exchanges().get("/", "unknown")).thenReturn(null);
 
@@ -111,12 +110,12 @@ public class BaseRabbitPartitionTest extends RabbitTopologyTestBase {
 
         partition.setup();
 
-        assertEquals(Partition.PartitionStates.ACTIVE, partition.getState());
+        assertEquals(amp.topology.global.Partition.PartitionStates.ACTIVE, partition.getState());
 
         partition.cleanup();
 
         verify(rmq.exchanges()).delete("/", "test.exchange");
 
-        assertEquals(Partition.PartitionStates.NONEXISTENT, partition.getState());
+        assertEquals(amp.topology.global.Partition.PartitionStates.NONEXISTENT, partition.getState());
     }
 }

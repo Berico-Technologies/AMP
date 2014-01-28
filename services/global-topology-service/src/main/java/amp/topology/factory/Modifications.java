@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 /**
  * A simple log of modifications that may have occurred when attempting to
- * mutate a Topic, Group, or Connector.
+ * mutate a BaseTopic, BaseGroup, or BaseConnector.
  *
  * @author Richard Clayton (Berico Technologies)
  */

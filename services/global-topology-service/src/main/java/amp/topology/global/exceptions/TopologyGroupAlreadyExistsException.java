@@ -11,7 +11,7 @@ public class TopologyGroupAlreadyExistsException extends Exception {
              String.format(
                  "TopicConfiguration '%s' already as a %s with an id of '%s'.",
                      topicConfigurationId,
-                     (isProducerGroup)? "ProducerGroup" : "ConsumerGroup",
+                     (isProducerGroup)? "BaseProducerGroup" : "BaseConsumerGroup",
                      groupId));
     }
 }

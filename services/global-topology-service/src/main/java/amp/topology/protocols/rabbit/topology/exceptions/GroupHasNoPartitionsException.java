@@ -9,7 +9,7 @@ public class GroupHasNoPartitionsException extends Exception {
 
     public GroupHasNoPartitionsException(String partitionId) {
 
-        super(String.format("Partition '%s' contains a group without partitions.", partitionId));
+        super(String.format("BasePartition '%s' contains a group without partitions.", partitionId));
 
         this.partitionId = partitionId;
     }

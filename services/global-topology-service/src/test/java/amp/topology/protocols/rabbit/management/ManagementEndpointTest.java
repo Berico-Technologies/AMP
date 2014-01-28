@@ -29,7 +29,7 @@ public class ManagementEndpointTest {
 
         ManagementEndpoint managementEndpoint = new ManagementEndpoint("localhost", 15672, true, httpClientProvider);
 
-        RabbitMgmtService rabbitMgmtService = managementEndpoint.getManagementService();
+        managementEndpoint.getManagementService();
 
         verify(httpClientProvider).getClient();
     }

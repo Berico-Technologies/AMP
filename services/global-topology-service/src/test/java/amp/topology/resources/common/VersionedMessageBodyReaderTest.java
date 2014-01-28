@@ -51,19 +51,19 @@ public class VersionedMessageBodyReaderTest
     @Test
     public void test_selectMostAppropriateAdaptor_by_specific_version(){
 
-        Optional<Versioned> v1 = Versioned.Helpers.find(new VersionedMessage().getClass().getAnnotations());
+        Optional<Versioned> v1 = Versioned.Helpers.find(VersionedMessage.class.getAnnotations());
 
         VersionAdaptor<VersionedMessage> actualV1 = this.selectMostAppropriateAdaptor(v1);
 
         assertEquals(V1, actualV1);
 
-        Optional<Versioned> v2 = Versioned.Helpers.find(new VersionedMessageV2().getClass().getAnnotations());
+        Optional<Versioned> v2 = Versioned.Helpers.find(VersionedMessage.class.getAnnotations());
 
         VersionAdaptor<VersionedMessage> actualV2 = this.selectMostAppropriateAdaptor(v2);
 
         assertEquals(V2, actualV2);
 
-        Optional<Versioned> v3 = Versioned.Helpers.find(new VersionedMessageV3().getClass().getAnnotations());
+        Optional<Versioned> v3 = Versioned.Helpers.find(VersionedMessage.class.getAnnotations());
 
         VersionAdaptor<VersionedMessage> actualV3 = this.selectMostAppropriateAdaptor(v3);
 
@@ -73,7 +73,7 @@ public class VersionedMessageBodyReaderTest
     @Test
     public void test_selectMostAppropriateAdaptor_with_unknown_version(){
 
-        Optional<Versioned> v4 = Versioned.Helpers.find(new VersionedMessageV4().getClass().getAnnotations());
+        Optional<Versioned> v4 = Versioned.Helpers.find(VersionedMessage.class.getAnnotations());
 
         VersionAdaptor<VersionedMessage> actualV4 = this.selectMostAppropriateAdaptor(v4);
 
@@ -83,7 +83,7 @@ public class VersionedMessageBodyReaderTest
     @Test
     public void test_selectMostAppropriateAdaptor_without_version_mention(){
 
-        Optional<Versioned> latest = Versioned.Helpers.find(new VersionedMessageV5().getClass().getAnnotations());
+        Optional<Versioned> latest = Versioned.Helpers.find(VersionedMessage.class.getAnnotations());
 
         VersionAdaptor<VersionedMessage> actualLatest = this.selectMostAppropriateAdaptor(latest);
 
@@ -159,6 +159,7 @@ public class VersionedMessageBodyReaderTest
 
     Set<VersionAdaptor<VersionedMessage>> adaptors;
 
+    @SuppressWarnings("unchecked")
     @Before public void initialize(){
 
 

@@ -1,8 +1,8 @@
 package amp.topology.protocols.rabbit;
 
 import amp.rabbit.topology.RoutingInfo;
-import amp.topology.global.Partition;
-import amp.topology.global.Topic;
+import amp.topology.global.impl.BasePartition;
+import amp.topology.global.impl.BaseTopic;
 import amp.topology.global.TopicRegistry;
 import amp.topology.global.filtering.RouteFilterResults;
 import amp.topology.global.filtering.RouteRequirements;
@@ -36,7 +36,7 @@ public class RabbitRouteProviderResourceTest {
 
         RouteFilterResults mockResults = createMockRouteFilterResults();
 
-        Topic mockTopic = createMockTopic(mockResults);
+        amp.topology.global.Topic mockTopic = createMockTopic(mockResults);
 
         doReturn(mockTopic).when(mockTopicRegistry).get(anyString());
 
@@ -68,16 +68,16 @@ public class RabbitRouteProviderResourceTest {
 
         RouteFilterResults mockResults = mock(RouteFilterResults.class);
 
-        doReturn(new ArrayList<Partition>()).when(mockResults).getProducerPartitions();
+        doReturn(new ArrayList<BasePartition>()).when(mockResults).getProducerPartitions();
 
-        doReturn(new ArrayList<Partition>()).when(mockResults).getConsumerPartitions();
+        doReturn(new ArrayList<BasePartition>()).when(mockResults).getConsumerPartitions();
 
         return mockResults;
     }
 
-    public Topic createMockTopic(RouteFilterResults mockResults){
+    public amp.topology.global.Topic createMockTopic(RouteFilterResults mockResults){
 
-        Topic mockTopic = mock(Topic.class);
+        amp.topology.global.Topic mockTopic = mock(BaseTopic.class);
 
         doReturn(mockResults).when(mockTopic).filter(any(RouteRequirements.class));
 

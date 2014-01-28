@@ -18,15 +18,15 @@ public class TopicSpecification_3_3_0 extends CommonSpecification_3_3_0 implemen
     protected TopicSpecification_3_3_0(){}
 
     /**
-     * Initialize with the required parameters for specifying a Topic.
-     * @param topicId Desired ID of the topic.  This is typically what you would refer to the Topic as.
+     * Initialize with the required parameters for specifying a BaseTopic.
+     * @param topicId Desired ID of the topic.  This is typically what you would refer to the BaseTopic as.
      * @param description A description of the purpose of the topic.
      * @param accessControlList Access controls for the topic (outside of the defaults).
      * @param configurationHints Any hints to the factory about how to create or configure the topic.  This may
      *                           include something about the desired protocol, producing configuration, whatever.
      *                           The key-value pairs will be specific to the underlying implementation of the
      *                           TopicFactory and any delegated factories it may use.
-     * @param createDefaults Should any of the default topology or configuration be applied to this Topic.  If
+     * @param createDefaults Should any of the default topology or configuration be applied to this BaseTopic.  If
      *                       FALSE, the request is expected to configure the topic in subsequent calls.
      */
     public TopicSpecification_3_3_0(
@@ -42,7 +42,7 @@ public class TopicSpecification_3_3_0 extends CommonSpecification_3_3_0 implemen
     }
 
     /**
-     * If the Topic Configuration supports a default route set (or something else), should that route set be created?
+     * If the BaseTopic Configuration supports a default route set (or something else), should that route set be created?
      * @return TRUE if the default topology constructs should be created.
      */
     @Override

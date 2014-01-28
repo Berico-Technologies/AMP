@@ -16,14 +16,14 @@ import java.util.Set;
 public class ConnectorSpecificationMessageBodyReader extends VersionedMessageBodyReader<ConnectorSpecification> {
 
     /**
-     * List of delegate adaptors that can transform the message body into Connector Specification.
+     * List of delegate adaptors that can transform the message body into BaseConnector Specification.
      */
-    static final Set<VersionAdaptor<ConnectorSpecification>> ADAPTORS;
+    private static final Set<VersionAdaptor<ConnectorSpecification>> ADAPTORS;
 
     /**
      * The Latest (and default) Adaptor.
      */
-    static final VersionAdaptor<ConnectorSpecification> LATEST;
+    private static final VersionAdaptor<ConnectorSpecification> LATEST;
 
     /**
      * Initialize the Adaptors.

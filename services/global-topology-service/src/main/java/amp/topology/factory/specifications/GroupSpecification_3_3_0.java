@@ -21,7 +21,7 @@ public class GroupSpecification_3_3_0 extends CommonSpecification_3_3_0 implemen
     protected GroupSpecification_3_3_0(){}
 
     /**
-     * Initialize with the required parameters for specifying a Group.
+     * Initialize with the required parameters for specifying a BaseGroup.
      *
      * @param topicId The id of the topic in which this connector should exist.
      * @param description A description of the purpose of the group.
@@ -31,8 +31,8 @@ public class GroupSpecification_3_3_0 extends CommonSpecification_3_3_0 implemen
      *                           The key-value pairs will be specific to the underlying implementation of the
      *                           TopicFactory and any delegated factories it may use.
      * @param groupId The desired id of the group, must be unique within the topic.
-     * @param isConsumerGroup Is this a Consumer Group? TRUE = Consumer, FALSE = Producer
-     * @param protocol The primary protocol of this Group.
+     * @param isConsumerGroup Is this a Consumer BaseGroup? TRUE = Consumer, FALSE = Producer
+     * @param protocol The primary protocol of this BaseGroup.
      */
     public GroupSpecification_3_3_0(
             String topicId,
@@ -59,8 +59,8 @@ public class GroupSpecification_3_3_0 extends CommonSpecification_3_3_0 implemen
     }
 
     /**
-     * Is this a Consumer Group?
-     * @return TRUE if it is, FALSE if it's a Producer Group.
+     * Is this a Consumer BaseGroup?
+     * @return TRUE if it is, FALSE if it's a Producer BaseGroup.
      */
     @Override
     public boolean isConsumerGroup() {
@@ -68,7 +68,7 @@ public class GroupSpecification_3_3_0 extends CommonSpecification_3_3_0 implemen
     }
 
     /**
-     * Get the primary protocol of this Group.
+     * Get the primary protocol of this BaseGroup.
      * @return Primary protocol
      */
     @Override
@@ -78,7 +78,7 @@ public class GroupSpecification_3_3_0 extends CommonSpecification_3_3_0 implemen
 
     /**
      * Get a builder for the GroupSpecification_3_3_0.
-     * @return Group Specification Builder.
+     * @return BaseGroup Specification Builder.
      */
     public GroupSpecificationBuilder builder(){
 
@@ -94,7 +94,7 @@ public class GroupSpecification_3_3_0 extends CommonSpecification_3_3_0 implemen
         protected GroupSpecificationBuilder() {  super(new GroupSpecification_3_3_0()); }
 
         /**
-         * The id of the group, which must be unique within a Topic.
+         * The id of the group, which must be unique within a BaseTopic.
          * @param id ID of the group.
          * @return this.
          */
@@ -106,8 +106,8 @@ public class GroupSpecification_3_3_0 extends CommonSpecification_3_3_0 implemen
         }
 
         /**
-         * Is this a Consumer Group?
-         * @param isConsumer TRUE if it is, FALSE if it is a Producer Group.
+         * Is this a Consumer BaseGroup?
+         * @param isConsumer TRUE if it is, FALSE if it is a Producer BaseGroup.
          * @return this.
          */
         public GroupSpecificationBuilder isConsumer(boolean isConsumer){
@@ -118,7 +118,7 @@ public class GroupSpecification_3_3_0 extends CommonSpecification_3_3_0 implemen
         }
 
         /**
-         * Set that this is a Consumer Group.
+         * Set that this is a Consumer BaseGroup.
          * @return this.
          */
         public GroupSpecificationBuilder consumer(){
@@ -129,7 +129,7 @@ public class GroupSpecification_3_3_0 extends CommonSpecification_3_3_0 implemen
         }
 
         /**
-         * Set that this is a Producer Group.
+         * Set that this is a Producer BaseGroup.
          * @return this.
          */
         public GroupSpecificationBuilder producer(){
@@ -140,7 +140,7 @@ public class GroupSpecification_3_3_0 extends CommonSpecification_3_3_0 implemen
         }
 
         /**
-         * Set the primary protocol of the Group.
+         * Set the primary protocol of the BaseGroup.
          * @param protocol
          * @return this.
          */

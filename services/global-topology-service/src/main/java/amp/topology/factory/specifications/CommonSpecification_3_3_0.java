@@ -26,7 +26,7 @@ public abstract class CommonSpecification_3_3_0 implements CommonSpecification {
 
     /**
      *
-     * @param topicId Desired ID of the topic.  This is typically what you would refer to the Topic as.
+     * @param topicId Desired ID of the topic.  This is typically what you would refer to the BaseTopic as.
      * @param description (optional) A description of the purpose of the topology item.
      * @param accessControlList (optional) Access controls for the item (outside of the defaults).
      * @param configurationHints (optional) Any hints to the factory about how to create or configure the item.
@@ -47,9 +47,9 @@ public abstract class CommonSpecification_3_3_0 implements CommonSpecification {
     }
 
     /**
-     * ID of the Topic.  This must be unique within the Topic space. Typically, this corresponds
+     * ID of the BaseTopic.  This must be unique within the BaseTopic space. Typically, this corresponds
      * to the type of event being produced or consumed (e.g. amp.events.UserPrivilegesRevokedEvent).
-     * @return Topic ID.
+     * @return BaseTopic ID.
      */
     @Override
     public String getTopicId() {

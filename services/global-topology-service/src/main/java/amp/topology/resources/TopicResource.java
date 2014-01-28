@@ -5,6 +5,7 @@ import amp.topology.factory.TopicFactory;
 import amp.topology.factory.TopicSpecification;
 import amp.topology.global.Topic;
 import amp.topology.global.TopicRegistry;
+import amp.topology.global.impl.BaseTopic;
 import amp.topology.resources.common.Versioned;
 import com.google.common.collect.Iterables;
 import com.wordnik.swagger.annotations.Api;
@@ -56,13 +57,13 @@ public class TopicResource {
 
     @POST
     @ApiOperation(
-        value = "Add a Topic to the Global Topology",
-        notes = "Adds a Topic with the supplied specification to the Global Topology, provisioning resources as needed.",
-        response = Topic.class,
+        value = "Add a BaseTopic to the Global Topology",
+        notes = "Adds a BaseTopic with the supplied specification to the Global Topology, provisioning resources as needed.",
+        response = BaseTopic.class,
         authorizations = "gts-topic-add"
     )
     @Timed
-    public Topic add(@Versioned TopicSpecification specification) throws Exception {
+    public amp.topology.global.Topic add(@Versioned TopicSpecification specification) throws Exception {
 
         return this.topicFactory.create(specification);
     }
@@ -70,7 +71,7 @@ public class TopicResource {
     @DELETE
     @Path("/{id}")
     @ApiOperation(
-        value = "Remove a Topic from the Global Topology.",
+        value = "Remove a BaseTopic from the Global Topology.",
         notes = "Removes the topic with the given ID from the Global Topology, cleaning up resources as needed.",
         authorizations = "gts-topic-remove"
     )
@@ -104,24 +105,24 @@ public class TopicResource {
     @GET
     @Path("/{id}")
     @ApiOperation(
-        value = "Get a Topic in the Global Topology.",
+        value = "Get a BaseTopic in the Global Topology.",
         notes = "Retrieves a topic registered in the Global Topology.",
-        response = Topic.class,
+        response = BaseTopic.class,
         authorizations = "gts-topic-get"
     )
     @ApiResponses({
             @ApiResponse(code=404, message="No topic with specified id.")
     })
     @Metered
-    public Topic get(@PathParam("id") String topicId) throws Exception {
+    public amp.topology.global.Topic get(@PathParam("id") String topicId) throws Exception {
 
         return topicRegistry.get(topicId);
     }
 
     @POST
     @ApiOperation(
-            value = "Modify a Topic in the Global Topology",
-            notes = "Modify a Topic in the Global Topology using the supplied specification.",
+            value = "Modify a BaseTopic in the Global Topology",
+            notes = "Modify a BaseTopic in the Global Topology using the supplied specification.",
             authorizations = "gts-topic-modify",
             response = Modifications.class
     )
@@ -140,14 +141,14 @@ public class TopicResource {
     @XmlRootElement
     public static class TopicConfigurationCollection {
 
-        private final Collection<Topic> topics;
+        private final Collection<amp.topology.global.Topic> topics;
 
-        public TopicConfigurationCollection(Collection<Topic> topics) {
+        public TopicConfigurationCollection(Collection<amp.topology.global.Topic> topics) {
 
             this.topics = topics;
         }
 
-        public Collection<Topic> getTopics() {
+        public Collection<amp.topology.global.Topic> getTopics() {
 
             return topics;
         }

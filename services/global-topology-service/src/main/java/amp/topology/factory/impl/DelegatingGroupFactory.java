@@ -4,6 +4,7 @@ import amp.topology.factory.GroupFactory;
 import amp.topology.factory.GroupSpecification;
 import amp.topology.factory.Modifications;
 import amp.topology.global.*;
+import amp.topology.global.impl.*;
 import com.google.common.collect.Lists;
 
 import java.util.Collection;
@@ -16,9 +17,9 @@ import java.util.List;
  */
 public class DelegatingGroupFactory implements GroupFactory {
 
-    TopicRegistry topicRegistry;
+    private TopicRegistry topicRegistry;
 
-    List<GroupFactoryDelegate> factoryDelegates = Lists.newCopyOnWriteArrayList();
+    private List<GroupFactoryDelegate> factoryDelegates = Lists.newCopyOnWriteArrayList();
 
     public DelegatingGroupFactory(TopicRegistry topicRegistry) {
 
@@ -39,30 +40,15 @@ public class DelegatingGroupFactory implements GroupFactory {
 
 
     @Override
-    public TopologyGroup<? extends Partition> create(GroupSpecification specification) throws Exception {
+    public Group<? extends Partition> create(GroupSpecification specification) throws Exception {
 
-        Topic topic = topicRegistry.get(specification.getTopicId());
+        amp.topology.global.Topic topic = topicRegistry.get(specification.getTopicId());
 
         GroupFactoryDelegate delegate = selectDelegate(specification);
 
-        TopologyGroup<?> group = delegate.createGroup(specification);
+        amp.topology.global.Group<?> group = delegate.createGroup(specification);
 
-        if (ProducerGroup.class.isAssignableFrom(group.getClass()))
-
-            topic.addProducerGroup((ProducerGroup) group);
-
-        else if (ConsumerGroup.class.isAssignableFrom(group.getClass()))
-
-            topic.addConsumerGroup((ConsumerGroup) group);
-
-        else
-
-            throw new RuntimeException(
-                    String.format(
-                        "Group [%s] is not a ProducingGroup or ConsumingGroup.  " +
-                        "This is very bad.  While we supply super type to help reduce " +
-                        "the coding burden on developers, implementations must implement one of " +
-                        "the aforementioned interfaces.", group.getClass()));
+        topic.addGroup(group);
 
         return group;
     }
@@ -70,7 +56,7 @@ public class DelegatingGroupFactory implements GroupFactory {
     @Override
     public Modifications modify(GroupSpecification specification) throws Exception {
 
-        TopologyGroup<?> group = topicRegistry
+        amp.topology.global.Group<?> group = topicRegistry
                 .get(specification.getTopicId())
                 .getGroup(specification.getGroupId());
 
@@ -92,9 +78,9 @@ public class DelegatingGroupFactory implements GroupFactory {
 
         boolean canHandle(GroupSpecification specification);
 
-        TopologyGroup<?> createGroup(GroupSpecification specification);
+        amp.topology.global.Group<?> createGroup(GroupSpecification specification);
 
-        Modifications modify(TopologyGroup<?> topologyGroup, GroupSpecification specification);
+        Modifications modify(amp.topology.global.Group<?> group, GroupSpecification specification);
 
     }
 }

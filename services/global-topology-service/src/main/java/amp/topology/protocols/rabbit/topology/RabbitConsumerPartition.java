@@ -27,7 +27,7 @@ public abstract class RabbitConsumerPartition extends BaseRabbitPartition implem
      *
      * In addition to providing this mechanism to process a queue before it's provided to a requester,
      * the RabbitConsumerPartition class also provides mechanisms to create the Queue and Bind it to
-     * the Partition's underlying exchange.
+     * the BasePartition's underlying exchange.
      *
      */
     public interface QueueProcessor {
@@ -88,7 +88,7 @@ public abstract class RabbitConsumerPartition extends BaseRabbitPartition implem
      * @param cluster     the Cluster in which the Exchange should exist.
      * @param exchange    Exchange configuration.
      * @param routingKeys Routing Keys for producing or consuming on the exchange.
-     * @param queuePrototype A Queue to use as a template for configuration for the Topic Subscription.
+     * @param queuePrototype A Queue to use as a template for configuration for the BaseTopic Subscription.
      */
     public RabbitConsumerPartition(Cluster cluster, Exchange exchange, Collection<String> routingKeys, Queue queuePrototype) {
         super(cluster, exchange, routingKeys);
@@ -99,7 +99,7 @@ public abstract class RabbitConsumerPartition extends BaseRabbitPartition implem
     @Override
     public String getDescription() {
         //TODO: Better description
-        return "Rabbit Consumer Partition mapped to exchange... ";
+        return "Rabbit Consumer BasePartition mapped to exchange... ";
     }
 
     /**
@@ -126,8 +126,8 @@ public abstract class RabbitConsumerPartition extends BaseRabbitPartition implem
     }
 
     /**
-     * Creates bindings using the exchange and routing keys defined on the Partition.
-     * @param queue Queue to bind to the Exchange using the Partition's routing keys.
+     * Creates bindings using the exchange and routing keys defined on the BasePartition.
+     * @param queue Queue to bind to the Exchange using the BasePartition's routing keys.
      * @throws Exception an error that may arise interacting with the RabbitMQ cluster.
      */
     protected void createBindings(Queue queue) throws Exception {
@@ -153,7 +153,7 @@ public abstract class RabbitConsumerPartition extends BaseRabbitPartition implem
     }
 
     /**
-     * Converts the static and dynamic configuration aspects of this Partition into
+     * Converts the static and dynamic configuration aspects of this BasePartition into
      * a ConsumingRoute.
      * @param requirements Route Requirements that can help customize the ConsumingRoute.
      * @return ConsumingRoute

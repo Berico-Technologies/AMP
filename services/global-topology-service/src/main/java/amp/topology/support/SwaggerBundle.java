@@ -100,7 +100,10 @@ public class SwaggerBundle extends AssetsBundle {
 
             hostname = Inet4Address.getLocalHost().getHostName();
 
-        } catch (UnknownHostException ex){}
+        } catch (UnknownHostException ex){
+
+            ex.printStackTrace();
+        }
 
         config.setBasePath(String.format("https://%s:%s", hostname, DEFAULT_PORT));
 

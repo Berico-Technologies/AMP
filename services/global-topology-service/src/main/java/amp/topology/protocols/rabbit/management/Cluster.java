@@ -24,7 +24,7 @@ public class Cluster extends CopyOnWriteArraySet<Broker> {
 
     private String virtualHost = "/";
 
-    private Object managementEndpointsLock = new Object();
+    private final Object managementEndpointsLock = new Object();
 
     Set<ManagementEndpoint> managementEndpoints = Sets.newCopyOnWriteArraySet();
 
@@ -77,9 +77,7 @@ public class Cluster extends CopyOnWriteArraySet<Broker> {
      */
     boolean validate(Broker broker) {
 
-        if (!broker.getVirtualHost().equals(this.virtualHost)) return false;
-
-        return true;
+        return (broker.getVirtualHost().equals(this.virtualHost));
     }
 
     /**
@@ -257,9 +255,7 @@ public class Cluster extends CopyOnWriteArraySet<Broker> {
 
                 RabbitMgmtService rms = me.getManagementService();
 
-                RETURN retValue = taskToExecute.execute(rms);
-
-                return retValue;
+                return taskToExecute.execute(rms);
 
             } catch (Exception e){
 
@@ -332,9 +328,8 @@ public class Cluster extends CopyOnWriteArraySet<Broker> {
         Cluster brokers = (Cluster) o;
 
         if (!clusterName.equals(brokers.clusterName)) return false;
-        if (!virtualHost.equals(brokers.virtualHost)) return false;
 
-        return true;
+        return virtualHost.equals(brokers.virtualHost);
     }
 
     @Override

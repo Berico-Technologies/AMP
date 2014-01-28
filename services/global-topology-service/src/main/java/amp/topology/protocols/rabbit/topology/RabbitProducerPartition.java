@@ -9,7 +9,7 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * Basic Producing Partition representing a RabbitMQ Exchange.
+ * Basic Producing BasePartition representing a RabbitMQ Exchange.
  *
  * @author Richard Clayton (Berico Technologies)
  */
@@ -27,8 +27,8 @@ public class RabbitProducerPartition extends BaseRabbitPartition implements Prod
     }
 
     /**
-     * Create a ProducingRoute from the underlying Partition configuration.
-     * @param requirements Request requirements, in this Partition's case, it is ignored
+     * Create a ProducingRoute from the underlying BasePartition configuration.
+     * @param requirements Request requirements, in this BasePartition's case, it is ignored
      *                     since their are no applicable request-specific configuration
      *                     for this partition.
      * @return ProducingRoute
@@ -44,9 +44,14 @@ public class RabbitProducerPartition extends BaseRabbitPartition implements Prod
                 .build();
     }
 
+    //TODO: Finish
     @Override
-    public String getDescription() {
-        //TODO: Better description
-        return "Rabbit Producing Partition mapped to exchange: ";
+    public void set(Map<String, String> properties) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Map<String, String> getExtensionProperties() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

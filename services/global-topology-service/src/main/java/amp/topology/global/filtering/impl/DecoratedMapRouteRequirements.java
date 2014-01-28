@@ -19,7 +19,7 @@ public abstract class DecoratedMapRouteRequirements extends HashMap<String, Stri
 
     private Actor actor;
 
-    public DecoratedMapRouteRequirements(Map<String, String> routeInfo) throws IllegalStateException {
+    protected DecoratedMapRouteRequirements(Map<String, String> routeInfo) throws IllegalStateException {
 
         if (routeInfo != null && routeInfo.size() > 0){
 

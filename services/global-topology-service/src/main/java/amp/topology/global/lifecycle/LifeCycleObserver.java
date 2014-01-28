@@ -1,9 +1,6 @@
 package amp.topology.global.lifecycle;
 
 import amp.topology.global.Connector;
-import amp.topology.global.Partition;
-import amp.topology.global.Topic;
-import amp.topology.global.TopologyGroup;
 import amp.topology.global.lifecycle.LifeCycleListener.ConnectorListener;
 import amp.topology.global.lifecycle.LifeCycleListener.GroupListener;
 import amp.topology.global.lifecycle.LifeCycleListener.PartitionListener;
@@ -17,7 +14,7 @@ import java.util.Set;
  *
  * @author Richard Clayton (Berico Technologies)
  */
-public class LifeCycleObservationManager {
+public class LifeCycleObserver {
 
     static Set<ConnectorListener> connectorListeners = Sets.newCopyOnWriteArraySet();
 
@@ -67,7 +64,7 @@ public class LifeCycleObservationManager {
         connectorListeners.remove(listener);
     }
 
-    public static void fireOnAdded(Topic topic){
+    public static void fireOnAdded(amp.topology.global.Topic topic){
 
         for (TopicListener listener : topicListeners) listener.onAdded(topic);
     }
@@ -77,17 +74,17 @@ public class LifeCycleObservationManager {
         for (ConnectorListener listener : connectorListeners) listener.onAdded(connector);
     }
 
-    public static void fireOnAdded(TopologyGroup group){
+    public static void fireOnAdded(amp.topology.global.Group group){
 
         for (GroupListener listener : groupListeners) listener.onAdded(group);
     }
 
-    public static void fireOnAdded(Partition partition){
+    public static void fireOnAdded(amp.topology.global.Partition partition){
 
         for (PartitionListener listener : partitionListeners) listener.onAdded(partition);
     }
 
-    public static void fireOnRemoved(Topic topic){
+    public static void fireOnRemoved(amp.topology.global.Topic topic){
 
         for (TopicListener listener : topicListeners) listener.onRemoved(topic);
     }
@@ -97,18 +94,18 @@ public class LifeCycleObservationManager {
         for (ConnectorListener listener : connectorListeners) listener.onRemoved(connector);
     }
 
-    public static void fireOnRemoved(TopologyGroup group){
+    public static void fireOnRemoved(amp.topology.global.Group group){
 
         for (GroupListener listener : groupListeners) listener.onRemoved(group);
     }
 
-    public static void fireOnRemoved(Partition partition){
+    public static void fireOnRemoved(amp.topology.global.Partition partition){
 
         for (PartitionListener listener : partitionListeners) listener.onRemoved(partition);
     }
 
     public static void fireOnStateChanged(
-            Partition target, Partition.PartitionStates oldState, Partition.PartitionStates newState, String reason){
+            amp.topology.global.Partition target, amp.topology.global.Partition.PartitionStates oldState, amp.topology.global.Partition.PartitionStates newState, String reason){
 
         for (PartitionListener listener : partitionListeners)
             listener.onStateChange(target, oldState, newState, reason);

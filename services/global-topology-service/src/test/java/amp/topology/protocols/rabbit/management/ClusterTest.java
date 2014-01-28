@@ -280,7 +280,7 @@ public class ClusterTest {
         verify(listener).onManagementEndpointRemoved(cluster, managementEndpoint);
     }
 
-    static ManagementEndpoint createMockManagementEndpoint(String hostname, int port, boolean useSsl){
+    private static ManagementEndpoint createMockManagementEndpoint(String hostname, int port, boolean useSsl){
 
         ManagementEndpoint managementEndpoint = mock(ManagementEndpoint.class);
 

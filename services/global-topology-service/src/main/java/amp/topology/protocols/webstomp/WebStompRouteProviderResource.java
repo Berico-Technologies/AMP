@@ -2,7 +2,6 @@ package amp.topology.protocols.webstomp;
 
 import amp.rabbit.topology.RoutingInfo;
 import amp.topology.anubis.Actor;
-import amp.topology.global.Topic;
 import amp.topology.global.TopicRegistry;
 import amp.topology.global.filtering.RouteFilterResults;
 import amp.topology.protocols.webstomp.requirements.WebStompRouteRequirements;
@@ -49,7 +48,7 @@ public class WebStompRouteProviderResource {
         routeRequirements.setActor(client);
 
         // Retrieve the target route.
-        Topic topicConf = topicRegistry.get(routeRequirements.getTopic());
+        amp.topology.global.Topic topicConf = topicRegistry.get(routeRequirements.getTopic());
 
         // Get the applicable topology constructs (PGroups, CGroups, Connectors)
         RouteFilterResults routeResults = topicConf.filter(routeRequirements);

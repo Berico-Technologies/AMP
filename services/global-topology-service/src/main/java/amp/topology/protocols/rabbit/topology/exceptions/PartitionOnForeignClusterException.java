@@ -14,8 +14,8 @@ public class PartitionOnForeignClusterException extends Exception {
 
     public PartitionOnForeignClusterException(Cluster cluster, BaseRabbitPartition partition) {
 
-        super(String.format("Partition '%s' is on cluster '%s' and should be on cluster '%s'.",
-                partition.getId(), partition.getCluster().getClusterId(), cluster.getClusterId()));
+        super(String.format("BasePartition '%s' is on cluster '%s' and should be on cluster '%s'.",
+                partition.getPartitionId(), partition.getCluster().getClusterId(), cluster.getClusterId()));
 
         this.cluster = cluster;
         this.partition = partition;

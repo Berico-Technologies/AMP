@@ -1,4 +1,4 @@
-package amp.topology.global;
+package amp.topology.global.impl;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;

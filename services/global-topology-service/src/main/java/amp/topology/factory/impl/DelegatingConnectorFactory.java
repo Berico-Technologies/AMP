@@ -2,9 +2,9 @@ package amp.topology.factory.impl;
 
 import amp.topology.factory.ConnectorFactory;
 import amp.topology.factory.ConnectorSpecification;
-import amp.topology.factory.GroupSpecification;
 import amp.topology.factory.Modifications;
 import amp.topology.global.*;
+import amp.topology.global.impl.*;
 import com.google.common.collect.Lists;
 
 import java.util.Collection;
@@ -39,7 +39,7 @@ public class DelegatingConnectorFactory implements ConnectorFactory {
     public Connector<? extends Partition, ? extends Partition>
                 create(ConnectorSpecification specification) throws Exception {
 
-        Topic topicConfiguration = this.topicRegistry.get(specification.getTopicId());
+        amp.topology.global.Topic topicConfiguration = this.topicRegistry.get(specification.getTopicId());
 
         ProducerGroup<?> producerGroup = topicConfiguration
                 .getProducerGroup(specification.getProducerGroupId());

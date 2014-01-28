@@ -3,7 +3,11 @@ package amp.topology.resources;
 import amp.topology.factory.ConnectorFactory;
 import amp.topology.factory.ConnectorSpecification;
 import amp.topology.factory.Modifications;
-import amp.topology.global.*;
+import amp.topology.global.Connector;
+import amp.topology.global.Partition;
+import amp.topology.global.impl.BaseGroup;
+import amp.topology.global.impl.BaseConnector;
+import amp.topology.global.TopicRegistry;
 import amp.topology.resources.common.Versioned;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
@@ -30,9 +34,9 @@ import java.util.Collection;
 @Produces({ "application/json;qs=1", "application/xml;qs=0.5" })
 public class ConnectorResource {
 
-    ConnectorFactory connectorFactory;
+    private ConnectorFactory connectorFactory;
 
-    TopicRegistry topicRegistry;
+    private TopicRegistry topicRegistry;
 
     public void setConnectorFactory(ConnectorFactory connectorFactory) {
 
@@ -46,9 +50,9 @@ public class ConnectorResource {
 
     @PUT
     @ApiOperation(
-            value = "Adds a Connector to a Topic in the Global Topology.",
-            notes = "Adds a Connector the the supplied specifications to a Topic in the Global Topology.",
-            response = TopologyGroup.class,
+            value = "Adds a BaseConnector to a BaseTopic in the Global Topology.",
+            notes = "Adds a BaseConnector the the supplied specifications to a BaseTopic in the Global Topology.",
+            response = BaseGroup.class,
             authorizations = "gts-connectors-add"
     )
     @Timed
@@ -60,7 +64,7 @@ public class ConnectorResource {
     @DELETE
     @Path("/{topicId}/{connectorId}")
     @ApiOperation(
-            value = "Remove a Connector from the Global Topology.",
+            value = "Remove a BaseConnector from the Global Topology.",
             notes = "Removes the connector with the given ID from the Global Topology, cleaning up resources as needed.",
             authorizations = "gts-connectors-remove"
     )
@@ -80,7 +84,7 @@ public class ConnectorResource {
     @Path("/{topicId}")
     @ApiOperation(
             value = "Retrieve all connectors from the Global Topology.",
-            notes = "Retrieves all Connectors for a Topic with the given ID in the Global Topology.",
+            notes = "Retrieves all Connectors for a BaseTopic with the given ID in the Global Topology.",
             authorizations = "gts-connectors-list",
             response = ConnectorsCollection.class
     )
@@ -91,7 +95,7 @@ public class ConnectorResource {
     @Metered(name="connectors-list")
     public ConnectorsCollection list(@PathParam("topicId") String topicId) throws Exception {
 
-        Topic topic = this.topicRegistry.get(topicId);
+        amp.topology.global.Topic topic = this.topicRegistry.get(topicId);
 
         return new ConnectorsCollection(topic);
     }
@@ -100,9 +104,9 @@ public class ConnectorResource {
     @Path("/{topicId}/{connectorId}")
     @ApiOperation(
             value = "Retrieve a specific connector from the Global Topology.",
-            notes = "Retrieves a Connector for a Topic with the given ID in the Global Topology.",
+            notes = "Retrieves a BaseConnector for a BaseTopic with the given ID in the Global Topology.",
             authorizations = "gts-groups-list",
-            response = Connector.class
+            response = BaseConnector.class
     )
     @ApiResponses({
             @ApiResponse(code=404, message="No topic with specified id."),
@@ -133,19 +137,19 @@ public class ConnectorResource {
     }
 
     /**
-     * Wraps a Connector Collection in a transportable object.
+     * Wraps a BaseConnector Collection in a transportable object.
      */
     @XmlRootElement
     public static class ConnectorsCollection  {
 
-        private final Collection<Connector<?,?>> connectors;
+        private final Collection<Connector<? extends Partition, ? extends Partition>> connectors;
 
-        public ConnectorsCollection(Topic topicConfiguration) {
+        public ConnectorsCollection(amp.topology.global.Topic topicConfiguration) {
 
             this.connectors = topicConfiguration.getConnectors();
         }
 
-        public Collection<Connector<?, ?>> getConnectors() {
+        public Collection<Connector<? extends Partition, ? extends Partition>> getConnectors() {
 
             return connectors;
         }

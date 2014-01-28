@@ -1,7 +1,5 @@
 package amp.topology.snapshot;
 
-import amp.topology.global.Topic;
-
 import javax.annotation.Nullable;
 import java.util.Collection;
 
@@ -14,18 +12,18 @@ public class Snapshot {
 
     protected String id;
 
-    protected @Nullable String description;
+    protected String description;
 
     protected long timestamp;
 
-    protected Collection<Topic> topics;
+    protected Collection<amp.topology.global.Topic> topics;
 
     /**
      * Please do not use.  This is for serialization purposes only.
      */
     public Snapshot(){}
 
-    public Snapshot(String id, @Nullable String description, long timestamp, Collection<Topic> topics) {
+    public Snapshot(String id, @Nullable String description, long timestamp, Collection<amp.topology.global.Topic> topics) {
         this.id = id;
         this.description = description;
         this.timestamp = timestamp;
@@ -45,7 +43,7 @@ public class Snapshot {
         return timestamp;
     }
 
-    public Collection<Topic> getTopics() {
+    public Collection<amp.topology.global.Topic> getTopics() {
         return topics;
     }
 }

@@ -10,7 +10,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 /**
  * An Access Control Entry.
  *
- * This class represents a rule as to whether an Actor or Group is allowed to perform
+ * This class represents a rule as to whether an Actor or BaseGroup is allowed to perform
  * the specified operation.
  *
  * @author Richard Clayton (Berico Technologies)

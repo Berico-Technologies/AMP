@@ -10,6 +10,7 @@ import rabbitmq.mgmt.RabbitMgmtService;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Map;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -95,6 +96,12 @@ public class RabbitTopologyTestBase {
         public String getDescription() {
             return "DESCRIPTION!";
         }
+
+        @Override
+        public void set(Map<String, String> properties) {}
+
+        @Override
+        public Map<String, String> getExtensionProperties() { return null; }
     }
 
 }

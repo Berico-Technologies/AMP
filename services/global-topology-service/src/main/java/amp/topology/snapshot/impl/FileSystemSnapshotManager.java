@@ -29,7 +29,7 @@ public class FileSystemSnapshotManager implements SnapshotManager {
 
     private static final Logger logger = LoggerFactory.getLogger(FileSystemSnapshotManager.class);
 
-    TopicRegistry topicRegistry;
+    final TopicRegistry topicRegistry;
 
     SnapshotSerializer serializer;
 
@@ -86,9 +86,9 @@ public class FileSystemSnapshotManager implements SnapshotManager {
     @Override
     public Snapshot export(@Nullable String description) throws Exception {
 
-        ArrayList<Topic> topics = Lists.newArrayList();
+        ArrayList<amp.topology.global.Topic> topics = Lists.newArrayList();
 
-        for(Topic topic : topicRegistry.entries()){
+        for(amp.topology.global.Topic topic : topicRegistry.entries()){
 
             topics.add(topic);
         }
@@ -301,17 +301,17 @@ public class FileSystemSnapshotManager implements SnapshotManager {
 
             try {
 
-                for(Topic currentState : topicRegistry.entries()){
+                for(amp.topology.global.Topic currentState : topicRegistry.entries()){
 
                     try {
 
-                        Topic mutation = locateById(snapshot, currentState.getId());
+                        Topic mutation = locateById(snapshot, currentState.getTopicId());
 
                         synchronizeTopic(currentState, mutation, removeUnspecifiedEntries);
 
                     } catch (Exception topicException){
 
-                        rollup.registerFailure(currentState.getId(), topicException);
+                        rollup.registerFailure(currentState.getTopicId(), topicException);
                     }
                 }
 
@@ -350,32 +350,32 @@ public class FileSystemSnapshotManager implements SnapshotManager {
 
             if (mutation.equals(currentState)){
 
-                logger.info("Topic '{}' is identical to configuration in snapshot...no change.",
-                        mutation.getId());
+                logger.info("BaseTopic '{}' is identical to configuration in snapshot...no change.",
+                        mutation.getTopicId());
             }
             else {
 
-                this.topicRegistry.unregister(currentState.getId());
+                this.topicRegistry.unregister(currentState.getTopicId());
 
                 this.topicRegistry.register(mutation);
             }
         }
         else if (removeNonspecifiedEntries) {
 
-            topicRegistry.unregister(currentState.getId());
+            topicRegistry.unregister(currentState.getTopicId());
         }
     }
 
     /**
      * Get a TopicConfiguration by it's id (or null if it can't be found).
      * @param snapshot Snapshot to perform lookup on.
-     * @param id ID of the Topic.
+     * @param id ID of the BaseTopic.
      * @return TopicConfiguration or Null.
      */
     static @Nullable Topic locateById(Snapshot snapshot, String id){
 
         for (Topic topicConfiguration : snapshot.getTopics())
-            if (topicConfiguration.getId().equals(id)) return topicConfiguration;
+            if (topicConfiguration.getTopicId().equals(id)) return topicConfiguration;
 
         return null;
     }

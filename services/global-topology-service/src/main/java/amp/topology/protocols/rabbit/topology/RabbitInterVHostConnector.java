@@ -1,50 +1,55 @@
 package amp.topology.protocols.rabbit.topology;
 
-import amp.topology.global.ConsumerGroup;
-import amp.topology.global.ProducerGroup;
-import amp.topology.global.Connector;
+import amp.topology.global.impl.BaseConnector;
+import amp.topology.global.impl.BaseProducerGroup;
+import amp.topology.global.impl.BaseConsumerGroup;
 import amp.topology.protocols.rabbit.management.Cluster;
 import amp.topology.protocols.rabbit.topology.exceptions.GroupHasNoPartitionsException;import amp.topology.protocols.rabbit.topology.exceptions.PartitionOnForeignClusterException;import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
- * This is a simple implementation of a Connector.  It's purpose is merely to synchronize routing keys
+ * This is a simple implementation of a BaseConnector.  It's purpose is merely to synchronize routing keys
  * between producers and consumers and to ensure
  *
  * @author Richard Clayton (Berico Technologies)
  */
-public class RabbitInterVHostConnector extends Connector<RabbitProducerPartition, RabbitConsumerPartition> {
+public class RabbitInterVHostConnector extends BaseConnector<RabbitProducerPartition, RabbitConsumerPartition> {
 
     final Cluster cluster;
 
     final Set<String> routingKeys = Sets.newCopyOnWriteArraySet();
 
     public RabbitInterVHostConnector(
+            String topicId,
             String description,
-            ProducerGroup<RabbitProducerPartition> producerGroup,
-            ConsumerGroup<RabbitConsumerPartition> consumerGroup,
+            BaseProducerGroup<RabbitProducerPartition> producerGroup,
+            BaseConsumerGroup<RabbitConsumerPartition> consumerGroup,
             Cluster cluster,
             Collection<String> routingKeys) {
 
-        super(description, producerGroup, consumerGroup);
+        super(topicId, description, producerGroup, consumerGroup);
 
         this.cluster = cluster;
         this.routingKeys.addAll(routingKeys);
     }
 
     public RabbitInterVHostConnector(
-            String id,
+            String topicId,
+            String connectorId,
             String description,
-            ProducerGroup<RabbitProducerPartition> producerGroup,
-            ConsumerGroup<RabbitConsumerPartition> consumerGroup,
+            BaseProducerGroup<RabbitProducerPartition> producerGroup,
+            BaseConsumerGroup<RabbitConsumerPartition> consumerGroup,
             Cluster cluster,
             Collection<String> routingKeys) {
 
-        super(id, description, producerGroup, consumerGroup);
+        super(topicId, description, producerGroup, consumerGroup);
+
+        setConnectorId(connectorId);
 
         this.cluster = cluster;
         this.routingKeys.addAll(routingKeys);
@@ -68,7 +73,7 @@ public class RabbitInterVHostConnector extends Connector<RabbitProducerPartition
     }
 
     /**
-     * Validate the state of the partitions in either the Producer or Consumer Group.
+     * Validate the state of the partitions in either the Producer or Consumer BaseGroup.
      * @param partitions The partitions to validate.
      */
     void validatePartitions(Collection<BaseRabbitPartition> partitions) throws Exception {
@@ -84,9 +89,9 @@ public class RabbitInterVHostConnector extends Connector<RabbitProducerPartition
 
         if (partitions.size() == 0){
 
-            setState(ConnectorStates.IN_ERROR, "There are no partitions for the ProducerGroup.");
+            setState(ConnectorStates.IN_ERROR, "There are no partitions for the BaseProducerGroup.");
 
-            throw new GroupHasNoPartitionsException(this.getId());
+            throw new GroupHasNoPartitionsException(this.getConnectorId());
         }
     }
 
@@ -104,9 +109,9 @@ public class RabbitInterVHostConnector extends Connector<RabbitProducerPartition
         if (!cluster.equals(partition.getCluster())){
 
             setState(ConnectorStates.IN_ERROR, String.format(
-                    "Connector can only bridge groups on the same cluster/virtual host.  " +
-                            "Partition '%s' exists on cluster '%s' and first partition is on '%s'.",
-                    partition.getId(),
+                    "BaseConnector can only bridge groups on the same cluster/virtual host.  " +
+                            "BasePartition '%s' exists on cluster '%s' and first partition is on '%s'.",
+                    partition.getPartitionId(),
                     partition.getCluster().getClusterId(),
                     cluster.getClusterId()));
 
@@ -141,7 +146,7 @@ public class RabbitInterVHostConnector extends Connector<RabbitProducerPartition
     }
 
     /**
-     * Add an alias (routing key) between the Producing and Consuming Group.
+     * Add an alias (routing key) between the Producing and Consuming BaseGroup.
      * @param routingAlias Alias to add.
      * @throws Exception Thrown if the verification process fails.
      */
@@ -155,7 +160,7 @@ public class RabbitInterVHostConnector extends Connector<RabbitProducerPartition
     }
 
     /**
-     * Remove an alias (routing key) between the Producing and Consuming Group.
+     * Remove an alias (routing key) between the Producing and Consuming BaseGroup.
      * @param routingAlias Alias to remove.
      * @throws Exception Thrown if the verification process fails.
      */
@@ -169,15 +174,6 @@ public class RabbitInterVHostConnector extends Connector<RabbitProducerPartition
     }
 
     @Override
-    public void activate() throws Exception {
-
-        verify();
-    }
-
-    @Override
-    public void deactivate() throws Exception {}
-
-    @Override
     public void setup() throws Exception {
 
         verify();
@@ -185,4 +181,15 @@ public class RabbitInterVHostConnector extends Connector<RabbitProducerPartition
 
     @Override
     public void cleanup() throws Exception {}
+
+    // TODO: Finish
+    @Override
+    public void set(Map<String, String> properties) {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public Map<String, String> getExtensionProperties() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    }
 }

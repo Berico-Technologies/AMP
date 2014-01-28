@@ -1,13 +1,9 @@
 package amp.topology.global.impl;
 
-import amp.topology.global.Topic;
 import amp.topology.global.TopicRegistry;
 import amp.topology.global.TopicRegistryComplianceTest;
 import com.google.common.collect.Iterables;
 import org.junit.Test;
-import org.mockito.InOrder;
-
-import java.util.Set;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -26,11 +22,11 @@ public class InMemoryTopicRegistryTest extends TopicRegistryComplianceTest {
     @Test
     public void test_exists() throws Exception {
 
-        String SHOULD_EXIST = "test.Topic";
+        String SHOULD_EXIST = "test.BaseTopic";
 
         InMemoryTopicRegistry topicRegistry = new InMemoryTopicRegistry();
 
-        Topic topic = createMockTopic(SHOULD_EXIST);
+        BaseTopic topic = createMockTopic(SHOULD_EXIST);
 
         topicRegistry.register(topic);
 
@@ -46,11 +42,11 @@ public class InMemoryTopicRegistryTest extends TopicRegistryComplianceTest {
 
         InMemoryTopicRegistry topicRegistry = new InMemoryTopicRegistry();
 
-        Topic EXPECTED_TOPIC = createMockTopic(TOPIC_ID);
+        BaseTopic EXPECTED_TOPIC = createMockTopic(TOPIC_ID);
 
         topicRegistry.register(EXPECTED_TOPIC);
 
-        Topic ACTUAL_TOPIC = topicRegistry.get(TOPIC_ID);
+        amp.topology.global.Topic ACTUAL_TOPIC = topicRegistry.get(TOPIC_ID);
 
         assertEquals(EXPECTED_TOPIC, ACTUAL_TOPIC);
     }
@@ -60,11 +56,11 @@ public class InMemoryTopicRegistryTest extends TopicRegistryComplianceTest {
 
         InMemoryTopicRegistry topicRegistry = new InMemoryTopicRegistry();
 
-        Topic TOPIC1 = createMockTopic("TOPIC_1");
+        BaseTopic TOPIC1 = createMockTopic("TOPIC_1");
 
-        Topic TOPIC2 = createMockTopic("TOPIC_2");
+        BaseTopic TOPIC2 = createMockTopic("TOPIC_2");
 
-        Topic TOPIC3 = createMockTopic("TOPIC_3");
+        BaseTopic TOPIC3 = createMockTopic("TOPIC_3");
 
         topicRegistry.register(TOPIC1);
 
@@ -72,7 +68,7 @@ public class InMemoryTopicRegistryTest extends TopicRegistryComplianceTest {
 
         topicRegistry.register(TOPIC3);
 
-        Iterable<Topic> ACTUAL_TOPICS = topicRegistry.entries();
+        Iterable<amp.topology.global.Topic> ACTUAL_TOPICS = topicRegistry.entries();
 
         assertEquals(3, Iterables.size(ACTUAL_TOPICS));
 
@@ -92,7 +88,7 @@ public class InMemoryTopicRegistryTest extends TopicRegistryComplianceTest {
 
         assertTrue(LAST_MODIFIED < 0);
 
-        Topic TOPIC = createMockTopic("amp.test.LastModified");
+        BaseTopic TOPIC = createMockTopic("amp.test.LastModified");
 
         topicRegistry.register(TOPIC);
 
@@ -103,18 +99,18 @@ public class InMemoryTopicRegistryTest extends TopicRegistryComplianceTest {
         // The implementation is so fast that register/unregister are happening in the same millisecond!
         Thread.sleep(10);
 
-        topicRegistry.unregister(TOPIC.getId());
+        topicRegistry.unregister(TOPIC.getTopicId());
 
         assertNotEquals(LAST_MODIFIED, topicRegistry.lastModified());
 
         assertTrue(LAST_MODIFIED < topicRegistry.lastModified());
     }
 
-    public static Topic createMockTopic(String id){
+    public static BaseTopic createMockTopic(String id){
 
-        Topic topic = mock(Topic.class);
+        BaseTopic topic = mock(BaseTopic.class);
 
-        when(topic.getId()).thenReturn(id);
+        when(topic.getTopicId()).thenReturn(id);
 
         return topic;
     }

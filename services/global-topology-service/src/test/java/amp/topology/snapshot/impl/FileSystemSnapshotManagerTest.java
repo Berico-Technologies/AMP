@@ -1,6 +1,6 @@
 package amp.topology.snapshot.impl;
 
-import amp.topology.global.Topic;
+import amp.topology.global.impl.BaseTopic;
 import amp.topology.global.TopicRegistry;
 import amp.topology.snapshot.Snapshot;
 import amp.topology.snapshot.SnapshotDescriptor;
@@ -114,17 +114,17 @@ public class FileSystemSnapshotManagerTest {
     @Test
     public void test_locateById(){
 
-        Topic topicConfiguration1 = mock(Topic.class);
+        amp.topology.global.Topic topicConfiguration1 = mock(BaseTopic.class);
 
-        when(topicConfiguration1.getId()).thenReturn("amp.test.Event1");
+        when(topicConfiguration1.getTopicId()).thenReturn("amp.test.Event1");
 
-        Topic topicConfiguration2 = mock(Topic.class);
+        amp.topology.global.Topic topicConfiguration2 = mock(BaseTopic.class);
 
-        when(topicConfiguration2.getId()).thenReturn("amp.test.Event2");
+        when(topicConfiguration2.getTopicId()).thenReturn("amp.test.Event2");
 
-        Topic topicConfiguration3 = mock(Topic.class);
+        amp.topology.global.Topic topicConfiguration3 = mock(BaseTopic.class);
 
-        when(topicConfiguration3.getId()).thenReturn("amp.test.Event3");
+        when(topicConfiguration3.getTopicId()).thenReturn("amp.test.Event3");
 
         Snapshot snapshot = mock(Snapshot.class);
 
@@ -338,7 +338,7 @@ public class FileSystemSnapshotManagerTest {
     @Test
     public void test_synchronizeConfiguration__does_not_update_if_state_is_equivalent() throws Exception {
 
-        Topic TOPIC = mock(Topic.class);
+        BaseTopic TOPIC = mock(BaseTopic.class);
 
         FileSystemSnapshotManager manager = createInstanceWithMocks();
 
@@ -352,11 +352,11 @@ public class FileSystemSnapshotManagerTest {
     @Test
     public void test_synchronizeConfiguration__replaces_existing_state_if_not_equivalent() throws Exception {
 
-        Topic TOPICA_CURRENT = mock(Topic.class);
+        amp.topology.global.Topic TOPICA_CURRENT = mock(BaseTopic.class);
 
-        when(TOPICA_CURRENT.getId()).thenReturn("abc123");
+        when(TOPICA_CURRENT.getTopicId()).thenReturn("abc123");
 
-        Topic TOPICA_MUTATION = mock(Topic.class);
+        BaseTopic TOPICA_MUTATION = mock(BaseTopic.class);
 
         FileSystemSnapshotManager manager = createInstanceWithMocks();
 
@@ -370,11 +370,11 @@ public class FileSystemSnapshotManagerTest {
     @Test
     public void test_synchronizeConfiguration__remove_if_no_mutation_and_dont_keep_entries() throws Exception {
 
-        Topic TOPICA_CURRENT = mock(Topic.class);
+        amp.topology.global.Topic TOPICA_CURRENT = mock(BaseTopic.class);
 
-        when(TOPICA_CURRENT.getId()).thenReturn("abc123");
+        when(TOPICA_CURRENT.getTopicId()).thenReturn("abc123");
 
-        Topic TOPICA_MUTATION = null;
+        BaseTopic TOPICA_MUTATION = null;
 
         FileSystemSnapshotManager manager = createInstanceWithMocks();
 
@@ -386,9 +386,9 @@ public class FileSystemSnapshotManagerTest {
     @Test
     public void test_synchronizeConfiguration__do_not_remove_if_no_mutation_and_keep_entries() throws Exception {
 
-        Topic TOPICA_CURRENT = mock(Topic.class);
+        amp.topology.global.Topic TOPICA_CURRENT = mock(BaseTopic.class);
 
-        Topic TOPICA_MUTATION = null;
+        BaseTopic TOPICA_MUTATION = null;
 
         FileSystemSnapshotManager manager = createInstanceWithMocks();
 
@@ -402,19 +402,19 @@ public class FileSystemSnapshotManagerTest {
 
         FileSystemSnapshotManager manager = createInstanceWithMocks();
 
-        Topic TC1 = mock(Topic.class);
+        amp.topology.global.Topic TC1 = mock(BaseTopic.class);
 
-        when(TC1.getId()).thenReturn("amp.test.Event1");
+        when(TC1.getTopicId()).thenReturn("amp.test.Event1");
 
-        Topic TC2 = mock(Topic.class);
+        amp.topology.global.Topic TC2 = mock(BaseTopic.class);
 
-        when(TC2.getId()).thenReturn("amp.test.Event2");
+        when(TC2.getTopicId()).thenReturn("amp.test.Event2");
 
-        Topic TC3 = mock(Topic.class);
+        amp.topology.global.Topic TC3 = mock(BaseTopic.class);
 
-        when(TC3.getId()).thenReturn("amp.test.Event3");
+        when(TC3.getTopicId()).thenReturn("amp.test.Event3");
 
-        Collection<Topic> TOPICS = Arrays.asList(TC1, TC2, TC3);
+        Collection<amp.topology.global.Topic> TOPICS = Arrays.asList(TC1, TC2, TC3);
 
         when(manager.topicRegistry.entries()).thenReturn(TOPICS);
 
@@ -430,21 +430,21 @@ public class FileSystemSnapshotManagerTest {
 
         FileSystemSnapshotManager manager = createInstanceWithMocks();
 
-        Topic TC1 = mock(Topic.class);
+        amp.topology.global.Topic TC1 = mock(BaseTopic.class);
 
-        when(TC1.getId()).thenReturn("amp.test.Event1");
+        when(TC1.getTopicId()).thenReturn("amp.test.Event1");
 
-        Topic TC2_I1 = mock(Topic.class);
+        amp.topology.global.Topic TC2_I1 = mock(BaseTopic.class);
 
-        when(TC2_I1.getId()).thenReturn("amp.test.Event2");
+        when(TC2_I1.getTopicId()).thenReturn("amp.test.Event2");
 
-        Topic TC2_I2 = mock(Topic.class);
+        BaseTopic TC2_I2 = mock(BaseTopic.class);
 
-        when(TC2_I2.getId()).thenReturn("amp.test.Event2");
+        when(TC2_I2.getTopicId()).thenReturn("amp.test.Event2");
 
-        Topic TC3 = mock(Topic.class);
+        amp.topology.global.Topic TC3 = mock(BaseTopic.class);
 
-        when(TC3.getId()).thenReturn("amp.test.Event3");
+        when(TC3.getTopicId()).thenReturn("amp.test.Event3");
 
         when(manager.topicRegistry.entries()).thenReturn(Arrays.asList(TC1, TC2_I1, TC3));
 
@@ -484,21 +484,21 @@ public class FileSystemSnapshotManagerTest {
 
         when(manager.serializer.serialize(any(Snapshot.class))).thenAnswer(new SerializeSnapshotAnswer());
 
-        Topic TC1 = mock(Topic.class);
+        amp.topology.global.Topic TC1 = mock(BaseTopic.class);
 
-        when(TC1.getId()).thenReturn("amp.test.Event1");
+        when(TC1.getTopicId()).thenReturn("amp.test.Event1");
 
-        Topic TC2_I1 = mock(Topic.class);
+        amp.topology.global.Topic TC2_I1 = mock(BaseTopic.class);
 
-        when(TC2_I1.getId()).thenReturn("amp.test.Event2");
+        when(TC2_I1.getTopicId()).thenReturn("amp.test.Event2");
 
-        Topic TC2_I2 = mock(Topic.class);
+        amp.topology.global.Topic TC2_I2 = mock(BaseTopic.class);
 
-        when(TC2_I2.getId()).thenReturn("amp.test.Event2");
+        when(TC2_I2.getTopicId()).thenReturn("amp.test.Event2");
 
-        Topic TC3 = mock(Topic.class);
+        amp.topology.global.Topic TC3 = mock(BaseTopic.class);
 
-        when(TC3.getId()).thenReturn("amp.test.Event3");
+        when(TC3.getTopicId()).thenReturn("amp.test.Event3");
 
         when(manager.topicRegistry.entries()).thenReturn(Arrays.asList(TC1, TC2_I1, TC3));
 
@@ -604,9 +604,9 @@ public class FileSystemSnapshotManagerTest {
 
             sb.append("\t<topics>\n");
 
-            for(Topic topicConfiguration : snapshot.getTopics()){
+            for(amp.topology.global.Topic topicConfiguration : snapshot.getTopics()){
 
-                sb.append("\t\t<topic id='").append(topicConfiguration.getId()).append("'>\n");
+                sb.append("\t\t<topic id='").append(topicConfiguration.getTopicId()).append("'>\n");
                 sb.append("\t\t\t").append(topicConfiguration.toString()).append("\n");
                 sb.append("\t\t</topic>\n");
             }

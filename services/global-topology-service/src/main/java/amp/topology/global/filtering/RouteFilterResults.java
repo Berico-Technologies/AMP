@@ -1,6 +1,7 @@
 package amp.topology.global.filtering;
 
 import amp.topology.global.Partition;
+import amp.topology.global.impl.BasePartition;
 import com.google.common.collect.Lists;
 
 import java.util.ArrayList;
@@ -102,9 +103,23 @@ public class RouteFilterResults {
             return this;
         }
 
+        public Builder produceOn(Collection<? extends Partition> producerPartitions){
+
+            this.producerPartitions.addAll(producerPartitions);
+
+            return this;
+        }
+
         public Builder consumeOn(Partition... consumerPartitions){
 
             this.consumerPartitions.addAll(Arrays.asList(consumerPartitions));
+
+            return this;
+        }
+
+        public Builder consumeOn(Collection<? extends Partition> consumerPartitions){
+
+            this.consumerPartitions.addAll(consumerPartitions);
 
             return this;
         }

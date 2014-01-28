@@ -13,4 +13,8 @@ public class ClusterDoesNotExistException extends Exception {
 
         this.clusterId = clusterId;
     }
+
+    public String getClusterId() {
+        return clusterId;
+    }
 }

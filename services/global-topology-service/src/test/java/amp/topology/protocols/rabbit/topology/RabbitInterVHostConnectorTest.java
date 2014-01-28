@@ -127,14 +127,14 @@ public class RabbitInterVHostConnectorTest extends RabbitTopologyTestBase {
 
         when(cgroup.getPartitions()).thenReturn(c);
 
-        return new RabbitInterVHostConnector("description", pgroup, cgroup, cluster, keys);
+        return new RabbitInterVHostConnector("topicId", "description", pgroup, cgroup, cluster, keys);
     }
 
     static RabbitProducerPartition createMockPPartition(String id, Cluster cluster){
 
         RabbitProducerPartition partition = mock(RabbitProducerPartition.class);
 
-        when(partition.getId()).thenReturn(id);
+        when(partition.getPartitionId()).thenReturn(id);
 
         ArrayList<String> keys = Lists.newArrayList();
 
@@ -149,7 +149,7 @@ public class RabbitInterVHostConnectorTest extends RabbitTopologyTestBase {
 
         RabbitConsumerPartition partition = mock(RabbitConsumerPartition.class);
 
-        when(partition.getId()).thenReturn(id);
+        when(partition.getPartitionId()).thenReturn(id);
 
         ArrayList<String> keys = Lists.newArrayList();
 

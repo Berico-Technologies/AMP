@@ -24,8 +24,6 @@ public class RabbitRouteRequirements_3_3_0_AdaptorTest {
     String createRoutingRequirements(
             String topic, String pattern, RouteRequirements.RouteDirections routeDirections){
 
-        String q = "\"";
-
         StringBuilder sb = new StringBuilder();
 
         sb.append("{ ")
@@ -42,7 +40,7 @@ public class RabbitRouteRequirements_3_3_0_AdaptorTest {
 
         RabbitRouteRequirements_3_3_0_Adaptor adaptor = new RabbitRouteRequirements_3_3_0_Adaptor();
 
-        String expectedTopic = "amp.test.Topic";
+        String expectedTopic = "amp.test.BaseTopic";
         String expectedPattern = Constants.MESSAGE_PATTERN_PUBSUB;
         RouteRequirements.RouteDirections expectedDirection = RouteRequirements.RouteDirections.CONSUME;
 

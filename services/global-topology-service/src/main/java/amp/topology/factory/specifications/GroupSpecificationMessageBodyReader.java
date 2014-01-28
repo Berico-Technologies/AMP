@@ -16,7 +16,7 @@ import java.util.Set;
 public class GroupSpecificationMessageBodyReader extends VersionedMessageBodyReader<GroupSpecification> {
 
     /**
-     * List of delegate adaptors that can transform the message body into Group Specification.
+     * List of delegate adaptors that can transform the message body into BaseGroup Specification.
      */
     static final Set<VersionAdaptor<GroupSpecification>> ADAPTORS;
 

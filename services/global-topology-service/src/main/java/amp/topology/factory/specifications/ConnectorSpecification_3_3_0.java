@@ -22,12 +22,12 @@ public class ConnectorSpecification_3_3_0 extends CommonSpecification_3_3_0 impl
     protected ConnectorSpecification_3_3_0(){}
 
     /**
-     * Initialize with the required parameters for specifying a Connector.
+     * Initialize with the required parameters for specifying a BaseConnector.
      *
      * @param topicId The id of the topic in which this connector should exist.
-     * @param description A description of the purpose of the Connector.
-     * @param accessControlList Access controls for the Connector (outside of the defaults).
-     * @param configurationHints Any hints to the factory about how to create or configure the Connector.  This may
+     * @param description A description of the purpose of the BaseConnector.
+     * @param accessControlList Access controls for the BaseConnector (outside of the defaults).
+     * @param configurationHints Any hints to the factory about how to create or configure the BaseConnector.  This may
      *                           include something about the desired protocol, producing configuration, whatever.
      *                           The key-value pairs will be specific to the underlying implementation of the
      *                           TopicFactory and any delegated factories it may use.
@@ -61,7 +61,7 @@ public class ConnectorSpecification_3_3_0 extends CommonSpecification_3_3_0 impl
 
     /**
      * Get the ID of the producer group.
-     * @return Producer Group Id.
+     * @return Producer BaseGroup Id.
      */
     @Override
     public String getProducerGroupId() {
@@ -70,7 +70,7 @@ public class ConnectorSpecification_3_3_0 extends CommonSpecification_3_3_0 impl
 
     /**
      * Get the ID of the consumer group.
-     * @return Consumer Group Id.
+     * @return Consumer BaseGroup Id.
      */
     @Override
     public String getConsumerGroupId() {
@@ -80,7 +80,7 @@ public class ConnectorSpecification_3_3_0 extends CommonSpecification_3_3_0 impl
 
     /**
      * Get a builder for the GroupSpecification_3_3_0.
-     * @return Group Specification Builder.
+     * @return BaseGroup Specification Builder.
      */
     public ConnectorSpecificationBuilder builder(){
 

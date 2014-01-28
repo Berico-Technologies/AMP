@@ -11,9 +11,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 public interface TopicRegistry {
 
     /**
-     * Get a TopicConfiguration by Id.
-     * @param id Id of the TopicConfiguration (though your implementation could support aliases...).
-     * @return TopicConfiguration
+     * Get a Topic by Id.
+     * @param id Id of the Topic (though your implementation could support aliases...).
+     * @return Topic
      * @throws amp.topology.global.exceptions.TopicNotExistException Thrown if there is no such topic.
      */
     @PreAuthorize("hasRole('gts-snapshot-describe')")
@@ -22,24 +22,24 @@ public interface TopicRegistry {
     /**
      * Does a particular topic exist?
      * @param id of the topic configuration.
-     * @return TRUE if a TopicConfiguration with that id exists.
+     * @return TRUE if a Topic with that id exists.
      */
     @PreAuthorize("hasRole('gts-snapshot-describe')")
     boolean exists(String id);
 
     /**
-     * Register a new TopicConfiguration with the registry.
-     * @param topicConfiguration TopicConfiguration to register.
-     * @throws Exception Thrown if an error occurs during the setup of the TopicConfiguration.
+     * Register a new Topic with the registry.
+     * @param topic Topic to register.
+     * @throws Exception Thrown if an error occurs during the setup of the Topic.
      */
     @PreAuthorize("hasRole('gts-snapshot-add')")
-    void register(Topic topicConfiguration) throws Exception;
+    void register(Topic topic) throws Exception;
 
     /**
-     * Unregister a TopicConfiguration with the register.
-     * @param id Id of the TopicConfiguration.
+     * Unregister a Topic with the register.
+     * @param id Id of the Topic.
      * @throws amp.topology.global.exceptions.TopicNotExistException Thrown if there is no such topic.
-     * @throws Exception If an exception is encountered cleaning up the TopicConfiguration.
+     * @throws Exception If an exception is encountered cleaning up the Topic.
      */
     @PreAuthorize("hasRole('gts-snapshot-remove')")
     void unregister(String id) throws Exception;

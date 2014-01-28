@@ -21,7 +21,7 @@ public interface ClusterManager {
      * @throws ClusterDoesNotExistException if the cluster doesn't exist.
      * @throws Exception an exception encountered in releasing cluster resources.
      */
-    void remove(String clusterId) throws ClusterDoesNotExistException, Exception;
+    void remove(String clusterId) throws Exception;
 
     /**
      * Get a Cluster by ID.
