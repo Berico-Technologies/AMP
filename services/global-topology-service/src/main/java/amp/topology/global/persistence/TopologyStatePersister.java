@@ -30,6 +30,13 @@ public interface TopologyStatePersister<TOPOLOGY_STATE extends TopologyState, NO
     TOPOLOGY_STATE get(String id) throws NOT_FOUND_EXCEPTION;
 
     /**
+     * Does a record with this ID exist?
+     * @param id Id of the item to check for.
+     * @return TRUE if it does, FALSE if it does not.
+     */
+    boolean exists(String id);
+
+    /**
      * Remove the topology state record for a topology entity.
      * @param id Id of the entity to remove the topology state record.
      * @throws NOT_FOUND_EXCEPTION Not Found.
@@ -46,7 +53,7 @@ public interface TopologyStatePersister<TOPOLOGY_STATE extends TopologyState, NO
     /**
      * Specification for the Topics.
      */
-    public interface TopicStatePersister extends TopologyStatePersister<BaseTopic.DehydratedState, TopicNotExistException> {}
+    public interface TopicStatePersister extends TopologyStatePersister<BasicTopic.DehydratedState, TopicNotExistException> {}
 
     /**
      * Specification for Groups.

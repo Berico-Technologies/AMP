@@ -1,6 +1,9 @@
 package amp.topology.global.lifecycle;
 
 import amp.topology.global.Connector;
+import amp.topology.global.Group;
+import amp.topology.global.Partition;
+import amp.topology.global.Topic;
 
 /**
  * Defines the lifecycle events handlers will be notified of when changes occur.
@@ -20,6 +23,12 @@ public interface LifeCycleListener<TOPOLOGY_ENTITY> {
      * @param entity
      */
     void onRemoved(TOPOLOGY_ENTITY entity);
+
+    /**
+     * Notify when an entity requests to be saved.
+     * @param entity
+     */
+    void saveRequested(TOPOLOGY_ENTITY entity);
 
     /**
      * Adds the notion of listening to state changes.
@@ -43,14 +52,15 @@ public interface LifeCycleListener<TOPOLOGY_ENTITY> {
     }
 
     /**
-     * Listening to BaseTopic lifecycle.
+     * Listening to BasicTopic lifecycle.
      */
-    public interface TopicListener extends LifeCycleListener<amp.topology.global.Topic> {}
+    public interface TopicListener extends LifeCycleListener<Topic> {}
+
 
     /**
      * Listening to BaseGroup lifecycle.
      */
-    public interface GroupListener extends LifeCycleListener<amp.topology.global.Group> {}
+    public interface GroupListener extends LifeCycleListener<Group> {}
 
     /**
      * Listening to BaseConnector lifecycle.
@@ -60,5 +70,5 @@ public interface LifeCycleListener<TOPOLOGY_ENTITY> {
     /**
      * Listening to BasePartition lifecycle.
      */
-    public interface PartitionListener extends StateChangeListener<amp.topology.global.Partition, amp.topology.global.Partition.PartitionStates> {}
+    public interface PartitionListener extends StateChangeListener<Partition, Partition.PartitionStates> {}
 }

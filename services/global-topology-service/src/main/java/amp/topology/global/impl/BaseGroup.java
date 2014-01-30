@@ -1,6 +1,7 @@
 package amp.topology.global.impl;
 
 import amp.topology.global.Group;
+import amp.topology.global.Partition;
 import amp.topology.global.exceptions.PartitionAlreadyExistsException;
 import amp.topology.global.exceptions.PartitionNotExistException;
 import amp.topology.global.lifecycle.LifeCycleObserver;
@@ -23,7 +24,7 @@ import java.util.concurrent.ConcurrentMap;
  */
 public abstract class BaseGroup<PARTITION extends BasePartition> extends BaseTopologyItem<BaseGroup.DehydratedState> implements Group<PARTITION> {
 
-    protected final TypeToken<PARTITION> PARTITION_TYPE = new TypeToken<PARTITION>(){};
+    protected final TypeToken<PARTITION> PARTITION_TYPE = new TypeToken<PARTITION>(getClass()){};
 
     /**
      * Provide a default, unique identifier for the BaseGroup that can
@@ -60,7 +61,20 @@ public abstract class BaseGroup<PARTITION extends BasePartition> extends BaseTop
     @Override
     public void save(){
 
-        for (amp.topology.global.Partition partition : partitions.values()) partition.save();
+        save(true);
+    }
+
+    @Override
+    public void save(boolean saveAggregates) {
+
+        if (saveAggregates)
+            for (Partition partition : partitions.values()) partition.save();
+
+        LifeCycleObserver.fireOnSaved(this);
+    }
+
+    @Override
+    public DehydratedState dehydrate() {
 
         DehydratedState state =
                 new DehydratedState(
@@ -73,7 +87,7 @@ public abstract class BaseGroup<PARTITION extends BasePartition> extends BaseTop
 
         state.getExtensionProperties().putAll(getExtensionProperties());
 
-        PersistenceManager.groups().save(state);
+        return state;
     }
 
     /**
@@ -150,8 +164,6 @@ public abstract class BaseGroup<PARTITION extends BasePartition> extends BaseTop
     @Override
     public void removePartition(String partitionId) throws Exception {
 
-        removePartition(getPartition(partitionId));
-
         PARTITION partition = partitions.remove(partitionId);
 
         if (partition == null) throw new PartitionNotExistException(this.getGroupId(), partitionId);
@@ -194,7 +206,7 @@ public abstract class BaseGroup<PARTITION extends BasePartition> extends BaseTop
         private Set<String> partitionIds = Sets.newHashSet();
 
         public DehydratedState(
-                Class<? extends amp.topology.global.Group> groupType,
+                Class<? extends Group> groupType,
                 String topicId,
                 String groupId,
                 String description,

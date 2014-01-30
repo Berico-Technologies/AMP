@@ -1,11 +1,10 @@
 package amp.topology.global.impl;
 
 import amp.topology.global.Partition;
+import amp.topology.global.PersistentTestBase;
 import amp.topology.global.lifecycle.LifeCycleListener;
 import amp.topology.global.lifecycle.LifeCycleObserver;
-import amp.topology.global.persistence.PersistenceManager;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -18,6 +17,10 @@ public class BasePartitionTest extends PersistentTestBase {
 
     @Test
     public void test_save(){
+
+        LifeCycleListener.PartitionListener listener = mock(LifeCycleListener.PartitionListener.class);
+
+        LifeCycleObserver.addListener(listener);
 
         String expectedTopic = "BasePartitionTest_Topic1";
         String expectedGroup = expectedTopic + "_Group1";
@@ -33,12 +36,25 @@ public class BasePartitionTest extends PersistentTestBase {
 
         partition.save();
 
-        ArgumentCaptor<BasePartition.DehydratedState> argumentCaptor =
-                ArgumentCaptor.forClass(BasePartition.DehydratedState.class);
+        verify(listener).saveRequested(partition);
+    }
 
-        verify(PersistenceManager.partitions()).save(argumentCaptor.capture());
+    @Test
+    public void test_dehydrate(){
 
-        BasePartition.DehydratedState actualState = locatePartitionState(argumentCaptor, expectedPartition);
+        String expectedTopic = "BasePartitionTest_Topic3";
+        String expectedGroup = expectedTopic + "_Group3";
+        String expectedPartition = expectedGroup + "_Partition3";
+        String expectedDescription = "BasePartitionTest";
+
+        TestPartition partition = new TestPartition();
+
+        partition.setTopicId(expectedTopic);
+        partition.setGroupId(expectedGroup);
+        partition.setPartitionId(expectedPartition);
+        partition.setDescription(expectedDescription);
+
+        BasePartition.DehydratedState actualState = partition.dehydrate();
 
         assertEquals(expectedTopic, actualState.getTopicId());
         assertEquals(expectedGroup, actualState.getGroupId());

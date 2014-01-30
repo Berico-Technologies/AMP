@@ -58,13 +58,22 @@ public abstract class BasePartition extends BaseTopologyItem<BasePartition.Dehyd
 
     public void save(){
 
+        LifeCycleObserver.fireOnSaved(this);
+    }
+
+    @Override
+    public DehydratedState dehydrate() {
+
         DehydratedState hydratedState =
                 new DehydratedState(getClass(), getTopicId(), getDescription(), getGroupId(), getPartitionId());
 
         hydratedState.getExtensionProperties().putAll(getExtensionProperties());
 
-        PersistenceManager.partitions().save(hydratedState);
+        return hydratedState;
     }
+
+    @Override
+    public void save(boolean saveAggregates) { save(); }
 
     @Override
     public void restore(DehydratedState state) {

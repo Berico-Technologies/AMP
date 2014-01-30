@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.Set;
 
 /**
- * Keeps to BaseTopic graph in memory.
+ * Keeps to BasicTopic graph in memory.
  *
  * Synchronization Policy: Writes are synchronized, reads are protected by an immutable list.
  *
@@ -106,7 +106,7 @@ public class InMemoryTopicRegistry implements TopicRegistry {
 
     /**
      * Get a TopicConfiguration by ID.
-     * @param topicId ID of the BaseTopic to retrieve.
+     * @param topicId ID of the BasicTopic to retrieve.
      * @return TopicConfiguration of Null.
      */
     private Optional<amp.topology.global.Topic> locate(String topicId){

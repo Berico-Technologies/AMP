@@ -9,7 +9,7 @@ public class ConnectorAlreadyExistsException extends Exception {
 
         super(
             String.format(
-                "BaseTopic '%s' already contains a connector with the id '%s'.",
+                "BasicTopic '%s' already contains a connector with the id '%s'.",
                 topicConfigurationId,
                 connectorId));
     }

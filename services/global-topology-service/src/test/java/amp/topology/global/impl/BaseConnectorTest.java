@@ -2,13 +2,12 @@ package amp.topology.global.impl;
 
 import amp.topology.global.Connector;
 import amp.topology.global.ConsumerGroup;
+import amp.topology.global.PersistentTestBase;
 import amp.topology.global.ProducerGroup;
 import amp.topology.global.lifecycle.LifeCycleListener;
 import amp.topology.global.lifecycle.LifeCycleObserver;
-import amp.topology.global.persistence.PersistenceManager;
 import com.google.common.collect.Maps;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
 
 import java.util.HashMap;
 
@@ -21,7 +20,11 @@ import static org.mockito.Mockito.*;
 public class BaseConnectorTest extends PersistentTestBase {
 
     @Test
-    public void test_save(){
+     public void test_save(){
+
+        LifeCycleListener.ConnectorListener listener = mock(LifeCycleListener.ConnectorListener.class);
+
+        LifeCycleObserver.addListener(listener);
 
         String expectedTopic = "BaseConnectorTest_Topic1";
         String expectedConnector = expectedTopic + "_Group1";
@@ -47,12 +50,69 @@ public class BaseConnectorTest extends PersistentTestBase {
 
         connector.save();
 
-        ArgumentCaptor<BaseConnector.DehydratedState> captor =
-                ArgumentCaptor.forClass(BaseConnector.DehydratedState.class);
+        verify(pgroup).save();
+        verify(cgroup).save();
 
-        verify(PersistenceManager.connectors()).save(captor.capture());
+        verify(listener).saveRequested(connector);
+    }
 
-        BaseConnector.DehydratedState actualState = locateConnectorState(captor, expectedConnector);
+    @Test
+    public void test_save_does_not_save_aggregates(){
+
+        String expectedTopic = "BaseConnectorTest_Topic4";
+        String expectedConnector = expectedTopic + "_Group4";
+        String expectedDescription = "BaseConnectorTest";
+        String expectedPGroup = expectedTopic + "_PGroup";
+        String expectedCGroup = expectedTopic + "_CGroup";
+
+        ProducerGroup<TestPartition> pgroup = mock(ProducerGroup.class);
+
+        when(pgroup.getGroupId()).thenReturn(expectedPGroup);
+
+        ConsumerGroup<TestPartition> cgroup = mock(ConsumerGroup.class);
+
+        when(cgroup.getGroupId()).thenReturn(expectedCGroup);
+
+        TestConnector connector = new TestConnector();
+
+        connector.setTopicId(expectedTopic);
+        connector.setDescription(expectedDescription);
+        connector.setConnectorId(expectedConnector);
+        connector.setProducerGroup(pgroup);
+        connector.setConsumerGroup(cgroup);
+
+        connector.save(false);
+
+        verify(pgroup, never()).save();
+        verify(cgroup, never()).save();
+    }
+
+    @Test
+    public void test_dehydrate(){
+
+        String expectedTopic = "BaseConnectorTest_Topic3";
+        String expectedConnector = expectedTopic + "_Group3";
+        String expectedDescription = "BaseConnectorTest";
+        String expectedPGroup = expectedTopic + "_PGroup";
+        String expectedCGroup = expectedTopic + "_CGroup";
+
+        ProducerGroup<TestPartition> pgroup = mock(ProducerGroup.class);
+
+        when(pgroup.getGroupId()).thenReturn(expectedPGroup);
+
+        ConsumerGroup<TestPartition> cgroup = mock(ConsumerGroup.class);
+
+        when(cgroup.getGroupId()).thenReturn(expectedCGroup);
+
+        TestConnector connector = new TestConnector();
+
+        connector.setTopicId(expectedTopic);
+        connector.setDescription(expectedDescription);
+        connector.setConnectorId(expectedConnector);
+        connector.setProducerGroup(pgroup);
+        connector.setConsumerGroup(cgroup);
+
+        BaseConnector.DehydratedState actualState = connector.dehydrate();
 
         assertEquals(expectedTopic, actualState.getTopicId());
         assertEquals(expectedConnector, actualState.getConnectorId());

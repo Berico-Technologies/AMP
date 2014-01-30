@@ -2,7 +2,7 @@ package amp.topology.global.persistence;
 
 import amp.topology.global.*;
 import amp.topology.global.impl.*;
-import amp.topology.global.impl.BaseTopic;
+import amp.topology.global.impl.BasicTopic;
 import com.google.common.collect.Sets;
 
 import java.util.Set;
@@ -13,7 +13,7 @@ import java.util.Set;
 public class Hydrater {
 
     @SuppressWarnings("unchecked")
-    public static <T extends BaseTopic> T  hydrate(BaseTopic.DehydratedState state) throws Exception {
+    public static <T extends BasicTopic> T  hydrate(BasicTopic.DehydratedState state) throws Exception {
 
         T topic = (T)state.getTopologyItemType().newInstance();
 

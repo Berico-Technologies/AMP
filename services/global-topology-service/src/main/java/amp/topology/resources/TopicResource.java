@@ -5,7 +5,7 @@ import amp.topology.factory.TopicFactory;
 import amp.topology.factory.TopicSpecification;
 import amp.topology.global.Topic;
 import amp.topology.global.TopicRegistry;
-import amp.topology.global.impl.BaseTopic;
+import amp.topology.global.impl.BasicTopic;
 import amp.topology.resources.common.Versioned;
 import com.google.common.collect.Iterables;
 import com.wordnik.swagger.annotations.Api;
@@ -57,9 +57,9 @@ public class TopicResource {
 
     @POST
     @ApiOperation(
-        value = "Add a BaseTopic to the Global Topology",
-        notes = "Adds a BaseTopic with the supplied specification to the Global Topology, provisioning resources as needed.",
-        response = BaseTopic.class,
+        value = "Add a BasicTopic to the Global Topology",
+        notes = "Adds a BasicTopic with the supplied specification to the Global Topology, provisioning resources as needed.",
+        response = BasicTopic.class,
         authorizations = "gts-topic-add"
     )
     @Timed
@@ -71,7 +71,7 @@ public class TopicResource {
     @DELETE
     @Path("/{id}")
     @ApiOperation(
-        value = "Remove a BaseTopic from the Global Topology.",
+        value = "Remove a BasicTopic from the Global Topology.",
         notes = "Removes the topic with the given ID from the Global Topology, cleaning up resources as needed.",
         authorizations = "gts-topic-remove"
     )
@@ -105,9 +105,9 @@ public class TopicResource {
     @GET
     @Path("/{id}")
     @ApiOperation(
-        value = "Get a BaseTopic in the Global Topology.",
+        value = "Get a BasicTopic in the Global Topology.",
         notes = "Retrieves a topic registered in the Global Topology.",
-        response = BaseTopic.class,
+        response = BasicTopic.class,
         authorizations = "gts-topic-get"
     )
     @ApiResponses({
@@ -121,8 +121,8 @@ public class TopicResource {
 
     @POST
     @ApiOperation(
-            value = "Modify a BaseTopic in the Global Topology",
-            notes = "Modify a BaseTopic in the Global Topology using the supplied specification.",
+            value = "Modify a BasicTopic in the Global Topology",
+            notes = "Modify a BasicTopic in the Global Topology using the supplied specification.",
             authorizations = "gts-topic-modify",
             response = Modifications.class
     )

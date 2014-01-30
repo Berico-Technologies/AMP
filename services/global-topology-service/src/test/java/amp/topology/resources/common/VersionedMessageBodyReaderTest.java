@@ -57,13 +57,13 @@ public class VersionedMessageBodyReaderTest
 
         assertEquals(V1, actualV1);
 
-        Optional<Versioned> v2 = Versioned.Helpers.find(VersionedMessage.class.getAnnotations());
+        Optional<Versioned> v2 = Versioned.Helpers.find(VersionedMessageV2.class.getAnnotations());
 
         VersionAdaptor<VersionedMessage> actualV2 = this.selectMostAppropriateAdaptor(v2);
 
         assertEquals(V2, actualV2);
 
-        Optional<Versioned> v3 = Versioned.Helpers.find(VersionedMessage.class.getAnnotations());
+        Optional<Versioned> v3 = Versioned.Helpers.find(VersionedMessageV3.class.getAnnotations());
 
         VersionAdaptor<VersionedMessage> actualV3 = this.selectMostAppropriateAdaptor(v3);
 
@@ -73,7 +73,7 @@ public class VersionedMessageBodyReaderTest
     @Test
     public void test_selectMostAppropriateAdaptor_with_unknown_version(){
 
-        Optional<Versioned> v4 = Versioned.Helpers.find(VersionedMessage.class.getAnnotations());
+        Optional<Versioned> v4 = Versioned.Helpers.find(VersionedMessageV4.class.getAnnotations());
 
         VersionAdaptor<VersionedMessage> actualV4 = this.selectMostAppropriateAdaptor(v4);
 
@@ -83,7 +83,7 @@ public class VersionedMessageBodyReaderTest
     @Test
     public void test_selectMostAppropriateAdaptor_without_version_mention(){
 
-        Optional<Versioned> latest = Versioned.Helpers.find(VersionedMessage.class.getAnnotations());
+        Optional<Versioned> latest = Versioned.Helpers.find(VersionedMessageV5.class.getAnnotations());
 
         VersionAdaptor<VersionedMessage> actualLatest = this.selectMostAppropriateAdaptor(latest);
 

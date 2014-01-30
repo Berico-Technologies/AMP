@@ -3,6 +3,7 @@ package amp.topology.global.impl;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
@@ -14,7 +15,7 @@ import java.util.Set;
  *
  * @author Richard Clayton (Berico Technologies)
  */
-public class TopologyState {
+public class TopologyState implements Serializable {
 
     private String topicId;
 

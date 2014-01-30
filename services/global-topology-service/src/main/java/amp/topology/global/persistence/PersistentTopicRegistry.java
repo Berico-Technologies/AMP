@@ -3,19 +3,23 @@ package amp.topology.global.persistence;
 import amp.topology.global.Topic;
 import amp.topology.global.TopicRegistry;
 import amp.topology.global.exceptions.TopicNotExistException;
-import amp.topology.global.impl.BaseTopic;
+import amp.topology.global.impl.BasicTopic;
+import amp.topology.global.lifecycle.LifeCycleObserver;
 
 import java.util.Iterator;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author Richard Clayton (Berico Technologies)
  */
 public class PersistentTopicRegistry implements TopicRegistry {
 
+    protected AtomicLong lastModified = new AtomicLong();
+
     @Override
     public Topic get(String id) throws TopicNotExistException {
 
-        BaseTopic.DehydratedState state = PersistenceManager.topics().get(id);
+        BasicTopic.DehydratedState state = PersistenceManager.topics().get(id);
 
         try {
 
@@ -30,49 +34,73 @@ public class PersistentTopicRegistry implements TopicRegistry {
     @Override
     public boolean exists(String id) {
 
-        try {
-
-            PersistenceManager.topics().get(id);
-
-            return true;
-
-        } catch (TopicNotExistException e) {
-
-            return false;
-        }
+        return PersistenceManager.topics().exists(id);
     }
 
     @Override
     public void register(Topic topic) throws Exception {
 
-        if (BaseTopic.class.isAssignableFrom(topic.getClass())){
+        if (BasicTopic.class.isAssignableFrom(topic.getClass())){
 
-            ((BaseTopic)topic).setup();
+            BasicTopic basicTopic = (BasicTopic)topic;
+
+            basicTopic.setup();
+
+            PersistenceManager.topics().save(basicTopic.dehydrate());
         }
 
-        topic.save();
+        LifeCycleObserver.fireOnAdded(topic);
+
+        lastModified.incrementAndGet();
     }
 
     @Override
     public void unregister(String id) throws Exception {
 
-        ((BaseTopic)get(id)).cleanup();
+        Topic topic = get(id);
 
-        PersistenceManager.topics().remove(id);
+        if (BasicTopic.class.isAssignableFrom(topic.getClass())){
+
+            BasicTopic basicTopic = (BasicTopic)topic;
+
+            basicTopic.cleanup();
+
+            PersistenceManager.topics().remove(basicTopic.getTopicId());
+        }
+
+        LifeCycleObserver.fireOnRemoved(topic);
+
+        lastModified.incrementAndGet();
     }
 
     @Override
     public Iterable<Topic> entries() throws Exception {
 
-        return new PersistentTopicIterator(this, PersistenceManager.topics().recordIdIterator());
+        return new PersistentTopicIterable(this);
     }
 
     @Override
     public long lastModified() {
-        return 0;  //To change body of implemented methods use File | Settings | File Templates.
+
+        return lastModified.get();
     }
 
-    public static class PersistentTopicIterator implements Iterator<Topic>, Iterable<Topic> {
+    public static class PersistentTopicIterable implements Iterable<Topic> {
+
+        private TopicRegistry registry;
+
+        public PersistentTopicIterable(TopicRegistry registry) {
+            this.registry = registry;
+        }
+
+        @Override
+        public Iterator<Topic> iterator() {
+
+            return new PersistentTopicIterator(registry, PersistenceManager.topics().recordIdIterator());
+        }
+    }
+
+    public static class PersistentTopicIterator implements Iterator<Topic> {
 
         private TopicRegistry registry;
 
@@ -108,12 +136,6 @@ public class PersistentTopicRegistry implements TopicRegistry {
         public void remove() {
 
             throw new UnsupportedOperationException();
-        }
-
-        @Override
-        public Iterator<Topic> iterator() {
-
-            return this;
         }
     }
 }

@@ -5,7 +5,7 @@ import amp.topology.global.Partition;
 /**
  * Encapsulates the construction of groups, hiding as much detail as possible from the requester.
  *
- * The GroupFactory not only creates the group, but also registers the group with the correct BaseTopic.
+ * The GroupFactory not only creates the group, but also registers the group with the correct BasicTopic.
  *
  * @author Richard Clayton (Berico Technologies)
  */

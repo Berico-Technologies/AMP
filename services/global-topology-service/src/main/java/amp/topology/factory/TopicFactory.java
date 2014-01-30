@@ -10,9 +10,9 @@ package amp.topology.factory;
 public interface TopicFactory {
 
     /**
-     * Create a BaseTopic with the provided specification.
+     * Create a BasicTopic with the provided specification.
      *
-     * You are returned a copy of the TopicConfiguration so you can readily interact with it.  The BaseTopic
+     * You are returned a copy of the TopicConfiguration so you can readily interact with it.  The BasicTopic
      * will automatically be registered with the TopicRegistry (you don't need to do anything else).
      *
      * @param specification Specification of the topic.
@@ -22,9 +22,9 @@ public interface TopicFactory {
     amp.topology.global.Topic create(TopicSpecification specification) throws Exception;
 
     /**
-     * Modify the provided BaseTopic with the state specified by the Configuration.
+     * Modify the provided BasicTopic with the state specified by the Configuration.
      *
-     * @param specification Specification of the BaseTopic (representing the mutations).
+     * @param specification Specification of the BasicTopic (representing the mutations).
      * @return a collection of modification entries describing the results of the operation.
      * @throws Exception Any error that occurred.
      */

@@ -16,9 +16,14 @@ public interface TopologyItem {
     void setDescription(String description);
 
     /**
-     * Save the entity with an the underlying PersistenceManager.
+     * Save the entity and it's aggregates.
      */
     void save();
+
+    /**
+     * Save the entity, optionally saving aggregates. (Default should be true).
+     */
+    void save(boolean saveAggregates);
 
     /**
      * Subclasses are should retrieve necessary state to initialize their internal state.

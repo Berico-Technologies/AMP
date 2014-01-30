@@ -350,7 +350,7 @@ public class FileSystemSnapshotManager implements SnapshotManager {
 
             if (mutation.equals(currentState)){
 
-                logger.info("BaseTopic '{}' is identical to configuration in snapshot...no change.",
+                logger.info("BasicTopic '{}' is identical to configuration in snapshot...no change.",
                         mutation.getTopicId());
             }
             else {
@@ -369,7 +369,7 @@ public class FileSystemSnapshotManager implements SnapshotManager {
     /**
      * Get a TopicConfiguration by it's id (or null if it can't be found).
      * @param snapshot Snapshot to perform lookup on.
-     * @param id ID of the BaseTopic.
+     * @param id ID of the BasicTopic.
      * @return TopicConfiguration or Null.
      */
     static @Nullable Topic locateById(Snapshot snapshot, String id){

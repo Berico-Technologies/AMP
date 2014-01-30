@@ -18,7 +18,7 @@ public class TopicChangeExceptionRollup extends Exception {
     /**
      * Register a failure that occurred for a topic.  You may register multiple failures
      * for the same topic.
-     * @param topicId BaseTopic that failed to change.
+     * @param topicId BasicTopic that failed to change.
      * @param cause Cause of the failure.
      */
     public void registerFailure(String topicId, Throwable cause){
@@ -53,7 +53,7 @@ public class TopicChangeExceptionRollup extends Exception {
 
             super(
                     String.format(
-                            "BaseTopic '%s' could not be modified: %s.",
+                            "BasicTopic '%s' could not be modified: %s.",
                             topicConfigurationId,
                             cause.getMessage()),
                     cause);

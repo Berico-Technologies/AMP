@@ -50,8 +50,8 @@ public class ConnectorResource {
 
     @PUT
     @ApiOperation(
-            value = "Adds a BaseConnector to a BaseTopic in the Global Topology.",
-            notes = "Adds a BaseConnector the the supplied specifications to a BaseTopic in the Global Topology.",
+            value = "Adds a BaseConnector to a BasicTopic in the Global Topology.",
+            notes = "Adds a BaseConnector the the supplied specifications to a BasicTopic in the Global Topology.",
             response = BaseGroup.class,
             authorizations = "gts-connectors-add"
     )
@@ -84,7 +84,7 @@ public class ConnectorResource {
     @Path("/{topicId}")
     @ApiOperation(
             value = "Retrieve all connectors from the Global Topology.",
-            notes = "Retrieves all Connectors for a BaseTopic with the given ID in the Global Topology.",
+            notes = "Retrieves all Connectors for a BasicTopic with the given ID in the Global Topology.",
             authorizations = "gts-connectors-list",
             response = ConnectorsCollection.class
     )
@@ -104,7 +104,7 @@ public class ConnectorResource {
     @Path("/{topicId}/{connectorId}")
     @ApiOperation(
             value = "Retrieve a specific connector from the Global Topology.",
-            notes = "Retrieves a BaseConnector for a BaseTopic with the given ID in the Global Topology.",
+            notes = "Retrieves a BaseConnector for a BasicTopic with the given ID in the Global Topology.",
             authorizations = "gts-groups-list",
             response = BaseConnector.class
     )

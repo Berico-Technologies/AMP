@@ -15,7 +15,9 @@ import java.util.UUID;
  *
  * @author Richard Clayton (Berico Technologies)
  */
-public abstract class BaseConnector<PPART extends BasePartition, CPART extends BasePartition> extends BaseTopologyItem<BaseConnector.DehydratedState> implements Connector<PPART,CPART> {
+public abstract class BaseConnector<PPART extends BasePartition, CPART extends BasePartition>
+        extends BaseTopologyItem<BaseConnector.DehydratedState>
+        implements Connector<PPART,CPART> {
 
     private String connectorId;
 
@@ -141,6 +143,25 @@ public abstract class BaseConnector<PPART extends BasePartition, CPART extends B
     @Override
     public void save(){
 
+        save(true);
+    }
+
+    @Override
+    public void save(boolean saveAggregates) {
+
+        if (saveAggregates) {
+
+            this.producerGroup.save();
+
+            this.consumerGroup.save();
+        }
+
+        LifeCycleObserver.fireOnSaved(this);
+    }
+
+    @Override
+    public DehydratedState dehydrate() {
+
         DehydratedState state =
                 new DehydratedState(
                         getClass(),
@@ -153,7 +174,7 @@ public abstract class BaseConnector<PPART extends BasePartition, CPART extends B
 
         state.getExtensionProperties().putAll(getExtensionProperties());
 
-        PersistenceManager.connectors().save(state);
+        return state;
     }
 
     @Override

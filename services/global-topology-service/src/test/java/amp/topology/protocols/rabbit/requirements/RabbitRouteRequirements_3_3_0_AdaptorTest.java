@@ -40,7 +40,7 @@ public class RabbitRouteRequirements_3_3_0_AdaptorTest {
 
         RabbitRouteRequirements_3_3_0_Adaptor adaptor = new RabbitRouteRequirements_3_3_0_Adaptor();
 
-        String expectedTopic = "amp.test.BaseTopic";
+        String expectedTopic = "amp.test.BasicTopic";
         String expectedPattern = Constants.MESSAGE_PATTERN_PUBSUB;
         RouteRequirements.RouteDirections expectedDirection = RouteRequirements.RouteDirections.CONSUME;
 

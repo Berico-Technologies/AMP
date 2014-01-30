@@ -66,6 +66,12 @@ public abstract class BaseTopologyItem<DEHYDRATED_STATE extends TopologyState> i
     public abstract void cleanup() throws Exception;
 
     /**
+     * Convert the object's internal representation into something that can be stored.
+     * @return
+     */
+    public abstract DEHYDRATED_STATE dehydrate();
+
+    /**
      * Restore the state of the object from it's dehydrated representation.
      * @param state
      */

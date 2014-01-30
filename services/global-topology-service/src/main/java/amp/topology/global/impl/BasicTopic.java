@@ -20,12 +20,12 @@ import java.util.concurrent.ConcurrentMap;
 /**
  * Container for the routes associated with a particular topology.
  *
- * The BaseTopic is responsible for managing the life cycle of
+ * The BasicTopic is responsible for managing the life cycle of
  * TopologyGroups and Connectors.
  *
  * @author Richard Clayton (Berico Technologies)
  */
-public class BaseTopic extends BaseTopologyItem<BaseTopic.DehydratedState> implements amp.topology.global.Topic {
+public class BasicTopic extends BaseTopologyItem<BasicTopic.DehydratedState> implements amp.topology.global.Topic {
 
     private ConcurrentMap<String, ProducerGroup<?>> pgroups = Maps.newConcurrentMap();
 
@@ -36,25 +36,25 @@ public class BaseTopic extends BaseTopologyItem<BaseTopic.DehydratedState> imple
     /**
      * No! No!  Don't you dare!  This is for state hydration purposes only!
      */
-    public BaseTopic(){}
+    public BasicTopic(){}
 
     /**
-     * Instantiate the BaseTopic with it's id.
+     * Instantiate the BasicTopic with it's id.
      * @param id A globally unique id in the topic space.  Typically this is the name of an event (canonical class name)
      *           or some easily identified but more generic category (e.g. "user-queues").
      */
-    public BaseTopic(String id){
+    public BasicTopic(String id){
 
         this.setTopicId(id);
     }
 
     /**
-     * Instantiate the BaseTopic with it's id.
+     * Instantiate the BasicTopic with it's id.
      * @param id A globally unique id in the topic space.  Typically this is the name of an event (canonical class name)
      *           or some easily identified but more generic category (e.g. "user-queues").
      * @param description A friendly description of this topic.
      */
-    public BaseTopic(String id, String description) {
+    public BasicTopic(String id, String description) {
 
         this.setTopicId(id);
         this.setDescription(description);
@@ -118,19 +118,8 @@ public class BaseTopic extends BaseTopologyItem<BaseTopic.DehydratedState> imple
         cgroups.clear();
     }
 
-
-
-    /**
-     * Persist the BaseTopic state.
-     */
     @Override
-    public void save(){
-
-        for (amp.topology.global.Group group : pgroups.values()) group.save();
-
-        for (amp.topology.global.Group group : cgroups.values()) group.save();
-
-        for (Connector connector : connectors.values()) connector.save();
+    public DehydratedState dehydrate() {
 
         DehydratedState topicState =
                 new DehydratedState(
@@ -143,7 +132,32 @@ public class BaseTopic extends BaseTopologyItem<BaseTopic.DehydratedState> imple
 
         topicState.getExtensionProperties().putAll(getExtensionProperties());
 
-        PersistenceManager.topics().save(topicState);
+        return topicState;
+    }
+
+
+    /**
+     * Persist the BasicTopic state.
+     */
+    @Override
+    public void save(){
+
+        save(true);
+    }
+
+    @Override
+    public void save(boolean saveAggregates) {
+
+        if (saveAggregates){
+
+            for (Group group : pgroups.values()) group.save();
+
+            for (Group group : cgroups.values()) group.save();
+
+            for (Connector connector : connectors.values()) connector.save();
+        }
+
+        LifeCycleObserver.fireOnSaved(this);
     }
 
     /**
@@ -241,7 +255,7 @@ public class BaseTopic extends BaseTopologyItem<BaseTopic.DehydratedState> imple
 
     /**
      * Add a BaseProducerGroup to the TopicConfiguration.  The "setup" method will be called on the group,
-     * and if an exception is raised, the group will fail to be added to the BaseTopic.  All listeners will
+     * and if an exception is raised, the group will fail to be added to the BasicTopic.  All listeners will
      * also be fired for onProducerGroupAdded.
      * @param producerGroup BaseProducerGroup to add.
      * @throws Exception Setup error.
@@ -322,7 +336,7 @@ public class BaseTopic extends BaseTopologyItem<BaseTopic.DehydratedState> imple
 
     /**
      * Add a BaseConsumerGroup to the TopicConfiguration.  The "setup" method will be called on the group,
-     * and if an exception is raised, the group will fail to be added to the BaseTopic.  All listeners will
+     * and if an exception is raised, the group will fail to be added to the BasicTopic.  All listeners will
      * also be fired for onConsumerGroupAdded.
      * @param consumerGroup BaseConsumerGroup to add.
      * @throws Exception Setup error.
@@ -403,7 +417,7 @@ public class BaseTopic extends BaseTopologyItem<BaseTopic.DehydratedState> imple
     }
 
     /**
-     * Add a BaseConnector to the BaseTopic.  This will call "setup" on the connector, which may error.  In the event
+     * Add a BaseConnector to the BasicTopic.  This will call "setup" on the connector, which may error.  In the event
      * of an error, the connector will not be added.  Listeners for onConnectorAdded will also be called.
      * @param connector BaseConnector to add.
      * @throws Exception If an error occurs during "setup"
@@ -486,7 +500,7 @@ public class BaseTopic extends BaseTopologyItem<BaseTopic.DehydratedState> imple
             this.connectors.putIfAbsent(connector.getConnectorId(), connector);
     }
 
-    private static void cleanup(TopologyItem item) throws Exception {
+    static void cleanup(TopologyItem item) throws Exception {
 
         if (BaseTopologyItem.class.isAssignableFrom(item.getClass())){
 
@@ -496,7 +510,7 @@ public class BaseTopic extends BaseTopologyItem<BaseTopic.DehydratedState> imple
         }
     }
 
-    private static void setup(TopologyItem item) throws Exception {
+    static void setup(TopologyItem item) throws Exception {
 
         if (BaseTopologyItem.class.isAssignableFrom(item.getClass())){
 
@@ -508,7 +522,7 @@ public class BaseTopic extends BaseTopologyItem<BaseTopic.DehydratedState> imple
 
 
     /**
-     * Represents the mandatory properties for a BaseTopic.
+     * Represents the mandatory properties for a BasicTopic.
      */
     public static class DehydratedState extends TopologyState {
 

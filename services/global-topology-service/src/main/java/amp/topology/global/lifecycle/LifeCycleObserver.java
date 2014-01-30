@@ -1,6 +1,9 @@
 package amp.topology.global.lifecycle;
 
 import amp.topology.global.Connector;
+import amp.topology.global.Group;
+import amp.topology.global.Partition;
+import amp.topology.global.Topic;
 import amp.topology.global.lifecycle.LifeCycleListener.ConnectorListener;
 import amp.topology.global.lifecycle.LifeCycleListener.GroupListener;
 import amp.topology.global.lifecycle.LifeCycleListener.PartitionListener;
@@ -64,7 +67,7 @@ public class LifeCycleObserver {
         connectorListeners.remove(listener);
     }
 
-    public static void fireOnAdded(amp.topology.global.Topic topic){
+    public static void fireOnAdded(Topic topic){
 
         for (TopicListener listener : topicListeners) listener.onAdded(topic);
     }
@@ -74,17 +77,17 @@ public class LifeCycleObserver {
         for (ConnectorListener listener : connectorListeners) listener.onAdded(connector);
     }
 
-    public static void fireOnAdded(amp.topology.global.Group group){
+    public static void fireOnAdded(Group group){
 
         for (GroupListener listener : groupListeners) listener.onAdded(group);
     }
 
-    public static void fireOnAdded(amp.topology.global.Partition partition){
+    public static void fireOnAdded(Partition partition){
 
         for (PartitionListener listener : partitionListeners) listener.onAdded(partition);
     }
 
-    public static void fireOnRemoved(amp.topology.global.Topic topic){
+    public static void fireOnRemoved(Topic topic){
 
         for (TopicListener listener : topicListeners) listener.onRemoved(topic);
     }
@@ -94,18 +97,38 @@ public class LifeCycleObserver {
         for (ConnectorListener listener : connectorListeners) listener.onRemoved(connector);
     }
 
-    public static void fireOnRemoved(amp.topology.global.Group group){
+    public static void fireOnRemoved(Group group){
 
         for (GroupListener listener : groupListeners) listener.onRemoved(group);
     }
 
-    public static void fireOnRemoved(amp.topology.global.Partition partition){
+    public static void fireOnRemoved(Partition partition){
 
         for (PartitionListener listener : partitionListeners) listener.onRemoved(partition);
     }
 
+    public static void fireOnSaved(Topic topic){
+
+        for (TopicListener listener: topicListeners) listener.saveRequested(topic);
+    }
+
+    public static void fireOnSaved(Group group){
+
+        for (GroupListener listener: groupListeners) listener.saveRequested(group);
+    }
+
+    public static void fireOnSaved(Partition partition){
+
+        for (PartitionListener listener: partitionListeners) listener.saveRequested(partition);
+    }
+
+    public static void fireOnSaved(Connector connector){
+
+        for (ConnectorListener listener: connectorListeners) listener.saveRequested(connector);
+    }
+
     public static void fireOnStateChanged(
-            amp.topology.global.Partition target, amp.topology.global.Partition.PartitionStates oldState, amp.topology.global.Partition.PartitionStates newState, String reason){
+            Partition target, Partition.PartitionStates oldState, Partition.PartitionStates newState, String reason){
 
         for (PartitionListener listener : partitionListeners)
             listener.onStateChange(target, oldState, newState, reason);

@@ -6,7 +6,7 @@ import amp.topology.global.Partition;
 /**
  * Encapsulates the construction of connectors, hiding as much detail as possible from the requester.
  *
- * The ConnectorFactory not only creates the connector, but also registers the connector with the correct BaseTopic.
+ * The ConnectorFactory not only creates the connector, but also registers the connector with the correct BasicTopic.
  *
  * @author Richard Clayton (Berico Technologies)
  */

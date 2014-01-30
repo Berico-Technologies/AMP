@@ -1,7 +1,7 @@
 package amp.topology.global;
 
 import amp.topology.global.exceptions.TopicNotExistException;
-import amp.topology.global.impl.BaseTopic;
+import amp.topology.global.impl.BasicTopic;
 import org.junit.Test;
 
 import java.util.UUID;
@@ -9,7 +9,7 @@ import java.util.UUID;
 import static org.mockito.Mockito.*;
 
 /**
- * Extend this class to test a TopicRegistry's compliance to the BaseTopic's life cycle.
+ * Extend this class to test a TopicRegistry's compliance to the BasicTopic's life cycle.
  *
  * @author Richard Clayton (Berico Technologies)
  */
@@ -22,7 +22,7 @@ public abstract class TopicRegistryComplianceTest {
 
         TopicRegistry topicRegistry = getRegistry();
 
-        BaseTopic mockTopic = mock(BaseTopic.class);
+        BasicTopic mockTopic = mock(BasicTopic.class);
 
         topicRegistry.register(mockTopic);
 
@@ -34,7 +34,7 @@ public abstract class TopicRegistryComplianceTest {
 
         TopicRegistry topicRegistry = getRegistry();
 
-        BaseTopic mockTopic = mock(BaseTopic.class);
+        BasicTopic mockTopic = mock(BasicTopic.class);
 
         when(mockTopic.getTopicId()).thenReturn("abc123");
 

@@ -88,7 +88,7 @@ public abstract class RabbitConsumerPartition extends BaseRabbitPartition implem
      * @param cluster     the Cluster in which the Exchange should exist.
      * @param exchange    Exchange configuration.
      * @param routingKeys Routing Keys for producing or consuming on the exchange.
-     * @param queuePrototype A Queue to use as a template for configuration for the BaseTopic Subscription.
+     * @param queuePrototype A Queue to use as a template for configuration for the BasicTopic Subscription.
      */
     public RabbitConsumerPartition(Cluster cluster, Exchange exchange, Collection<String> routingKeys, Queue queuePrototype) {
         super(cluster, exchange, routingKeys);

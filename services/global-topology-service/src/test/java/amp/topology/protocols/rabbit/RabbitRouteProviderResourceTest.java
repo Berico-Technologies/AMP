@@ -2,7 +2,7 @@ package amp.topology.protocols.rabbit;
 
 import amp.rabbit.topology.RoutingInfo;
 import amp.topology.global.impl.BasePartition;
-import amp.topology.global.impl.BaseTopic;
+import amp.topology.global.impl.BasicTopic;
 import amp.topology.global.TopicRegistry;
 import amp.topology.global.filtering.RouteFilterResults;
 import amp.topology.global.filtering.RouteRequirements;
@@ -77,7 +77,7 @@ public class RabbitRouteProviderResourceTest {
 
     public amp.topology.global.Topic createMockTopic(RouteFilterResults mockResults){
 
-        amp.topology.global.Topic mockTopic = mock(BaseTopic.class);
+        amp.topology.global.Topic mockTopic = mock(BasicTopic.class);
 
         doReturn(mockResults).when(mockTopic).filter(any(RouteRequirements.class));
 

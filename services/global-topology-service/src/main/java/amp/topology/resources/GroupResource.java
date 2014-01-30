@@ -47,8 +47,8 @@ public class GroupResource {
 
     @PUT
     @ApiOperation(
-        value = "Adds a BaseGroup to a BaseTopic in the Global Topology.",
-        notes = "Adds a BaseGroup the the supplied specifications to a BaseTopic in the Global Topology.",
+        value = "Adds a BaseGroup to a BasicTopic in the Global Topology.",
+        notes = "Adds a BaseGroup the the supplied specifications to a BasicTopic in the Global Topology.",
         response = BaseGroup.class,
         authorizations = "gts-groups-add"
     )
@@ -81,7 +81,7 @@ public class GroupResource {
     @Path("/{topicId}")
     @ApiOperation(
             value = "Retrieve all groups from the Global Topology.",
-            notes = "Retrieves all Producing and Consuming groups for a BaseTopic with the given ID in the Global Topology.",
+            notes = "Retrieves all Producing and Consuming groups for a BasicTopic with the given ID in the Global Topology.",
             authorizations = "gts-groups-list",
             response = TopologyGroupCollection.class
     )
@@ -101,7 +101,7 @@ public class GroupResource {
     @Path("/{topicId}/{groupId}")
     @ApiOperation(
             value = "Retrieve a specific group from the Global Topology.",
-            notes = "Retrieves a Producing or Consuming group for a BaseTopic with the given IDs in the Global Topology.",
+            notes = "Retrieves a Producing or Consuming group for a BasicTopic with the given IDs in the Global Topology.",
             authorizations = "gts-groups-get",
             response = BaseGroup.class
     )
@@ -135,7 +135,7 @@ public class GroupResource {
 
 
     /**
-     * Represents all the Producer and Consumer Groups in a BaseTopic.
+     * Represents all the Producer and Consumer Groups in a BasicTopic.
      */
     @XmlRootElement
     public static class TopologyGroupCollection {

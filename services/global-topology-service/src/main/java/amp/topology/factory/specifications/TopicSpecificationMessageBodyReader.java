@@ -16,7 +16,7 @@ import java.util.Set;
 public class TopicSpecificationMessageBodyReader extends VersionedMessageBodyReader<TopicSpecification> {
 
     /**
-     * List of delegate adaptors that can transform the message body into BaseTopic Specification.
+     * List of delegate adaptors that can transform the message body into BasicTopic Specification.
      */
     static final Set<VersionAdaptor<TopicSpecification>> ADAPTORS;
 

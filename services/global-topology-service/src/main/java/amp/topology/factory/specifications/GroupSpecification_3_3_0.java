@@ -94,7 +94,7 @@ public class GroupSpecification_3_3_0 extends CommonSpecification_3_3_0 implemen
         protected GroupSpecificationBuilder() {  super(new GroupSpecification_3_3_0()); }
 
         /**
-         * The id of the group, which must be unique within a BaseTopic.
+         * The id of the group, which must be unique within a BasicTopic.
          * @param id ID of the group.
          * @return this.
          */

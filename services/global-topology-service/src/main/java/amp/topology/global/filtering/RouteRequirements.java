@@ -13,8 +13,8 @@ import java.util.Map;
 public interface RouteRequirements extends Map<String, String> {
 
     /**
-     * Get the BaseTopic in which route information is desired.
-     * @return BaseTopic (amp.my.BaseTopic)
+     * Get the BasicTopic in which route information is desired.
+     * @return BasicTopic (amp.my.BasicTopic)
      */
     String getTopic();
 

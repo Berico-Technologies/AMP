@@ -67,9 +67,9 @@ public class RabbitRouteProviderResource {
     }
 
     /**
-     * Set the BaseTopic Registry (used for Unit Testing purposes).
+     * Set the BasicTopic Registry (used for Unit Testing purposes).
      *
-     * @param topicRegistry BaseTopic Registry to set.
+     * @param topicRegistry BasicTopic Registry to set.
      */
     public void setTopicRegistry(TopicRegistry topicRegistry) {
 

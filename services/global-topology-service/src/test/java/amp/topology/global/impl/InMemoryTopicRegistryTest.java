@@ -22,11 +22,11 @@ public class InMemoryTopicRegistryTest extends TopicRegistryComplianceTest {
     @Test
     public void test_exists() throws Exception {
 
-        String SHOULD_EXIST = "test.BaseTopic";
+        String SHOULD_EXIST = "test.BasicTopic";
 
         InMemoryTopicRegistry topicRegistry = new InMemoryTopicRegistry();
 
-        BaseTopic topic = createMockTopic(SHOULD_EXIST);
+        BasicTopic topic = createMockTopic(SHOULD_EXIST);
 
         topicRegistry.register(topic);
 
@@ -42,7 +42,7 @@ public class InMemoryTopicRegistryTest extends TopicRegistryComplianceTest {
 
         InMemoryTopicRegistry topicRegistry = new InMemoryTopicRegistry();
 
-        BaseTopic EXPECTED_TOPIC = createMockTopic(TOPIC_ID);
+        BasicTopic EXPECTED_TOPIC = createMockTopic(TOPIC_ID);
 
         topicRegistry.register(EXPECTED_TOPIC);
 
@@ -56,11 +56,11 @@ public class InMemoryTopicRegistryTest extends TopicRegistryComplianceTest {
 
         InMemoryTopicRegistry topicRegistry = new InMemoryTopicRegistry();
 
-        BaseTopic TOPIC1 = createMockTopic("TOPIC_1");
+        BasicTopic TOPIC1 = createMockTopic("TOPIC_1");
 
-        BaseTopic TOPIC2 = createMockTopic("TOPIC_2");
+        BasicTopic TOPIC2 = createMockTopic("TOPIC_2");
 
-        BaseTopic TOPIC3 = createMockTopic("TOPIC_3");
+        BasicTopic TOPIC3 = createMockTopic("TOPIC_3");
 
         topicRegistry.register(TOPIC1);
 
@@ -88,7 +88,7 @@ public class InMemoryTopicRegistryTest extends TopicRegistryComplianceTest {
 
         assertTrue(LAST_MODIFIED < 0);
 
-        BaseTopic TOPIC = createMockTopic("amp.test.LastModified");
+        BasicTopic TOPIC = createMockTopic("amp.test.LastModified");
 
         topicRegistry.register(TOPIC);
 
@@ -106,9 +106,9 @@ public class InMemoryTopicRegistryTest extends TopicRegistryComplianceTest {
         assertTrue(LAST_MODIFIED < topicRegistry.lastModified());
     }
 
-    public static BaseTopic createMockTopic(String id){
+    public static BasicTopic createMockTopic(String id){
 
-        BaseTopic topic = mock(BaseTopic.class);
+        BasicTopic topic = mock(BasicTopic.class);
 
         when(topic.getTopicId()).thenReturn(id);
 
