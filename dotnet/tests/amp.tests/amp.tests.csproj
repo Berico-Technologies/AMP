@@ -30,6 +30,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="cmf.bus">
+      <HintPath>..\..\packages\cmf.bus.3.1.2.27690\lib\net40\cmf.bus.dll</HintPath>
+    </Reference>
+    <Reference Include="cmf.eventing">
+      <HintPath>..\..\packages\cmf.eventing.3.1.2.27690\lib\net40\cmf.eventing.dll</HintPath>
+    </Reference>
     <Reference Include="Moq">
       <HintPath>..\..\binaries\libraries\Moq.dll</HintPath>
     </Reference>
@@ -45,12 +51,6 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="cmf.bus">
-      <HintPath>..\..\binaries\libraries\cmf.bus.dll</HintPath>
-    </Reference>
-    <Reference Include="cmf.eventing">
-      <HintPath>..\..\binaries\libraries\cmf.eventing.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DefaultEnvelopeBusTests.cs" />
@@ -59,18 +59,21 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\source\amp.bus\amp.bus.csproj">
-      <Project>{D96A6D2B-E427-406A-BD73-9961447B3557}</Project>
-      <Name>amp.bus</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\source\amp.bus.rabbit\amp.bus.rabbit.csproj">
-      <Project>{8CB67E8B-14B4-4C67-A23E-5C61EE17C8C2}</Project>
+      <Project>{8cb67e8b-14b4-4c67-a23e-5c61ee17c8c2}</Project>
       <Name>amp.bus.rabbit</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\source\amp.bus\amp.bus.csproj">
+      <Project>{d96a6d2b-e427-406a-bd73-9961447b3557}</Project>
+      <Name>amp.bus</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\source\amp.eventing\amp.eventing.csproj">
-      <Project>{24D9184A-81B9-4D67-86E4-1B8B4EAB27BB}</Project>
+      <Project>{24d9184a-81b9-4d67-86e4-1b8b4eab27bb}</Project>
       <Name>amp.eventing</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

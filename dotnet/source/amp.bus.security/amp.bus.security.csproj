@@ -59,7 +59,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="amp.bus.security.snk" />
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
