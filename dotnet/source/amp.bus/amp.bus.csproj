@@ -36,9 +36,9 @@
     <AssemblyOriginatorKeyFile>amp.bus.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="cmf.bus, Version=3.1.2.27690, Culture=neutral, PublicKeyToken=bbbef7830e900844, processorArchitecture=MSIL">
+    <Reference Include="cmf.bus, Version=3.1.3.0, Culture=neutral, PublicKeyToken=bbbef7830e900844, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\cmf.bus.3.1.2.27690\lib\net40\cmf.bus.dll</HintPath>
+      <HintPath>..\..\packages\cmf.bus.3.1.3.0\lib\net40\cmf.bus.dll</HintPath>
     </Reference>
     <Reference Include="Common.Logging, Version=1.2.0.0, Culture=neutral, PublicKeyToken=af08829b84f0328e">
       <SpecificVersion>False</SpecificVersion>

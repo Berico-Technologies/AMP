@@ -13,6 +13,6 @@
     <description>$description$</description>
     <releaseNotes>API to interact with the Windows Certificate Store enabling applications to connect to an AMPere Enterprise Message broker using X509 Mutual Certificate Authentication</releaseNotes>
     <copyright>Copyright 2013</copyright>
-    <tags>AMPere security X509 certificates mutual authentication</tags>
+    <tags>AMPere security X509 certificates mutual authentication amp.bus.security</tags>
   </metadata>
 </package>

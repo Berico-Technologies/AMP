@@ -13,6 +13,6 @@
     <description>$description$</description>
     <releaseNotes>AMPere Implementation of Common Messaging Framework Eventing Specification</releaseNotes>
     <copyright>Copyright 2013</copyright>
-    <tags>AMPere Common Messaging Framework Eventing</tags>
+    <tags>amp.eventing</tags>
   </metadata>
 </package>

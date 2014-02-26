@@ -31,10 +31,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="cmf.bus">
-      <HintPath>..\..\packages\cmf.bus.3.1.2.27690\lib\net40\cmf.bus.dll</HintPath>
+      <HintPath>..\..\packages\cmf.bus.3.1.3.0\lib\net40\cmf.bus.dll</HintPath>
     </Reference>
     <Reference Include="cmf.eventing">
-      <HintPath>..\..\packages\cmf.eventing.3.1.2.27690\lib\net40\cmf.eventing.dll</HintPath>
+      <HintPath>..\..\packages\cmf.eventing.3.1.3.0\lib\net40\cmf.eventing.dll</HintPath>
     </Reference>
     <Reference Include="Moq">
       <HintPath>..\..\binaries\libraries\Moq.dll</HintPath>

@@ -13,6 +13,6 @@
     <description>$description$</description>
     <releaseNotes>AMPere implementation of the cmf.bus interfaces.</releaseNotes>
     <copyright>Copyright 2013</copyright>
-    <tags>AMPere Common Messaging Framework</tags>
+    <tags>AMPere Common Messaging Framework amp.bus</tags>
   </metadata>
 </package>
